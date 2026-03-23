@@ -386,34 +386,6 @@
     </div>
   </header>
 
-  <!-- STORY BAR -->
-  <div class="story-bar">
-    <div class="story-crumb">
-      <span>Budget Planning</span>
-      <span class="story-crumb-sep">›</span>
-      <span>Stories</span>
-      <span class="story-crumb-sep">›</span>
-      <span class="active">Budget vs Actual Dashboard</span>
-    </div>
-    <span class="story-badge">FY 2024–25 · Q4</span>
-    <div class="story-spacer"></div>
-    <div class="story-actions">
-      <button class="btn-z btn-z-outline" onclick="exportData()">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6">
-          <path d="M6 1v7M3.5 5.5l2.5 2.5 2.5-2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M1.5 9.5h9" stroke-linecap="round"/>
-        </svg>
-        Export
-      </button>
-      <button class="btn-z btn-z-dark">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6">
-          <circle cx="6" cy="6" r="4.5"/>
-          <path d="M4 6l1.5 1.5L8 4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Publish Story
-      </button>
-    </div>
-  </div>
 
   <!-- MAIN CANVAS -->
   <main class="canvas" role="main">
@@ -423,13 +395,13 @@
       <span class="filter-bar-label">Filters</span>
       <div class="filter-divider"></div>
 
-      <!-- Entity: static chip — always "Zinc" -->
+      <!-- Entity: dropdown -->
       <div class="filter-group">
-        <span class="filter-group-label">Entity:</span>
-        <div class="filter-entity-chip">
-          <span class="filter-entity-chip-dot"></span>
-          Zinc
-        </div>
+        <label class="filter-group-label" for="filterEntity">Entity:</label>
+        <select class="filter-select" id="filterEntity" onchange="applyEntityFilter()">
+          <option value="Zinc">Zinc</option>
+          <option value="Alumina">Alumina</option>
+        </select>
       </div>
 
       <div class="filter-divider"></div>
@@ -437,12 +409,7 @@
       <!-- Business Unit: dropdown -->
       <div class="filter-group">
         <label class="filter-group-label" for="filterBU">Business Unit:</label>
-        <select class="filter-select" id="filterBU" onchange="applyFilter()">
-          <option value="All">All</option>
-          <option value="Zawar Mines">Zawar Mines</option>
-          <option value="SK Mine">SK Mine</option>
-          <option value="Dariba Complex">Dariba Complex</option>
-        </select>
+        <select class="filter-select" id="filterBU" onchange="applyFilter()"></select>
       </div>
 
       <div class="filter-divider"></div>
@@ -470,25 +437,15 @@
         <div class="plant-info-sub" id="buInfoSub">Rajasthan Operations · 3 Plants · FY 2024–25</div>
       </div>
       <div class="plant-info-spacer"></div>
-      <div class="plant-info-meta">
-        <div class="plant-meta-item">
-          <div class="plant-meta-label">Total Capacity</div>
-          <div class="plant-meta-value" id="buMetaCap">12.6 Mtpa</div>
-        </div>
-        <div class="plant-meta-divider"></div>
-        <div class="plant-meta-item">
-          <div class="plant-meta-label">Ore Grade</div>
-          <div class="plant-meta-value" id="buMetaGrade">Blended</div>
-        </div>
-        <div class="plant-meta-divider"></div>
-        <div class="plant-meta-item">
-          <div class="plant-meta-label">BU Utilisation</div>
-          <div class="plant-meta-value" id="buMetaUtil">80.0%</div>
-        </div>
-        <div class="plant-meta-divider"></div>
-        <div class="plant-meta-item">
-          <div class="plant-meta-label">SLA Compliance</div>
-          <div class="plant-meta-value" id="buMetaSla">93.2%</div>
+      <div class="plant-info-meta" style="min-width:260px;">
+        <div style="display:flex;flex-direction:column;gap:8px;width:100%;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="plant-meta-label">BU Budget Utilisation</span>
+            <span class="plant-meta-value" id="buMetaUtil">80.0%</span>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden;">
+            <div id="buUtilBarFill" style="height:100%;border-radius:999px;background:white;transition:width 1s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -496,7 +453,7 @@
     <!-- KPI Cards: Total Budget (1st) · Actual Spend (2nd) · Variance (3rd) -->
     <div class="kpi-grid-3">
 
-      <!-- 1. Total Budget — ALWAYS ₹500 Cr, shows % consumed indicator -->
+      <!-- 1. Total Budget — entity envelope or BU allocation depending on filter -->
       <div class="kpi-card dark">
         <div class="kpi-icon">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--c-text-500)" stroke-width="1.5">
@@ -506,18 +463,8 @@
           </svg>
         </div>
         <div class="kpi-label">Total Budget</div>
-        <div class="kpi-value">₹500 Cr</div>
-        <div class="kpi-sub"><span>FY 2024–25 · Zinc Entity Envelope</span></div>
-        <!-- % consumed bar — changes per BU -->
-        <div class="kpi-consumed-bar">
-          <div class="kpi-consumed-label">
-            <span class="kpi-consumed-text" id="kpiConsumedLabel">80% budget consumed</span>
-            <span class="kpi-consumed-pct" id="kpiConsumedPct">80%</span>
-          </div>
-          <div class="kpi-consumed-track">
-            <div class="kpi-consumed-fill" id="kpiConsumedFill"></div>
-          </div>
-        </div>
+        <div class="kpi-value" id="kpiBudgetVal">₹500 Cr</div>
+        <div class="kpi-sub"><span id="kpiBudgetSub">FY 2024–25 · Zinc Entity Envelope</span></div>
       </div>
 
       <!-- 2. Actual Spend — changes per BU -->
@@ -532,9 +479,6 @@
         <div class="kpi-value" id="kpiActualVal">₹400 Cr</div>
         <div class="kpi-sub">
           <span class="kpi-tag" id="kpiActualTag">of ₹500 Cr entity budget</span>
-        </div>
-        <div class="kpi-mini-bar">
-          <div class="kpi-mini-bar-fill" id="kpiActualBar" style="background:#71717A;"></div>
         </div>
       </div>
 
@@ -623,7 +567,7 @@
         <div style="font-size:var(--text-xs);color:var(--c-text-400);" id="tableFooterLeft">Zinc · FY 2024–25</div>
         <div style="display:flex;gap:var(--space-4);">
           <span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--c-text-400);">
-            Entity Budget: <strong style="color:var(--c-text-700);">₹500 Cr</strong>
+            <span id="footerBudgetLabel">Entity Budget</span>: <strong style="color:var(--c-text-700);" id="footerEntityBudget">₹500 Cr</strong>
           </span>
           <span style="color:var(--c-text-300);">·</span>
           <span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--c-text-400);">
@@ -641,173 +585,252 @@
 
   <script>
     /* ══════════════════════════════════════════════════════════
-       DATA MODEL
-       ── ENTITY_BUDGET: ₹500 Cr (Zinc, never changes)
-       ── Each BU has an allocation (slice of ₹500 Cr),
-          actual spend, and cost-centre breakdown.
-       ── pctOfEntity = actual / ENTITY_BUDGET × 100
-          (shown in the "% consumed" indicator on the
-          Total Budget KPI card)
+       DATA MODEL — multi-entity aware
+       ENTITIES maps entity name → { budget, BU: { key → data } }
+       Each BU has: infoName, infoSub, utilPct, actual, allocation,
+       barLabels, barBudget, barActual, trend, isAllView, rows
     ══════════════════════════════════════════════════════════ */
-    const ENTITY_BUDGET = 500;  // ₹ Crore — fixed
 
-    const BU = {
-
-      'All': {
-        infoName:  'Zinc — All Business Units',
-        infoSub:   'Rajasthan Operations · 3 Plants · FY 2024–25',
-        cap: '12.6 Mtpa', grade: 'Blended', util: '80.0%', sla: '93.2%',
-        // actual = sum of all three BUs
-        actual:     400,  // 156 + 148 + 96
-        allocation: 500,  // entity total (all allocations sum to 500)
-        // % of ₹500 Cr entity budget consumed — "All" = total/entity
-        pctConsumed: 80.0,
-        // Bar chart: one group per BU
-        barLabels:  ['Zawar Mines', 'SK Mine', 'Dariba Complex'],
-        barBudget:  [220, 180, 100],
-        barActual:  [156, 148,  96],
-        // Monthly trend: aggregate of all three
-        trend: {
-          actual: [26, 28, 26, 30, 33, 29, 36, 33, 37, 33, 38, 31],
-          budget: [38, 38, 38, 46, 46, 46, 50, 50, 50, 58, 58, 32]
-        },
-        // Summary rows for "All" table (one row per BU)
-        isAllView: true,
-        rows: [
-          { name: 'Zawar Mines',    sub:'Underground Mining',      gl:'PLANT_01', type:'CAPEX', allocation:220, actual:156 },
-          { name: 'SK Mine',        sub:'Open-pit + Underground',   gl:'PLANT_02', type:'CAPEX', allocation:180, actual:148 },
-          { name: 'Dariba Complex', sub:'Integrated Smelting',      gl:'PLANT_03', type:'CAPEX', allocation:100, actual: 96 },
-        ]
+    const ENTITIES = {
+      'Zinc': {
+        budget: 500,
+        BU: {
+          'All': {
+            infoName: 'Zinc — All Business Units',
+            infoSub:  'Rajasthan Operations · 3 Plants · FY 2024–25',
+            utilPct: 80.0,
+            actual: 400, allocation: 500,
+            barLabels: ['Zawar Mines', 'SK Mine', 'Dariba Complex'],
+            barBudget: [220, 180, 100],
+            barActual: [156, 148,  96],
+            trend: {
+              actual: [26,28,26,30,33,29,36,33,37,33,38,31],
+              budget: [38,38,38,46,46,46,50,50,50,58,58,32]
+            },
+            isAllView: true,
+            rows: [
+              { name:'Zawar Mines',    sub:'Underground Mining',   gl:'PLANT_01', type:'CAPEX', allocation:220, actual:156 },
+              { name:'SK Mine',        sub:'Open-pit + Underground',gl:'PLANT_02', type:'CAPEX', allocation:180, actual:148 },
+              { name:'Dariba Complex', sub:'Integrated Smelting',   gl:'PLANT_03', type:'CAPEX', allocation:100, actual: 96 },
+            ]
+          },
+          'Zawar Mines': {
+            infoName: 'Zawar Mines',
+            infoSub:  'Udaipur, Rajasthan · Underground Zinc Mining',
+            utilPct: 70.9,
+            actual: 156, allocation: 220,
+            barLabels: ['Mine Operations','Ore Processing','Smelting & Refining','Power & Utilities','Logistics & Dispatch'],
+            barBudget: [75,50,55,25,15],
+            barActual: [52,38,42,16, 8],
+            trend: {
+              actual: [ 9,10, 9,12,13,11,15,14,16,14,17,16],
+              budget: [17,17,17,20,20,20,21,21,21,23,23, 0]
+            },
+            isAllView: false,
+            rows: [
+              { name:'Mine Operations',      sub:'Underground Mining',    gl:'GL-5110-MO', type:'CAPEX', allocation:75, actual:52 },
+              { name:'Ore Processing',       sub:'Concentrator Plant',    gl:'GL-5120-OP', type:'OPEX',  allocation:50, actual:38 },
+              { name:'Smelting & Refining',  sub:'ISP / Roasting Unit',   gl:'GL-5130-SR', type:'CAPEX', allocation:55, actual:42 },
+              { name:'Power & Utilities',    sub:'Captive Power Plant',   gl:'GL-5140-PU', type:'OPEX',  allocation:25, actual:16 },
+              { name:'Logistics & Dispatch', sub:'Outbound & Warehousing',gl:'GL-5150-LD', type:'OPEX',  allocation:15, actual: 8 },
+            ]
+          },
+          'SK Mine': {
+            infoName: 'Sindesar Khurd (SK Mine)',
+            infoSub:  'Rajsamand, Rajasthan · World-class Underground Mine',
+            utilPct: 82.2,
+            actual: 148, allocation: 180,
+            barLabels: ['Mine Expansion','Ore Beneficiation','Electrolytic Refinery','Steam & Power','Quality & Lab'],
+            barBudget: [55,42,48,22,13],
+            barActual: [48,38,42,12, 8],
+            trend: {
+              actual: [ 8, 9, 8,10,11,10,13,12,14,12,13,11],
+              budget: [14,14,14,16,16,16,18,18,18,20,20,16]
+            },
+            isAllView: false,
+            rows: [
+              { name:'Mine Expansion',        sub:'Level Development',      gl:'GL-5210-ME', type:'CAPEX', allocation:55, actual:48 },
+              { name:'Ore Beneficiation',     sub:'Flotation & Filtration', gl:'GL-5220-OB', type:'OPEX',  allocation:42, actual:38 },
+              { name:'Electrolytic Refinery', sub:'Zinc Electrolysis',      gl:'GL-5230-ER', type:'CAPEX', allocation:48, actual:42 },
+              { name:'Steam & Power',         sub:'Utility Generation',     gl:'GL-5240-SP', type:'OPEX',  allocation:22, actual:12 },
+              { name:'Quality & Lab',         sub:'QA / QC Testing',        gl:'GL-5250-QL', type:'OPEX',  allocation:13, actual: 8 },
+            ]
+          },
+          'Dariba Complex': {
+            infoName: 'Dariba Smelting Complex',
+            infoSub:  'Rajsamand, Rajasthan · Integrated Smelting & Refining',
+            utilPct: 96.0,
+            actual: 96, allocation: 100,
+            barLabels: ['Lead-Silver Circuit','Zinc Oxide Plant','Captive Power','Environmental & Safety','Maintenance Engg.'],
+            barBudget: [28,26,22,14,10],
+            barActual: [28,25,21,13, 9],
+            trend: {
+              actual: [6,7,6,7,8,7,8,8,9,8,9, 9],
+              budget: [8,8,8,9,9,9,10,10,10,11,11,7]
+            },
+            isAllView: false,
+            rows: [
+              { name:'Lead-Silver Circuit',    sub:'Pb/Ag Refining',          gl:'GL-5310-LS', type:'CAPEX', allocation:28, actual:28 },
+              { name:'Zinc Oxide Plant',       sub:'ZnO Production',           gl:'GL-5320-ZO', type:'CAPEX', allocation:26, actual:25 },
+              { name:'Captive Power',          sub:'Waste Heat Recovery',      gl:'GL-5330-CP', type:'OPEX',  allocation:22, actual:21 },
+              { name:'Environmental & Safety', sub:'Effluent Treatment',       gl:'GL-5340-ES', type:'OPEX',  allocation:14, actual:13 },
+              { name:'Maintenance Engg.',      sub:'Mechanical & Electrical',  gl:'GL-5350-MA', type:'OPEX',  allocation:10, actual: 9 },
+            ]
+          }
+        }
       },
 
-      'Zawar Mines': {
-        infoName:  'Zawar Mines',
-        infoSub:   'Udaipur, Rajasthan · Underground Zinc Mining',
-        cap: '4.0 Mtpa', grade: '8.2% Zn', util: '70.9%', sla: '94.1%',
-        actual:      156,
-        allocation:  220,   // this BU's budget slice of ₹500 Cr
-        // 156 / 500 × 100 = 31.2% of entity budget consumed by Zawar
-        pctConsumed: 31.2,
-        barLabels:  ['Mine Operations','Ore Processing','Smelting & Refining','Power & Utilities','Logistics & Dispatch'],
-        barBudget:  [75, 50, 55, 25, 15],
-        barActual:  [52, 38, 42, 16,  8],
-        trend: {
-          actual: [ 9,10, 9,12,13,11,15,14,16,14,17,16],
-          budget: [17,17,17,20,20,20,21,21,21,23,23, 0]
-        },
-        isAllView: false,
-        rows: [
-          { name:'Mine Operations',     sub:'Underground Mining',     gl:'GL-5110-MO', type:'CAPEX', allocation:75, actual:52 },
-          { name:'Ore Processing',      sub:'Concentrator Plant',     gl:'GL-5120-OP', type:'OPEX',  allocation:50, actual:38 },
-          { name:'Smelting & Refining', sub:'ISP / Roasting Unit',    gl:'GL-5130-SR', type:'CAPEX', allocation:55, actual:42 },
-          { name:'Power & Utilities',   sub:'Captive Power Plant',    gl:'GL-5140-PU', type:'OPEX',  allocation:25, actual:16 },
-          { name:'Logistics & Dispatch',sub:'Outbound & Warehousing', gl:'GL-5150-LD', type:'OPEX',  allocation:15, actual: 8 },
-        ]
-      },
-
-      'SK Mine': {
-        infoName:  'Sindesar Khurd (SK Mine)',
-        infoSub:   'Rajsamand, Rajasthan · World-class Underground Mine',
-        cap: '6.5 Mtpa', grade: '11.4% Zn', util: '82.2%', sla: '97.3%',
-        actual:      148,
-        allocation:  180,
-        // 148 / 500 × 100 = 29.6% of entity budget consumed by SK Mine
-        pctConsumed: 29.6,
-        barLabels:  ['Mine Expansion','Ore Beneficiation','Electrolytic Refinery','Steam & Power','Quality & Lab'],
-        barBudget:  [55, 42, 48, 22, 13],
-        barActual:  [48, 38, 42, 12,  8],
-        trend: {
-          actual: [ 8, 9, 8,10,11,10,13,12,14,12,13,11],
-          budget: [14,14,14,16,16,16,18,18,18,20,20,16]
-        },
-        isAllView: false,
-        rows: [
-          { name:'Mine Expansion',        sub:'Level Development',       gl:'GL-5210-ME', type:'CAPEX', allocation:55, actual:48 },
-          { name:'Ore Beneficiation',     sub:'Flotation & Filtration',  gl:'GL-5220-OB', type:'OPEX',  allocation:42, actual:38 },
-          { name:'Electrolytic Refinery', sub:'Zinc Electrolysis',       gl:'GL-5230-ER', type:'CAPEX', allocation:48, actual:42 },
-          { name:'Steam & Power',         sub:'Utility Generation',      gl:'GL-5240-SP', type:'OPEX',  allocation:22, actual:12 },
-          { name:'Quality & Lab',         sub:'QA / QC Testing',         gl:'GL-5250-QL', type:'OPEX',  allocation:13, actual: 8 },
-        ]
-      },
-
-      'Dariba Complex': {
-        infoName:  'Dariba Smelting Complex',
-        infoSub:   'Rajsamand, Rajasthan · Integrated Smelting & Refining',
-        cap: '2.1 Mtpa', grade: '9.8% Zn', util: '96.0%', sla: '88.6%',
-        actual:       96,
-        allocation:  100,
-        // 96 / 500 × 100 = 19.2% of entity budget consumed by Dariba
-        pctConsumed: 19.2,
-        barLabels:  ['Lead-Silver Circuit','Zinc Oxide Plant','Captive Power','Environmental & Safety','Maintenance Engg.'],
-        barBudget:  [28, 26, 22, 14, 10],
-        barActual:  [28, 25, 21, 13,  9],
-        trend: {
-          actual: [ 6, 7, 6, 7, 8, 7, 8, 8, 9, 8, 9, 9],
-          budget: [ 8, 8, 8, 9, 9, 9,10,10,10,11,11, 7]
-        },
-        isAllView: false,
-        rows: [
-          { name:'Lead-Silver Circuit',    sub:'Pb/Ag Refining',         gl:'GL-5310-LS', type:'CAPEX', allocation:28, actual:28 },
-          { name:'Zinc Oxide Plant',       sub:'ZnO Production',         gl:'GL-5320-ZO', type:'CAPEX', allocation:26, actual:25 },
-          { name:'Captive Power',          sub:'Waste Heat Recovery',    gl:'GL-5330-CP', type:'OPEX',  allocation:22, actual:21 },
-          { name:'Environmental & Safety', sub:'Effluent Treatment',     gl:'GL-5340-ES', type:'OPEX',  allocation:14, actual:13 },
-          { name:'Maintenance Engg.',      sub:'Mechanical & Electrical',gl:'GL-5350-MA', type:'OPEX',  allocation:10, actual: 9 },
-        ]
+      'Alumina': {
+        budget: 350,
+        BU: {
+          'All': {
+            infoName: 'Alumina — All Business Units',
+            infoSub:  'Odisha Operations · 3 Plants · FY 2024–25',
+            utilPct: 83.1,
+            actual: 291, allocation: 350,
+            barLabels: ['Lanjigarh Refinery', 'Bauxite Mining', 'Utilities & Power'],
+            barBudget: [180, 110,  60],
+            barActual: [152,  88,  51],
+            trend: {
+              actual: [19,21,20,23,25,22,27,25,28,25,27,29],
+              budget: [28,28,28,30,30,30,32,32,32,30,30,20]
+            },
+            isAllView: true,
+            rows: [
+              { name:'Lanjigarh Refinery', sub:'Alumina Refining',        gl:'PLANT_A1', type:'CAPEX', allocation:180, actual:152 },
+              { name:'Bauxite Mining',     sub:'Open-cast Bauxite Mining',gl:'PLANT_A2', type:'CAPEX', allocation:110, actual: 88 },
+              { name:'Utilities & Power',  sub:'Captive Power & Steam',   gl:'PLANT_A3', type:'OPEX',  allocation: 60, actual: 51 },
+            ]
+          },
+          'Lanjigarh Refinery': {
+            infoName: 'Lanjigarh Alumina Refinery',
+            infoSub:  'Kalahandi, Odisha · Alumina Refining',
+            utilPct: 84.4,
+            actual: 152, allocation: 180,
+            barLabels: ['Refinery Operations','Calcination','Caustic Soda Plant','Power & Steam','Quality & Env.'],
+            barBudget: [60,40,35,30,15],
+            barActual: [52,35,29,25,11],
+            trend: {
+              actual: [10,11,10,12,13,11,14,13,15,13,14,16],
+              budget: [14,14,14,16,16,16,17,17,17,15,15, 9]
+            },
+            isAllView: false,
+            rows: [
+              { name:'Refinery Operations', sub:'Digestion & Precipitation', gl:'GL-6110-RO', type:'CAPEX', allocation:60, actual:52 },
+              { name:'Calcination',         sub:'Rotary Kiln Operations',    gl:'GL-6120-CA', type:'CAPEX', allocation:40, actual:35 },
+              { name:'Caustic Soda Plant',  sub:'NaOH Recovery & Supply',    gl:'GL-6130-CS', type:'OPEX',  allocation:35, actual:29 },
+              { name:'Power & Steam',       sub:'Captive Power Generation',  gl:'GL-6140-PS', type:'OPEX',  allocation:30, actual:25 },
+              { name:'Quality & Env.',      sub:'QA / Effluent Treatment',   gl:'GL-6150-QE', type:'OPEX',  allocation:15, actual:11 },
+            ]
+          },
+          'Bauxite Mining': {
+            infoName: 'Bauxite Mining — Niyamgiri',
+            infoSub:  'Rayagada & Koraput, Odisha · Open-cast Mining',
+            utilPct: 80.0,
+            actual: 88, allocation: 110,
+            barLabels: ['Mine Operations','Crushing & Handling','Overburden Mgmt.','Logistics','Safety & Compliance'],
+            barBudget: [38,25,22,15,10],
+            barActual: [31,20,18,12, 7],
+            trend: {
+              actual: [6,7,6,7,8,7,8,7,8,7,8, 9],
+              budget: [9,9,9,9,9,9,10,10,10,9,9,8]
+            },
+            isAllView: false,
+            rows: [
+              { name:'Mine Operations',      sub:'Drill, Blast & Excavation',    gl:'GL-6210-MO', type:'CAPEX', allocation:38, actual:31 },
+              { name:'Crushing & Handling',  sub:'Primary & Secondary Crushing', gl:'GL-6220-CH', type:'OPEX',  allocation:25, actual:20 },
+              { name:'Overburden Mgmt.',     sub:'OB Removal & Backfilling',     gl:'GL-6230-OB', type:'CAPEX', allocation:22, actual:18 },
+              { name:'Logistics',            sub:'Rail & Road Despatch',         gl:'GL-6240-LG', type:'OPEX',  allocation:15, actual:12 },
+              { name:'Safety & Compliance',  sub:'EHS & Statutory Compliance',   gl:'GL-6250-SC', type:'OPEX',  allocation:10, actual: 7 },
+            ]
+          },
+          'Utilities & Power': {
+            infoName: 'Utilities & Power — Lanjigarh',
+            infoSub:  'Kalahandi, Odisha · Captive Power & Steam Generation',
+            utilPct: 85.0,
+            actual: 51, allocation: 60,
+            barLabels: ['Captive Power Plant','Steam Generation','Water Treatment','Electrical Distribution','Maintenance'],
+            barBudget: [22,16,10, 7, 5],
+            barActual: [19,14, 9, 6, 3],
+            trend: {
+              actual: [3,4,3,4,5,4,5,4,5,4,5,5],
+              budget: [5,5,5,5,5,5,5,5,5,5,5,5]
+            },
+            isAllView: false,
+            rows: [
+              { name:'Captive Power Plant',      sub:'Coal-fired Generation',      gl:'GL-6310-CP', type:'CAPEX', allocation:22, actual:19 },
+              { name:'Steam Generation',         sub:'Process Steam Supply',       gl:'GL-6320-SG', type:'OPEX',  allocation:16, actual:14 },
+              { name:'Water Treatment',          sub:'Clarification & Recycling',  gl:'GL-6330-WT', type:'OPEX',  allocation:10, actual: 9 },
+              { name:'Electrical Distribution',  sub:'HT/LT Distribution Network', gl:'GL-6340-ED', type:'OPEX',  allocation: 7, actual: 6 },
+              { name:'Maintenance',              sub:'Mechanical & Electrical Upkeep',gl:'GL-6350-MA',type:'OPEX', allocation: 5, actual: 3 },
+            ]
+          }
+        }
       }
     };
 
-    // ── Chart instances ──
+    // ── State ──
+    let currentEntity = 'Zinc';
     let barChartInst = null, lineChartInst = null;
 
     function getRowStatus(allocation, actual) {
       const pct = Math.round((actual / allocation) * 100);
-      if (pct > 100) return { status:'Over Budget', bar:'danger', badge:'zbadge zbadge-danger' };
-      if (pct >= 85)  return { status:'At Risk',    bar:'warning', badge:'zbadge zbadge-warn'  };
-      return              { status:'On Track',    bar:'ok',      badge:'zbadge zbadge-dark'  };
+      if (pct > 100) return { status:'Over Budget', bar:'danger',  badge:'zbadge zbadge-danger' };
+      if (pct >= 85)  return { status:'At Risk',    bar:'warning', badge:'zbadge zbadge-warn'   };
+      return               { status:'On Track',    bar:'ok',      badge:'zbadge zbadge-dark'   };
+    }
+
+    function populateBUDropdown(entity) {
+      const buSel = document.getElementById('filterBU');
+      buSel.innerHTML = Object.keys(ENTITIES[entity].BU)
+        .map(k => `<option value="${k}">${k}</option>`).join('');
+    }
+
+    function applyEntityFilter() {
+      currentEntity = document.getElementById('filterEntity').value;
+      populateBUDropdown(currentEntity);
+      renderBU('All');
     }
 
     function renderBU(key) {
-      const d = BU[key];
+      const entity       = currentEntity;
+      const ENTITY_BUDGET = ENTITIES[entity].budget;
+      const d            = ENTITIES[entity].BU[key];
 
       // ── Top pill ──
       document.getElementById('topbarPill').innerHTML =
-        `<span class="topbar-entity-dot"></span>Zinc · ${key}`;
+        `<span class="topbar-entity-dot"></span>${entity} · ${key}`;
 
       // ── Info banner ──
       document.getElementById('buInfoName').textContent = d.infoName;
       document.getElementById('buInfoSub').textContent  = d.infoSub;
-      document.getElementById('buMetaCap').textContent  = d.cap;
-      document.getElementById('buMetaGrade').textContent = d.grade;
-      document.getElementById('buMetaUtil').textContent  = d.util;
-      document.getElementById('buMetaSla').textContent   = d.sla;
+      document.getElementById('buMetaUtil').textContent = `${d.utilPct.toFixed(1)}%`;
+      const utilFill = document.getElementById('buUtilBarFill');
+      utilFill.style.width = '0%';
+      requestAnimationFrame(() => {
+        setTimeout(() => { utilFill.style.width = `${Math.min(d.utilPct, 100)}%`; }, 250);
+      });
       const banner = document.getElementById('buInfoBar');
       banner.classList.remove('animate-in');
       void banner.offsetWidth;
       banner.classList.add('animate-in');
 
-      // ── KPI 1: Total Budget (always ₹500 Cr) + % consumed bar ──
-      const pct        = d.pctConsumed;
-      const pctLabel   = `${pct.toFixed(1)}% budget consumed`;
-      document.getElementById('kpiConsumedLabel').textContent = pctLabel;
-      document.getElementById('kpiConsumedPct').textContent   = `${pct.toFixed(1)}%`;
-      const fill = document.getElementById('kpiConsumedFill');
-      fill.style.width = '0%';
-      requestAnimationFrame(() => {
-        setTimeout(() => { fill.style.width = `${Math.min(pct, 100)}%`; }, 250);
-      });
+      // ── KPI 1: Total Budget — BU allocation when specific BU, entity total for All ──
+      const displayBudget = key === 'All' ? ENTITY_BUDGET : d.allocation;
+      const budgetSub     = key === 'All'
+        ? `FY 2024–25 · ${entity} Entity Envelope`
+        : `FY 2024–25 · ${key} Allocation`;
+      document.getElementById('kpiBudgetVal').textContent = `₹${displayBudget} Cr`;
+      document.getElementById('kpiBudgetSub').textContent = budgetSub;
 
       // ── KPI 2: Actual Spend ──
       document.getElementById('kpiActualVal').textContent = `₹${d.actual} Cr`;
-      document.getElementById('kpiActualTag').textContent = `of ₹${ENTITY_BUDGET} Cr entity budget`;
-      const actBar = document.getElementById('kpiActualBar');
-      actBar.style.width = '0%';
-      requestAnimationFrame(() => {
-        setTimeout(() => { actBar.style.width = `${Math.min((d.actual / ENTITY_BUDGET) * 100, 100)}%`; }, 250);
-      });
+      document.getElementById('kpiActualTag').textContent =
+        `of ₹${displayBudget} Cr ${key === 'All' ? 'entity' : 'BU'} budget`;
 
-      // ── KPI 3: Variance (vs BU allocation for individual; vs entity budget for All) ──
-      const baseBudget = key === 'All' ? ENTITY_BUDGET : d.allocation;
-      const variance   = d.actual - baseBudget;  // negative = underspent
+      // ── KPI 3: Variance ──
+      const baseBudget = displayBudget;
+      const variance   = d.actual - baseBudget;
       const headroom   = Math.abs(variance);
       document.getElementById('kpiVarianceVal').textContent =
         `${variance < 0 ? '-' : '+'}₹${headroom} Cr`;
@@ -875,7 +898,6 @@
       });
 
       // ── Table ──
-      // Header differs for "All" view (shows BU-level columns) vs cost-centre view
       const thead = document.getElementById('tableHead');
       const tbody = document.getElementById('detailTableBody');
       tbody.innerHTML = '';
@@ -1001,12 +1023,14 @@
 
       // ── Footer ──
       const totalActual = d.actual;
-      const footerVar   = totalActual - (key === 'All' ? ENTITY_BUDGET : d.allocation);
-      document.getElementById('tableFooterLeft').textContent = `Zinc · ${key} · FY 2024–25`;
-      document.getElementById('tableSubtitle').textContent   = `Zinc · ${key} · FY 2024–25 · Budget version · ₹ Crore`;
-      document.getElementById('footerActual').textContent    = `₹${totalActual} Cr`;
-      document.getElementById('footerVariance').textContent  = `${footerVar < 0 ? '-' : '+'}₹${Math.abs(footerVar)} Cr`;
-      document.getElementById('footerVariance').style.color  = footerVar > 0 ? 'var(--c-danger)' : 'var(--c-text-700)';
+      const footerVar   = totalActual - baseBudget;
+      document.getElementById('tableFooterLeft').textContent  = `${entity} · ${key} · FY 2024–25`;
+      document.getElementById('tableSubtitle').textContent    = `${entity} · ${key} · FY 2024–25 · Budget version · ₹ Crore`;
+      document.getElementById('footerBudgetLabel').textContent = key === 'All' ? 'Entity Budget' : 'BU Allocation';
+      document.getElementById('footerEntityBudget').textContent = `₹${displayBudget} Cr`;
+      document.getElementById('footerActual').textContent     = `₹${totalActual} Cr`;
+      document.getElementById('footerVariance').textContent   = `${footerVar < 0 ? '-' : '+'}₹${Math.abs(footerVar)} Cr`;
+      document.getElementById('footerVariance').style.color   = footerVar > 0 ? 'var(--c-danger)' : 'var(--c-text-700)';
     }
 
     function applyFilter() {
@@ -1014,6 +1038,9 @@
     }
 
     function resetFilter() {
+      document.getElementById('filterEntity').value  = 'Zinc';
+      currentEntity = 'Zinc';
+      populateBUDropdown('Zinc');
       document.getElementById('filterBU').value      = 'All';
       document.getElementById('filterVersion').value = 'Budget';
       renderBU('All');
@@ -1040,14 +1067,16 @@
     }
 
     function exportData() {
-      const key = document.getElementById('filterBU').value;
-      const d   = BU[key];
+      const key    = document.getElementById('filterBU').value;
+      const entity = currentEntity;
+      const ENTITY_BUDGET = ENTITIES[entity].budget;
+      const d      = ENTITIES[entity].BU[key];
       const header = d.isAllView
         ? ['Business Unit','Allocation (₹ Cr)','Actual (₹ Cr)','Variance (₹ Cr)','Available (₹ Cr)','% of Entity Budget','Type','Status']
         : ['Cost Centre','Budget (₹ Cr)','Actual (₹ Cr)','Variance (₹ Cr)','Available (₹ Cr)','GL Account','Type','Status'];
       const rows = d.rows.map(r => {
-        const m = getRowStatus(r.allocation, r.actual);
-        const var_ = (r.actual - r.allocation).toFixed(0);
+        const m     = getRowStatus(r.allocation, r.actual);
+        const var_  = (r.actual - r.allocation).toFixed(0);
         const avail = (r.allocation - r.actual).toFixed(0);
         return d.isAllView
           ? [r.name, r.allocation, r.actual, var_, avail, ((r.actual/ENTITY_BUDGET)*100).toFixed(1)+'%', r.type, m.status]
@@ -1057,11 +1086,14 @@
       const blob = new Blob([csv], { type:'text/csv' });
       const a    = document.createElement('a');
       a.href     = URL.createObjectURL(blob);
-      a.download = `zinc_budget_${key.replace(/\s+/g,'_')}.csv`;
+      a.download = `${entity.toLowerCase()}_budget_${key.replace(/\s+/g,'_')}.csv`;
       a.click();
     }
 
-    window.addEventListener('DOMContentLoaded', () => renderBU('All'));
+    window.addEventListener('DOMContentLoaded', () => {
+      populateBUDropdown('Zinc');
+      renderBU('All');
+    });
   </script>
 
 </body>
