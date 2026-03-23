@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budgeting Application — Vedanta Zinc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --c-topbar:        #18181B;
+      --c-topbar-hover:  #27272A;
+      --c-bg:            #F4F4F5;
+      --c-surface:       #FFFFFF;
+      --c-border:        #E4E4E7;
+      --c-border-md:     #D4D4D8;
+      --c-border-strong: #A1A1AA;
+      --c-text-900:      #09090B;
+      --c-text-700:      #3F3F46;
+      --c-text-500:      #71717A;
+      --c-text-400:      #A1A1AA;
+      --c-text-300:      #D4D4D8;
+      --c-danger:        #991B1B;
+      --c-danger-bg:     #FEF2F2;
+      --c-warn:          #78350F;
+      --c-warn-bg:       #FFFBEB;
+      --font-primary:    'Inter', 'Arial', sans-serif;
+      --font-mono:       'JetBrains Mono', 'Courier New', monospace;
+      --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+      --font-medium: 500; --font-semibold: 600; --font-bold: 700;
+      --space-1:.25rem; --space-2:.5rem; --space-3:.75rem;
+      --space-4:1rem;   --space-5:1.25rem; --space-6:1.5rem;
+      --radius-sm:4px; --radius-md:8px; --radius-lg:12px; --radius-full:9999px;
+      --shadow-xs:0 1px 2px rgba(0,0,0,0.06);
+      --shadow-sm:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md:0 4px 8px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--c-bg);
+      color: var(--c-text-900);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top App Bar ── */
+    .app-topbar {
+      height: 52px;
+      background: var(--c-topbar);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-6);
+      gap: var(--space-4);
+      flex-shrink: 0;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .topbar-logo { display:flex; align-items:center; text-decoration:none; }
+    .topbar-logo-img { height:30px; width:auto; background:white; border-radius:var(--radius-sm); padding:3px 8px; display:block; }
+    .topbar-divider { width:1px; height:20px; background:rgba(255,255,255,0.15); }
+    .topbar-app-name { font-size:var(--text-sm); font-weight:var(--font-medium); color:rgba(255,255,255,0.7); }
+
+    .topbar-entity-pill {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);
+      border-radius:var(--radius-full); padding:3px 10px 3px 7px;
+      font-size:var(--text-xs); font-weight:var(--font-semibold);
+      color:rgba(255,255,255,0.9); letter-spacing:0.02em;
+    }
+    .topbar-entity-dot { width:7px; height:7px; border-radius:50%; background:#D4D4D8; flex-shrink:0; }
+
+    .topbar-spacer { flex:1; }
+    .topbar-actions { display:flex; align-items:center; gap:var(--space-2); }
+    .topbar-icon-btn {
+      width:32px; height:32px; border-radius:var(--radius-sm); border:none;
+      background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.7);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition:background 150ms,color 150ms; position:relative;
+    }
+    .topbar-icon-btn:hover { background:rgba(255,255,255,0.16); color:white; }
+    .topbar-notif-dot {
+      position:absolute; top:5px; right:5px; width:7px; height:7px;
+      background:#D4D4D8; border-radius:50%; border:1.5px solid var(--c-topbar);
+    }
+    .topbar-user {
+      display:flex; align-items:center; gap:var(--space-2);
+      padding:4px 10px 4px 4px; border-radius:var(--radius-sm);
+      cursor:pointer; transition:background 150ms; margin-left:var(--space-1);
+    }
+    .topbar-user:hover { background:rgba(255,255,255,0.08); }
+    .topbar-user-avatar {
+      width:28px; height:28px; border-radius:50%;
+      background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.2);
+      color:white; font-size:10px; font-weight:var(--font-bold);
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .topbar-user-name { font-size:var(--text-xs); font-weight:var(--font-semibold); color:white; line-height:1.25; }
+    .topbar-user-role { font-size:10px; color:rgba(255,255,255,0.5); line-height:1.25; }
+
+    /* ── Story Bar ── */
+    .story-bar {
+      height:44px; background:var(--c-surface); border-bottom:1px solid var(--c-border);
+      display:flex; align-items:center; padding:0 var(--space-6); gap:var(--space-4);
+      flex-shrink:0; box-shadow:var(--shadow-xs);
+    }
+    .story-crumb { display:flex; align-items:center; gap:var(--space-2); font-size:var(--text-sm); color:var(--c-text-500); }
+    .story-crumb .active { color:var(--c-text-900); font-weight:var(--font-semibold); }
+    .story-crumb-sep { color:var(--c-text-300); font-size:var(--text-xs); }
+    .story-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:var(--text-xs); font-weight:var(--font-semibold); padding:2px 10px;
+      border-radius:var(--radius-full); background:var(--c-bg);
+      color:var(--c-text-700); border:1px solid var(--c-border-md);
+    }
+    .story-spacer { flex:1; }
+    .story-actions { display:flex; align-items:center; gap:var(--space-2); }
+
+    /* ── Buttons ── */
+    .btn-z {
+      display:inline-flex; align-items:center; gap:var(--space-2);
+      padding:6px 14px; font-family:var(--font-primary); font-size:var(--text-sm);
+      font-weight:var(--font-medium); border-radius:var(--radius-md);
+      cursor:pointer; transition:all 150ms; border:1px solid transparent; white-space:nowrap;
+    }
+    .btn-z-dark { background:var(--c-topbar); color:white; border-color:var(--c-topbar); }
+    .btn-z-dark:hover { background:var(--c-topbar-hover); }
+    .btn-z-outline { background:transparent; color:var(--c-text-700); border-color:var(--c-border-md); }
+    .btn-z-outline:hover { background:var(--c-bg); border-color:var(--c-border-strong); color:var(--c-text-900); }
+
+    /* ── Canvas ── */
+    .canvas { flex:1; padding:var(--space-6); max-width:1440px; width:100%; margin:0 auto; }
+
+    /* ── Filter Bar ── */
+    .filter-bar {
+      display:flex; align-items:center; gap:var(--space-3);
+      padding:var(--space-3) var(--space-5);
+      background:var(--c-surface); border:1px solid var(--c-border);
+      border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);
+      margin-bottom:var(--space-5); flex-wrap:wrap;
+    }
+    .filter-bar-label {
+      font-size:var(--text-xs); font-weight:var(--font-semibold);
+      text-transform:uppercase; letter-spacing:0.07em; color:var(--c-text-400);
+      margin-right:var(--space-1);
+    }
+    .filter-divider { width:1px; height:20px; background:var(--c-border); }
+    .filter-group { display:flex; align-items:center; gap:var(--space-2); }
+    .filter-group-label { font-size:var(--text-xs); font-weight:var(--font-medium); color:var(--c-text-500); }
+
+    /* Static entity chip */
+    .filter-entity-chip {
+      display:inline-flex; align-items:center; gap:6px;
+      background:var(--c-topbar); color:white;
+      border-radius:var(--radius-md); padding:5px 12px;
+      font-size:var(--text-sm); font-weight:var(--font-semibold);
+      letter-spacing:0.01em; pointer-events:none; user-select:none;
+    }
+    .filter-entity-chip-dot { width:6px; height:6px; border-radius:50%; background:#D4D4D8; flex-shrink:0; }
+
+    .filter-select {
+      appearance:none; -webkit-appearance:none;
+      background:var(--c-bg); border:1px solid var(--c-border-md);
+      border-radius:var(--radius-md); padding:5px 28px 5px 10px;
+      font-family:var(--font-primary); font-size:var(--text-sm);
+      font-weight:var(--font-medium); color:var(--c-text-900);
+      cursor:pointer; transition:border-color 150ms,box-shadow 150ms;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%2352525B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 8px center; min-width:160px;
+    }
+    .filter-select:focus { outline:none; border-color:var(--c-text-700); box-shadow:0 0 0 3px rgba(63,63,70,0.1); }
+    .filter-select:hover { border-color:var(--c-border-strong); }
+
+    .filter-reset-btn {
+      margin-left:auto; font-size:var(--text-xs); color:var(--c-text-500);
+      background:none; border:none; cursor:pointer; padding:4px 8px;
+      border-radius:var(--radius-sm); transition:color 150ms,background 150ms;
+      display:flex; align-items:center; gap:4px;
+    }
+    .filter-reset-btn:hover { color:var(--c-text-900); background:var(--c-bg); }
+
+    /* ── Plant Info Banner ── */
+    .plant-info-bar {
+      display:flex; align-items:center; gap:var(--space-4);
+      margin-bottom:var(--space-5); padding:var(--space-4) var(--space-5);
+      background:var(--c-topbar); border-radius:var(--radius-lg);
+    }
+    .plant-info-name { font-size:var(--text-base); font-weight:var(--font-bold); color:white; }
+    .plant-info-sub  { font-size:var(--text-sm); color:rgba(255,255,255,0.5); margin-top:1px; }
+    .plant-info-spacer { flex:1; }
+    .plant-info-meta { display:flex; align-items:center; gap:var(--space-5); }
+    .plant-meta-item { text-align:right; }
+    .plant-meta-label { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.4); margin-bottom:2px; }
+    .plant-meta-value { font-family:var(--font-mono); font-size:var(--text-sm); font-weight:var(--font-bold); color:white; }
+    .plant-meta-divider { width:1px; height:32px; background:rgba(255,255,255,0.12); }
+
+    /* ── KPI Grid ── */
+    .kpi-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-4); margin-bottom:var(--space-5); }
+    .kpi-card {
+      background:var(--c-surface); border-radius:var(--radius-lg); padding:var(--space-5);
+      box-shadow:var(--shadow-sm); border:1px solid var(--c-border);
+      position:relative; overflow:hidden; transition:box-shadow 200ms,transform 200ms;
+    }
+    .kpi-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+    .kpi-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .kpi-card.dark::before   { background:var(--c-topbar); }
+    .kpi-card.medium::before { background:#71717A; }
+    .kpi-card.light::before  { background:#A1A1AA; }
+    .kpi-card.danger-top::before { background:var(--c-danger); }
+
+    .kpi-icon {
+      position:absolute; top:var(--space-4); right:var(--space-4);
+      width:34px; height:34px; border-radius:var(--radius-md);
+      background:var(--c-bg); border:1px solid var(--c-border);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .kpi-label {
+      font-size:var(--text-xs); font-weight:var(--font-semibold); text-transform:uppercase;
+      letter-spacing:0.08em; color:var(--c-text-400); margin-bottom:var(--space-2);
+    }
+    .kpi-value {
+      font-family:var(--font-mono); font-size:1.7rem; font-weight:var(--font-bold);
+      color:var(--c-text-900); line-height:1.1; margin-bottom:var(--space-2);
+    }
+    .kpi-sub { font-size:var(--text-xs); color:var(--c-text-500); display:flex; align-items:center; gap:var(--space-1); }
+    .kpi-tag {
+      font-size:var(--text-xs); font-weight:var(--font-semibold); padding:2px 7px;
+      border-radius:var(--radius-full); background:var(--c-bg);
+      border:1px solid var(--c-border-md); color:var(--c-text-700);
+    }
+    .kpi-tag.danger { background:var(--c-danger-bg); border-color:#FECACA; color:var(--c-danger); }
+    .kpi-tag.warn   { background:var(--c-warn-bg);   border-color:#FDE68A; color:var(--c-warn); }
+
+    /* % consumed indicator on Total Budget card */
+    .kpi-consumed-bar {
+      margin-top:var(--space-3);
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .kpi-consumed-label {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .kpi-consumed-text {
+      font-size:var(--text-xs);
+      font-weight:var(--font-semibold);
+      color:var(--c-text-500);
+    }
+    .kpi-consumed-pct {
+      font-family:var(--font-mono);
+      font-size:var(--text-xs);
+      font-weight:var(--font-bold);
+      color:var(--c-text-700);
+    }
+    .kpi-consumed-track {
+      height:4px;
+      background:var(--c-border);
+      border-radius:var(--radius-full);
+      overflow:hidden;
+    }
+    .kpi-consumed-fill {
+      height:100%;
+      border-radius:var(--radius-full);
+      background:var(--c-topbar);
+      transition:width 1s cubic-bezier(0.4,0,0.2,1);
+      width:0%;
+    }
+
+    .kpi-mini-bar { margin-top:var(--space-3); height:3px; background:var(--c-border); border-radius:var(--radius-full); overflow:hidden; }
+    .kpi-mini-bar-fill { height:100%; border-radius:var(--radius-full); transition:width 1s cubic-bezier(0.4,0,0.2,1); width:0%; }
+
+    /* ── Charts Row ── */
+    .charts-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-4); margin-bottom:var(--space-5); }
+    .chart-card { background:var(--c-surface); border-radius:var(--radius-lg); border:1px solid var(--c-border); box-shadow:var(--shadow-sm); overflow:hidden; }
+    .chart-card-header { display:flex; align-items:center; justify-content:space-between; padding:var(--space-4) var(--space-5); border-bottom:1px solid var(--c-border); }
+    .chart-card-title { font-size:var(--text-base); font-weight:var(--font-semibold); color:var(--c-text-900); }
+    .chart-card-subtitle { font-size:var(--text-xs); color:var(--c-text-500); margin-top:2px; }
+    .chart-legend { display:flex; align-items:center; gap:var(--space-4); }
+    .chart-legend-item { display:flex; align-items:center; gap:var(--space-2); font-size:var(--text-xs); color:var(--c-text-500); }
+    .chart-legend-swatch { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+    .chart-body { padding:var(--space-4); position:relative; }
+
+    /* ── Detail Table ── */
+    .detail-card { background:var(--c-surface); border-radius:var(--radius-lg); border:1px solid var(--c-border); box-shadow:var(--shadow-sm); overflow:hidden; }
+    .detail-head { display:flex; align-items:center; justify-content:space-between; padding:var(--space-4) var(--space-5); border-bottom:1px solid var(--c-border); }
+    .detail-title { font-size:var(--text-base); font-weight:var(--font-semibold); color:var(--c-text-900); }
+    .detail-sub   { font-size:var(--text-xs); color:var(--c-text-500); margin-top:2px; }
+
+    .z-table { width:100%; border-collapse:collapse; }
+    .z-table thead tr { background:var(--c-bg); border-bottom:1px solid var(--c-border-md); }
+    .z-table th {
+      padding:10px 14px; font-size:var(--text-xs); font-weight:var(--font-semibold);
+      text-transform:uppercase; letter-spacing:0.06em; color:var(--c-text-400);
+      text-align:left; white-space:nowrap;
+    }
+    .z-table tbody tr { border-bottom:1px solid var(--c-border); transition:background 150ms; }
+    .z-table tbody tr:last-child { border-bottom:none; }
+    .z-table tbody tr:hover { background:var(--c-bg); }
+    .z-table td { padding:12px 14px; font-size:var(--text-sm); color:var(--c-text-700); }
+
+    .sortable { cursor:pointer; user-select:none; }
+    .sortable:hover { color:var(--c-text-900); }
+    .sortable::after      { content:' ⇅'; font-size:10px; opacity:0.35; margin-left:3px; }
+    .sortable.asc::after  { content:' ↑'; opacity:1; color:var(--c-text-900); }
+    .sortable.desc::after { content:' ↓'; opacity:1; color:var(--c-text-900); }
+
+    .num-pos { color:var(--c-text-700); font-weight:var(--font-semibold); }
+    .num-neg { color:var(--c-danger);   font-weight:var(--font-semibold); }
+
+    .zbadge { display:inline-block; padding:2px 9px; border-radius:var(--radius-full); font-size:11px; font-weight:var(--font-semibold); white-space:nowrap; }
+    .zbadge-dark   { background:var(--c-topbar); color:white; }
+    .zbadge-mid    { background:#3F3F46; color:white; }
+    .zbadge-gray   { background:var(--c-bg); color:var(--c-text-700); border:1px solid var(--c-border-md); }
+    .zbadge-danger { background:var(--c-danger-bg); color:var(--c-danger); }
+    .zbadge-warn   { background:var(--c-warn-bg); color:var(--c-warn); }
+
+    .version-pill { display:inline-block; padding:2px 9px; border-radius:var(--radius-full); font-size:11px; font-weight:var(--font-medium); background:var(--c-bg); color:var(--c-text-500); border:1px solid var(--c-border-md); }
+
+    .util-bar-wrap { display:flex; align-items:center; gap:var(--space-2); }
+    .util-bar-track { flex:1; height:5px; background:var(--c-border); border-radius:var(--radius-full); overflow:hidden; min-width:55px; }
+    .util-bar-fill { height:100%; border-radius:var(--radius-full); transition:width 1.2s cubic-bezier(0.4,0,0.2,1); width:0%; }
+    .util-bar-fill.ok      { background:#52525B; }
+    .util-bar-fill.warning { background:#A16207; }
+    .util-bar-fill.danger  { background:var(--c-danger); }
+
+    .table-footer { display:flex; align-items:center; justify-content:space-between; padding:var(--space-3) var(--space-5); border-top:1px solid var(--c-border); background:var(--c-bg); }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+    .animate-in { animation:fadeIn 0.25s ease forwards; }
+
+    @media (max-width:1100px) { .kpi-grid-3 { grid-template-columns:1fr 1fr; } .charts-row { grid-template-columns:1fr; } }
+    @media (max-width:700px)  { .kpi-grid-3 { grid-template-columns:1fr; } .topbar-nav { display:none; } .plant-info-meta { display:none; } }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP APP BAR -->
+  <header class="app-topbar" role="banner">
+    <a href="#" class="topbar-logo">
+      <img src="../references/vendanta logo.jpeg" alt="Vedanta" class="topbar-logo-img" />
+    </a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-app-name">Budgeting Application</span>
+    <div class="topbar-entity-pill" id="topbarPill">
+      <span class="topbar-entity-dot"></span>Zinc · All Plants
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <button class="topbar-icon-btn" aria-label="Search">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="6.5" cy="6.5" r="5"/><line x1="10.5" y1="10.5" x2="13.5" y2="13.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="topbar-icon-btn" aria-label="Notifications" style="position:relative;">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M7.5 1.5a4.5 4.5 0 00-4.5 4.5c0 2.5-1.2 3.7-1.2 3.7H13.2s-1.2-1.2-1.2-3.7A4.5 4.5 0 007.5 1.5z" stroke-linejoin="round"/>
+          <path d="M6 12a1.5 1.5 0 003 0" stroke-linecap="round"/>
+        </svg>
+        <span class="topbar-notif-dot"></span>
+      </button>
+      <div class="topbar-user" role="button" tabindex="0">
+        <div class="topbar-user-avatar">RK</div>
+        <div>
+          <div class="topbar-user-name">Rajesh Kumar</div>
+          <div class="topbar-user-role">Finance Controller</div>
+        </div>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" style="margin-left:4px;">
+          <path d="M2 3.5l3 3 3-3"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- STORY BAR -->
+  <div class="story-bar">
+    <div class="story-crumb">
+      <span>Budget Planning</span>
+      <span class="story-crumb-sep">›</span>
+      <span>Stories</span>
+      <span class="story-crumb-sep">›</span>
+      <span class="active">Budget vs Actual Dashboard</span>
+    </div>
+    <span class="story-badge">FY 2024–25 · Q4</span>
+    <div class="story-spacer"></div>
+    <div class="story-actions">
+      <button class="btn-z btn-z-outline" onclick="exportData()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M6 1v7M3.5 5.5l2.5 2.5 2.5-2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M1.5 9.5h9" stroke-linecap="round"/>
+        </svg>
+        Export
+      </button>
+      <button class="btn-z btn-z-dark">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="6" cy="6" r="4.5"/>
+          <path d="M4 6l1.5 1.5L8 4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Publish Story
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CANVAS -->
+  <main class="canvas" role="main">
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <span class="filter-bar-label">Filters</span>
+      <div class="filter-divider"></div>
+
+      <!-- Entity: static chip — always "Zinc" -->
+      <div class="filter-group">
+        <span class="filter-group-label">Entity:</span>
+        <div class="filter-entity-chip">
+          <span class="filter-entity-chip-dot"></span>
+          Zinc
+        </div>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <!-- Business Unit: dropdown -->
+      <div class="filter-group">
+        <label class="filter-group-label" for="filterBU">Business Unit:</label>
+        <select class="filter-select" id="filterBU" onchange="applyFilter()">
+          <option value="All">All</option>
+          <option value="Zawar Mines">Zawar Mines</option>
+          <option value="SK Mine">SK Mine</option>
+          <option value="Dariba Complex">Dariba Complex</option>
+        </select>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <div class="filter-group">
+        <label class="filter-group-label" for="filterVersion">Version:</label>
+        <select class="filter-select" id="filterVersion" style="min-width:100px;">
+          <option value="Budget">Budget</option>
+        </select>
+      </div>
+
+      <button class="filter-reset-btn" onclick="resetFilter()">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M9.5 1.5A5 5 0 101.5 5.5" stroke-linecap="round"/>
+          <path d="M1.5 1.5v4h4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Reset
+      </button>
+    </div>
+
+    <!-- Plant / BU Info Banner -->
+    <div class="plant-info-bar animate-in" id="buInfoBar">
+      <div>
+        <div class="plant-info-name" id="buInfoName">Zinc — All Business Units</div>
+        <div class="plant-info-sub" id="buInfoSub">Rajasthan Operations · 3 Plants · FY 2024–25</div>
+      </div>
+      <div class="plant-info-spacer"></div>
+      <div class="plant-info-meta">
+        <div class="plant-meta-item">
+          <div class="plant-meta-label">Total Capacity</div>
+          <div class="plant-meta-value" id="buMetaCap">12.6 Mtpa</div>
+        </div>
+        <div class="plant-meta-divider"></div>
+        <div class="plant-meta-item">
+          <div class="plant-meta-label">Ore Grade</div>
+          <div class="plant-meta-value" id="buMetaGrade">Blended</div>
+        </div>
+        <div class="plant-meta-divider"></div>
+        <div class="plant-meta-item">
+          <div class="plant-meta-label">BU Utilisation</div>
+          <div class="plant-meta-value" id="buMetaUtil">80.0%</div>
+        </div>
+        <div class="plant-meta-divider"></div>
+        <div class="plant-meta-item">
+          <div class="plant-meta-label">SLA Compliance</div>
+          <div class="plant-meta-value" id="buMetaSla">93.2%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Cards: Total Budget (1st) · Actual Spend (2nd) · Variance (3rd) -->
+    <div class="kpi-grid-3">
+
+      <!-- 1. Total Budget — ALWAYS ₹500 Cr, shows % consumed indicator -->
+      <div class="kpi-card dark">
+        <div class="kpi-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--c-text-500)" stroke-width="1.5">
+            <rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/>
+            <line x1="1.5" y1="7" x2="14.5" y2="7"/>
+            <line x1="4" y1="10" x2="5.5" y2="10" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Total Budget</div>
+        <div class="kpi-value">₹500 Cr</div>
+        <div class="kpi-sub"><span>FY 2024–25 · Zinc Entity Envelope</span></div>
+        <!-- % consumed bar — changes per BU -->
+        <div class="kpi-consumed-bar">
+          <div class="kpi-consumed-label">
+            <span class="kpi-consumed-text" id="kpiConsumedLabel">80% budget consumed</span>
+            <span class="kpi-consumed-pct" id="kpiConsumedPct">80%</span>
+          </div>
+          <div class="kpi-consumed-track">
+            <div class="kpi-consumed-fill" id="kpiConsumedFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Actual Spend — changes per BU -->
+      <div class="kpi-card medium">
+        <div class="kpi-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--c-text-500)" stroke-width="1.5">
+            <path d="M2 11l3.5-3.5 2.5 2.5 4.5-5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="14.5" cy="4" r="1.2" fill="var(--c-text-500)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Actual Spend</div>
+        <div class="kpi-value" id="kpiActualVal">₹400 Cr</div>
+        <div class="kpi-sub">
+          <span class="kpi-tag" id="kpiActualTag">of ₹500 Cr entity budget</span>
+        </div>
+        <div class="kpi-mini-bar">
+          <div class="kpi-mini-bar-fill" id="kpiActualBar" style="background:#71717A;"></div>
+        </div>
+      </div>
+
+      <!-- 3. Variance — changes per BU -->
+      <div class="kpi-card light" id="kpiVarianceCard">
+        <div class="kpi-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--c-text-500)" stroke-width="1.5">
+            <circle cx="8" cy="8" r="6.5"/>
+            <line x1="8" y1="4.5" x2="8" y2="8.5" stroke-linecap="round"/>
+            <circle cx="8" cy="11" r="0.7" fill="var(--c-text-500)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="kpi-label">Variance</div>
+        <div class="kpi-value" id="kpiVarianceVal">-₹100 Cr</div>
+        <div class="kpi-sub">
+          <span class="kpi-tag" id="kpiVarianceTag">₹100 Cr headroom remaining</span>
+        </div>
+        <div class="kpi-mini-bar">
+          <div class="kpi-mini-bar-fill" id="kpiVarianceBar" style="background:#D4D4D8;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Budget vs. Actual</div>
+            <div class="chart-card-subtitle" id="barChartSub">By business unit · ₹ Crore</div>
+          </div>
+          <div class="chart-legend">
+            <div class="chart-legend-item">
+              <div class="chart-legend-swatch" style="background:rgba(39,39,42,0.12);border:1.5px solid #71717A;"></div>Budget
+            </div>
+            <div class="chart-legend-item">
+              <div class="chart-legend-swatch" style="background:#27272A;"></div>Actual
+            </div>
+          </div>
+        </div>
+        <div class="chart-body" style="height:280px;"><canvas id="horizBarChart"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Monthly Trend</div>
+            <div class="chart-card-subtitle">Actual vs. Budget · FY 2024–25 · ₹ Crore</div>
+          </div>
+          <div class="chart-legend">
+            <div class="chart-legend-item">
+              <div class="chart-legend-swatch" style="background:#27272A;border-radius:50%;width:8px;height:8px;"></div>Actual
+            </div>
+            <div class="chart-legend-item">
+              <div class="chart-legend-swatch" style="background:rgba(39,39,42,0.35);border-radius:50%;width:8px;height:8px;"></div>Budget
+            </div>
+          </div>
+        </div>
+        <div class="chart-body" style="height:280px;"><canvas id="trendLineChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Detail Table -->
+    <div class="detail-card">
+      <div class="detail-head">
+        <div>
+          <div class="detail-title">Detail Table</div>
+          <div class="detail-sub" id="tableSubtitle">Zinc · All Business Units · FY 2024–25 · Budget version · ₹ Crore</div>
+        </div>
+        <button class="btn-z btn-z-outline" onclick="exportData()">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M6 1v7M3.5 5.5l2.5 2.5 2.5-2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1.5 9.5h9" stroke-linecap="round"/>
+          </svg>
+          Export CSV
+        </button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="z-table" id="detailTable">
+          <thead id="tableHead"></thead>
+          <tbody id="detailTableBody"></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <div style="font-size:var(--text-xs);color:var(--c-text-400);" id="tableFooterLeft">Zinc · FY 2024–25</div>
+        <div style="display:flex;gap:var(--space-4);">
+          <span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--c-text-400);">
+            Entity Budget: <strong style="color:var(--c-text-700);">₹500 Cr</strong>
+          </span>
+          <span style="color:var(--c-text-300);">·</span>
+          <span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--c-text-400);">
+            Total Actual: <strong style="color:var(--c-text-700);" id="footerActual">₹400 Cr</strong>
+          </span>
+          <span style="color:var(--c-text-300);">·</span>
+          <span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--c-text-400);">
+            Variance: <strong id="footerVariance" style="color:var(--c-text-700);">-₹100 Cr</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    /* ══════════════════════════════════════════════════════════
+       DATA MODEL
+       ── ENTITY_BUDGET: ₹500 Cr (Zinc, never changes)
+       ── Each BU has an allocation (slice of ₹500 Cr),
+          actual spend, and cost-centre breakdown.
+       ── pctOfEntity = actual / ENTITY_BUDGET × 100
+          (shown in the "% consumed" indicator on the
+          Total Budget KPI card)
+    ══════════════════════════════════════════════════════════ */
+    const ENTITY_BUDGET = 500;  // ₹ Crore — fixed
+
+    const BU = {
+
+      'All': {
+        infoName:  'Zinc — All Business Units',
+        infoSub:   'Rajasthan Operations · 3 Plants · FY 2024–25',
+        cap: '12.6 Mtpa', grade: 'Blended', util: '80.0%', sla: '93.2%',
+        // actual = sum of all three BUs
+        actual:     400,  // 156 + 148 + 96
+        allocation: 500,  // entity total (all allocations sum to 500)
+        // % of ₹500 Cr entity budget consumed — "All" = total/entity
+        pctConsumed: 80.0,
+        // Bar chart: one group per BU
+        barLabels:  ['Zawar Mines', 'SK Mine', 'Dariba Complex'],
+        barBudget:  [220, 180, 100],
+        barActual:  [156, 148,  96],
+        // Monthly trend: aggregate of all three
+        trend: {
+          actual: [26, 28, 26, 30, 33, 29, 36, 33, 37, 33, 38, 31],
+          budget: [38, 38, 38, 46, 46, 46, 50, 50, 50, 58, 58, 32]
+        },
+        // Summary rows for "All" table (one row per BU)
+        isAllView: true,
+        rows: [
+          { name: 'Zawar Mines',    sub:'Underground Mining',      gl:'PLANT_01', type:'CAPEX', allocation:220, actual:156 },
+          { name: 'SK Mine',        sub:'Open-pit + Underground',   gl:'PLANT_02', type:'CAPEX', allocation:180, actual:148 },
+          { name: 'Dariba Complex', sub:'Integrated Smelting',      gl:'PLANT_03', type:'CAPEX', allocation:100, actual: 96 },
+        ]
+      },
+
+      'Zawar Mines': {
+        infoName:  'Zawar Mines',
+        infoSub:   'Udaipur, Rajasthan · Underground Zinc Mining',
+        cap: '4.0 Mtpa', grade: '8.2% Zn', util: '70.9%', sla: '94.1%',
+        actual:      156,
+        allocation:  220,   // this BU's budget slice of ₹500 Cr
+        // 156 / 500 × 100 = 31.2% of entity budget consumed by Zawar
+        pctConsumed: 31.2,
+        barLabels:  ['Mine Operations','Ore Processing','Smelting & Refining','Power & Utilities','Logistics & Dispatch'],
+        barBudget:  [75, 50, 55, 25, 15],
+        barActual:  [52, 38, 42, 16,  8],
+        trend: {
+          actual: [ 9,10, 9,12,13,11,15,14,16,14,17,16],
+          budget: [17,17,17,20,20,20,21,21,21,23,23, 0]
+        },
+        isAllView: false,
+        rows: [
+          { name:'Mine Operations',     sub:'Underground Mining',     gl:'GL-5110-MO', type:'CAPEX', allocation:75, actual:52 },
+          { name:'Ore Processing',      sub:'Concentrator Plant',     gl:'GL-5120-OP', type:'OPEX',  allocation:50, actual:38 },
+          { name:'Smelting & Refining', sub:'ISP / Roasting Unit',    gl:'GL-5130-SR', type:'CAPEX', allocation:55, actual:42 },
+          { name:'Power & Utilities',   sub:'Captive Power Plant',    gl:'GL-5140-PU', type:'OPEX',  allocation:25, actual:16 },
+          { name:'Logistics & Dispatch',sub:'Outbound & Warehousing', gl:'GL-5150-LD', type:'OPEX',  allocation:15, actual: 8 },
+        ]
+      },
+
+      'SK Mine': {
+        infoName:  'Sindesar Khurd (SK Mine)',
+        infoSub:   'Rajsamand, Rajasthan · World-class Underground Mine',
+        cap: '6.5 Mtpa', grade: '11.4% Zn', util: '82.2%', sla: '97.3%',
+        actual:      148,
+        allocation:  180,
+        // 148 / 500 × 100 = 29.6% of entity budget consumed by SK Mine
+        pctConsumed: 29.6,
+        barLabels:  ['Mine Expansion','Ore Beneficiation','Electrolytic Refinery','Steam & Power','Quality & Lab'],
+        barBudget:  [55, 42, 48, 22, 13],
+        barActual:  [48, 38, 42, 12,  8],
+        trend: {
+          actual: [ 8, 9, 8,10,11,10,13,12,14,12,13,11],
+          budget: [14,14,14,16,16,16,18,18,18,20,20,16]
+        },
+        isAllView: false,
+        rows: [
+          { name:'Mine Expansion',        sub:'Level Development',       gl:'GL-5210-ME', type:'CAPEX', allocation:55, actual:48 },
+          { name:'Ore Beneficiation',     sub:'Flotation & Filtration',  gl:'GL-5220-OB', type:'OPEX',  allocation:42, actual:38 },
+          { name:'Electrolytic Refinery', sub:'Zinc Electrolysis',       gl:'GL-5230-ER', type:'CAPEX', allocation:48, actual:42 },
+          { name:'Steam & Power',         sub:'Utility Generation',      gl:'GL-5240-SP', type:'OPEX',  allocation:22, actual:12 },
+          { name:'Quality & Lab',         sub:'QA / QC Testing',         gl:'GL-5250-QL', type:'OPEX',  allocation:13, actual: 8 },
+        ]
+      },
+
+      'Dariba Complex': {
+        infoName:  'Dariba Smelting Complex',
+        infoSub:   'Rajsamand, Rajasthan · Integrated Smelting & Refining',
+        cap: '2.1 Mtpa', grade: '9.8% Zn', util: '96.0%', sla: '88.6%',
+        actual:       96,
+        allocation:  100,
+        // 96 / 500 × 100 = 19.2% of entity budget consumed by Dariba
+        pctConsumed: 19.2,
+        barLabels:  ['Lead-Silver Circuit','Zinc Oxide Plant','Captive Power','Environmental & Safety','Maintenance Engg.'],
+        barBudget:  [28, 26, 22, 14, 10],
+        barActual:  [28, 25, 21, 13,  9],
+        trend: {
+          actual: [ 6, 7, 6, 7, 8, 7, 8, 8, 9, 8, 9, 9],
+          budget: [ 8, 8, 8, 9, 9, 9,10,10,10,11,11, 7]
+        },
+        isAllView: false,
+        rows: [
+          { name:'Lead-Silver Circuit',    sub:'Pb/Ag Refining',         gl:'GL-5310-LS', type:'CAPEX', allocation:28, actual:28 },
+          { name:'Zinc Oxide Plant',       sub:'ZnO Production',         gl:'GL-5320-ZO', type:'CAPEX', allocation:26, actual:25 },
+          { name:'Captive Power',          sub:'Waste Heat Recovery',    gl:'GL-5330-CP', type:'OPEX',  allocation:22, actual:21 },
+          { name:'Environmental & Safety', sub:'Effluent Treatment',     gl:'GL-5340-ES', type:'OPEX',  allocation:14, actual:13 },
+          { name:'Maintenance Engg.',      sub:'Mechanical & Electrical',gl:'GL-5350-MA', type:'OPEX',  allocation:10, actual: 9 },
+        ]
+      }
+    };
+
+    // ── Chart instances ──
+    let barChartInst = null, lineChartInst = null;
+
+    function getRowStatus(allocation, actual) {
+      const pct = Math.round((actual / allocation) * 100);
+      if (pct > 100) return { status:'Over Budget', bar:'danger', badge:'zbadge zbadge-danger' };
+      if (pct >= 85)  return { status:'At Risk',    bar:'warning', badge:'zbadge zbadge-warn'  };
+      return              { status:'On Track',    bar:'ok',      badge:'zbadge zbadge-dark'  };
+    }
+
+    function renderBU(key) {
+      const d = BU[key];
+
+      // ── Top pill ──
+      document.getElementById('topbarPill').innerHTML =
+        `<span class="topbar-entity-dot"></span>Zinc · ${key}`;
+
+      // ── Info banner ──
+      document.getElementById('buInfoName').textContent = d.infoName;
+      document.getElementById('buInfoSub').textContent  = d.infoSub;
+      document.getElementById('buMetaCap').textContent  = d.cap;
+      document.getElementById('buMetaGrade').textContent = d.grade;
+      document.getElementById('buMetaUtil').textContent  = d.util;
+      document.getElementById('buMetaSla').textContent   = d.sla;
+      const banner = document.getElementById('buInfoBar');
+      banner.classList.remove('animate-in');
+      void banner.offsetWidth;
+      banner.classList.add('animate-in');
+
+      // ── KPI 1: Total Budget (always ₹500 Cr) + % consumed bar ──
+      const pct        = d.pctConsumed;
+      const pctLabel   = `${pct.toFixed(1)}% budget consumed`;
+      document.getElementById('kpiConsumedLabel').textContent = pctLabel;
+      document.getElementById('kpiConsumedPct').textContent   = `${pct.toFixed(1)}%`;
+      const fill = document.getElementById('kpiConsumedFill');
+      fill.style.width = '0%';
+      requestAnimationFrame(() => {
+        setTimeout(() => { fill.style.width = `${Math.min(pct, 100)}%`; }, 250);
+      });
+
+      // ── KPI 2: Actual Spend ──
+      document.getElementById('kpiActualVal').textContent = `₹${d.actual} Cr`;
+      document.getElementById('kpiActualTag').textContent = `of ₹${ENTITY_BUDGET} Cr entity budget`;
+      const actBar = document.getElementById('kpiActualBar');
+      actBar.style.width = '0%';
+      requestAnimationFrame(() => {
+        setTimeout(() => { actBar.style.width = `${Math.min((d.actual / ENTITY_BUDGET) * 100, 100)}%`; }, 250);
+      });
+
+      // ── KPI 3: Variance (vs BU allocation for individual; vs entity budget for All) ──
+      const baseBudget = key === 'All' ? ENTITY_BUDGET : d.allocation;
+      const variance   = d.actual - baseBudget;  // negative = underspent
+      const headroom   = Math.abs(variance);
+      document.getElementById('kpiVarianceVal').textContent =
+        `${variance < 0 ? '-' : '+'}₹${headroom} Cr`;
+      document.getElementById('kpiVarianceVal').style.color =
+        variance > 0 ? 'var(--c-danger)' : 'var(--c-text-900)';
+      document.getElementById('kpiVarianceTag').textContent =
+        variance < 0 ? `₹${headroom} Cr headroom remaining` : `₹${headroom} Cr over allocation`;
+      const varTag = document.getElementById('kpiVarianceTag');
+      varTag.className = variance > 0 ? 'kpi-tag danger' : 'kpi-tag';
+      const varCard = document.getElementById('kpiVarianceCard');
+      varCard.classList.remove('danger-top', 'light');
+      varCard.classList.add(variance > 0 ? 'danger-top' : 'light');
+      const varBar = document.getElementById('kpiVarianceBar');
+      varBar.style.width = '0%';
+      requestAnimationFrame(() => {
+        setTimeout(() => { varBar.style.width = `${Math.min((headroom / baseBudget) * 100, 100)}%`; }, 250);
+      });
+
+      // ── Bar Chart ──
+      if (barChartInst) { barChartInst.destroy(); barChartInst = null; }
+      document.getElementById('barChartSub').textContent =
+        key === 'All' ? 'By business unit · ₹ Crore' : `${key} cost centres · ₹ Crore`;
+      const hCtx = document.getElementById('horizBarChart').getContext('2d');
+      barChartInst = new Chart(hCtx, {
+        type: 'bar',
+        data: {
+          labels: d.barLabels,
+          datasets: [
+            { label:'Budget', data:d.barBudget, backgroundColor:'rgba(39,39,42,0.1)', borderColor:'#71717A', borderWidth:1.5, borderRadius:4 },
+            { label:'Actual', data:d.barActual, backgroundColor:'#27272A', borderRadius:4 }
+          ]
+        },
+        options: {
+          indexAxis:'y', responsive:true, maintainAspectRatio:false,
+          animation:{ duration:800, easing:'easeOutCubic' },
+          plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:ctx => ` ₹${ctx.parsed.x} Cr` } } },
+          scales:{
+            x:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ font:{ family:'Inter', size:11 }, color:'#A1A1AA', callback:v=>`₹${v}` } },
+            y:{ grid:{ display:false }, ticks:{ font:{ family:'Inter', size:11 }, color:'#71717A' } }
+          }
+        }
+      });
+
+      // ── Line Chart ──
+      if (lineChartInst) { lineChartInst.destroy(); lineChartInst = null; }
+      const lCtx = document.getElementById('trendLineChart').getContext('2d');
+      lineChartInst = new Chart(lCtx, {
+        type:'line',
+        data:{
+          labels:['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+          datasets:[
+            { label:'Actual', data:d.trend.actual, borderColor:'#27272A', backgroundColor:'rgba(39,39,42,0.06)', borderWidth:2, pointRadius:3, pointHoverRadius:5, pointBackgroundColor:'#27272A', tension:0.35, fill:true },
+            { label:'Budget', data:d.trend.budget, borderColor:'rgba(39,39,42,0.35)', backgroundColor:'rgba(39,39,42,0.03)', borderWidth:1.5, borderDash:[5,4], pointRadius:2, pointHoverRadius:4, pointBackgroundColor:'rgba(39,39,42,0.4)', tension:0.35, fill:true }
+          ]
+        },
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          animation:{ duration:900, easing:'easeOutCubic' },
+          plugins:{ legend:{ display:false }, tooltip:{ mode:'index', intersect:false, callbacks:{ label:ctx=>` ${ctx.dataset.label}: ₹${ctx.parsed.y} Cr` } } },
+          scales:{
+            x:{ grid:{ display:false }, ticks:{ font:{ family:'Inter', size:11 }, color:'#A1A1AA' } },
+            y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ font:{ family:'Inter', size:11 }, color:'#A1A1AA', callback:v=>`₹${v} Cr` } }
+          }
+        }
+      });
+
+      // ── Table ──
+      // Header differs for "All" view (shows BU-level columns) vs cost-centre view
+      const thead = document.getElementById('tableHead');
+      const tbody = document.getElementById('detailTableBody');
+      tbody.innerHTML = '';
+
+      if (d.isAllView) {
+        thead.innerHTML = `<tr>
+          <th class="sortable" onclick="sortTable(0)">Business Unit</th>
+          <th class="sortable" onclick="sortTable(1)" style="text-align:right;">Allocation (₹ Cr)</th>
+          <th class="sortable" onclick="sortTable(2)" style="text-align:right;">Actual (₹ Cr)</th>
+          <th class="sortable" onclick="sortTable(3)" style="text-align:right;">Variance (₹ Cr)</th>
+          <th style="text-align:right;">Available (₹ Cr)</th>
+          <th style="min-width:130px;">Utilisation</th>
+          <th style="text-align:right;">% of Entity Budget</th>
+          <th>Type</th>
+          <th>Version</th>
+          <th style="text-align:center;">Status</th>
+        </tr>`;
+
+        d.rows.forEach(r => {
+          const m   = getRowStatus(r.allocation, r.actual);
+          const var_ = r.actual - r.allocation;
+          const avail = r.allocation - r.actual;
+          const utilPct = Math.round((r.actual / r.allocation) * 100);
+          const entityPct = ((r.actual / ENTITY_BUDGET) * 100).toFixed(1);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:30px;height:30px;border-radius:6px;background:var(--c-bg);border:1px solid var(--c-border-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="var(--c-text-400)" stroke-width="1.4">
+                    <rect x="1" y="1" width="4.5" height="4.5" rx="0.8"/>
+                    <rect x="7.5" y="1" width="4.5" height="4.5" rx="0.8"/>
+                    <rect x="1" y="7.5" width="4.5" height="4.5" rx="0.8"/>
+                    <rect x="7.5" y="7.5" width="4.5" height="4.5" rx="0.8"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style="font-weight:600;font-size:0.875rem;color:var(--c-text-900);">${r.name}</div>
+                  <div style="font-size:11px;color:var(--c-text-400);">${r.sub}</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-family:var(--font-mono);font-weight:600;text-align:right;">${r.allocation.toFixed(0)}</td>
+            <td style="font-family:var(--font-mono);font-weight:600;text-align:right;">${r.actual.toFixed(0)}</td>
+            <td style="font-family:var(--font-mono);text-align:right;" class="${var_ > 0 ? 'num-neg' : 'num-pos'}">${var_ > 0 ? '+' : ''}${var_.toFixed(0)}</td>
+            <td style="font-family:var(--font-mono);font-weight:600;text-align:right;color:${avail < 0 ? 'var(--c-danger)' : 'var(--c-text-700)'};">${avail.toFixed(0)}</td>
+            <td>
+              <div class="util-bar-wrap">
+                <div class="util-bar-track"><div class="util-bar-fill ${m.bar}" data-target="${Math.min(utilPct,100)}"></div></div>
+                <span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:600;color:${utilPct>100?'var(--c-danger)':utilPct>=85?'#A16207':'var(--c-text-500)'};white-space:nowrap;">${utilPct}%</span>
+              </div>
+            </td>
+            <td style="font-family:var(--font-mono);font-weight:600;text-align:right;color:var(--c-text-700);">${entityPct}%</td>
+            <td><span class="zbadge zbadge-mid">${r.type}</span></td>
+            <td><span class="version-pill">Budget</span></td>
+            <td style="text-align:center;"><span class="${m.badge}">${m.status}</span></td>
+          `;
+          tbody.appendChild(row);
+        });
+
+      } else {
+        thead.innerHTML = `<tr>
+          <th class="sortable" onclick="sortTable(0)">Cost Centre</th>
+          <th class="sortable" onclick="sortTable(1)" style="text-align:right;">Budget (₹ Cr)</th>
+          <th class="sortable" onclick="sortTable(2)" style="text-align:right;">Actual (₹ Cr)</th>
+          <th class="sortable" onclick="sortTable(3)" style="text-align:right;">Variance (₹ Cr)</th>
+          <th style="text-align:right;">Available (₹ Cr)</th>
+          <th style="min-width:130px;">Utilisation</th>
+          <th>GL Account</th>
+          <th>Spend Type</th>
+          <th>Version</th>
+          <th style="text-align:center;">Status</th>
+        </tr>`;
+
+        d.rows.forEach(r => {
+          const m   = getRowStatus(r.allocation, r.actual);
+          const var_ = r.actual - r.allocation;
+          const avail = r.allocation - r.actual;
+          const utilPct = Math.round((r.actual / r.allocation) * 100);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:30px;height:30px;border-radius:6px;background:var(--c-bg);border:1px solid var(--c-border-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="var(--c-text-400)" stroke-width="1.4">
+                    <rect x="1" y="1" width="4.5" height="4.5" rx="0.8"/>
+                    <rect x="7.5" y="1" width="4.5" height="4.5" rx="0.8"/>
+                    <rect x="1" y="7.5" width="4.5" height="4.5" rx="0.8"/>
+                    <rect x="7.5" y="7.5" width="4.5" height="4.5" rx="0.8"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style="font-weight:600;font-size:0.875rem;color:var(--c-text-900);">${r.name}</div>
+                  <div style="font-size:11px;color:var(--c-text-400);">${r.sub}</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-family:var(--font-mono);font-weight:600;text-align:right;">${r.allocation.toFixed(0)}</td>
+            <td style="font-family:var(--font-mono);font-weight:600;text-align:right;">${r.actual.toFixed(0)}</td>
+            <td style="font-family:var(--font-mono);text-align:right;" class="${var_ > 0 ? 'num-neg' : 'num-pos'}">${var_ > 0 ? '+' : ''}${var_.toFixed(0)}</td>
+            <td style="font-family:var(--font-mono);font-weight:600;text-align:right;color:${avail < 0 ? 'var(--c-danger)' : 'var(--c-text-700)'};">${avail.toFixed(0)}</td>
+            <td>
+              <div class="util-bar-wrap">
+                <div class="util-bar-track"><div class="util-bar-fill ${m.bar}" data-target="${Math.min(utilPct,100)}"></div></div>
+                <span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:600;color:${utilPct>100?'var(--c-danger)':utilPct>=85?'#A16207':'var(--c-text-500)'};white-space:nowrap;">${utilPct}%</span>
+              </div>
+            </td>
+            <td style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--c-text-400);">${r.gl}</td>
+            <td><span class="zbadge ${r.type==='CAPEX'?'zbadge-mid':'zbadge-gray'}">${r.type}</span></td>
+            <td><span class="version-pill">Budget</span></td>
+            <td style="text-align:center;"><span class="${m.badge}">${m.status}</span></td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // Animate util bars
+      setTimeout(() => {
+        document.querySelectorAll('.util-bar-fill[data-target]').forEach(b => {
+          b.style.width = b.dataset.target + '%';
+        });
+      }, 500);
+
+      // ── Footer ──
+      const totalActual = d.actual;
+      const footerVar   = totalActual - (key === 'All' ? ENTITY_BUDGET : d.allocation);
+      document.getElementById('tableFooterLeft').textContent = `Zinc · ${key} · FY 2024–25`;
+      document.getElementById('tableSubtitle').textContent   = `Zinc · ${key} · FY 2024–25 · Budget version · ₹ Crore`;
+      document.getElementById('footerActual').textContent    = `₹${totalActual} Cr`;
+      document.getElementById('footerVariance').textContent  = `${footerVar < 0 ? '-' : '+'}₹${Math.abs(footerVar)} Cr`;
+      document.getElementById('footerVariance').style.color  = footerVar > 0 ? 'var(--c-danger)' : 'var(--c-text-700)';
+    }
+
+    function applyFilter() {
+      renderBU(document.getElementById('filterBU').value);
+    }
+
+    function resetFilter() {
+      document.getElementById('filterBU').value      = 'All';
+      document.getElementById('filterVersion').value = 'Budget';
+      renderBU('All');
+    }
+
+    let sortDir = {};
+    function sortTable(col) {
+      const tbody = document.getElementById('detailTableBody');
+      const rows  = Array.from(tbody.querySelectorAll('tr'));
+      const dir   = sortDir[col] === 'asc' ? -1 : 1;
+      sortDir[col] = dir === 1 ? 'asc' : 'desc';
+      rows.sort((a, b) => {
+        const at = a.cells[col].textContent.replace(/[₹,+\s%]/g,'');
+        const bt = b.cells[col].textContent.replace(/[₹,+\s%]/g,'');
+        const an = parseFloat(at), bn = parseFloat(bt);
+        if (!isNaN(an) && !isNaN(bn)) return dir * (an - bn);
+        return dir * at.localeCompare(bt);
+      });
+      rows.forEach(r => tbody.appendChild(r));
+      document.querySelectorAll('th.sortable').forEach((th,i) => {
+        th.classList.remove('asc','desc');
+        if (i === col) th.classList.add(sortDir[col]);
+      });
+    }
+
+    function exportData() {
+      const key = document.getElementById('filterBU').value;
+      const d   = BU[key];
+      const header = d.isAllView
+        ? ['Business Unit','Allocation (₹ Cr)','Actual (₹ Cr)','Variance (₹ Cr)','Available (₹ Cr)','% of Entity Budget','Type','Status']
+        : ['Cost Centre','Budget (₹ Cr)','Actual (₹ Cr)','Variance (₹ Cr)','Available (₹ Cr)','GL Account','Type','Status'];
+      const rows = d.rows.map(r => {
+        const m = getRowStatus(r.allocation, r.actual);
+        const var_ = (r.actual - r.allocation).toFixed(0);
+        const avail = (r.allocation - r.actual).toFixed(0);
+        return d.isAllView
+          ? [r.name, r.allocation, r.actual, var_, avail, ((r.actual/ENTITY_BUDGET)*100).toFixed(1)+'%', r.type, m.status]
+          : [r.name, r.allocation, r.actual, var_, avail, r.gl, r.type, m.status];
+      });
+      const csv  = [header,...rows].map(r=>r.join(',')).join('\n');
+      const blob = new Blob([csv], { type:'text/csv' });
+      const a    = document.createElement('a');
+      a.href     = URL.createObjectURL(blob);
+      a.download = `zinc_budget_${key.replace(/\s+/g,'_')}.csv`;
+      a.click();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => renderBU('All'));
+  </script>
+
+</body>
+</html>
