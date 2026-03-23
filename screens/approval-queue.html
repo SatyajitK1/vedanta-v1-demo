@@ -616,10 +616,6 @@
       <!-- Filters -->
       <div class="queue-filters">
         <div class="filter-group" role="group" aria-label="Status filters">
-          <button class="filter-btn active">All (47)</button>
-          <button class="filter-btn">High Risk (12)</button>
-          <button class="filter-btn">SLA Breach (8)</button>
-          <button class="filter-btn">Policy Violations (9)</button>
         </div>
         <div class="filters-right">
           <select class="form-select" style="width:160px;font-size:var(--text-xs);">
@@ -638,185 +634,136 @@
       <!-- Table -->
       <div class="card" style="padding:0;overflow:hidden;">
         <div style="overflow-x:auto;">
-          <table class="data-table" role="grid" aria-label="Pending approval requests">
-            <thead>
-              <tr>
-                <th style="width:36px;"><input type="checkbox" aria-label="Select all" /></th>
-                <th class="sortable" aria-sort="none">Request ID</th>
-                <th class="sortable" aria-sort="none">Requestor</th>
-                <th class="sortable" aria-sort="none">Amount</th>
-                <th>Cost Centre</th>
-                <th class="sortable" aria-sort="descending">ACT Score</th>
-                <th>Risk Level</th>
-                <th class="sortable desc" aria-sort="ascending">SLA Timer</th>
-                <th>Status</th>
-                <th style="width:40px;"></th>
-              </tr>
-            </thead>
-            <tbody id="approvalTable">
+          <table class="data-table" role="grid" aria-label="Purchase requisitions" style="min-width:1600px;">
+              <thead>
+                <tr>
+                  <th class="sortable" style="white-space:nowrap;">PR Line Item</th>
+                  <th style="white-space:nowrap;min-width:180px;">Material / Service Description</th>
+                  <th class="sortable" style="white-space:nowrap;">Requestor</th>
+                  <th style="white-space:nowrap;">Spend Type</th>
+                  <th class="sortable" style="white-space:nowrap;text-align:center;">Qty</th>
+                  <th class="sortable" style="white-space:nowrap;text-align:right;">Est. Value (₹ Cr)</th>
+                  <th style="white-space:nowrap;">Plant Code</th>
+                  <th style="white-space:nowrap;">Account Assignment</th>
+                  <th style="white-space:nowrap;">Asset Code / CER No.</th>
+                  <th style="white-space:nowrap;min-width:200px;">Technical Specification / SOW</th>
+                  <th style="white-space:nowrap;">Preferred Supplier</th>
+                  <th style="white-space:nowrap;">Budgeted / Unbudgeted</th>
+                  <th style="white-space:nowrap;min-width:180px;">Justification / Remarks</th>
+                  <th style="white-space:nowrap;text-align:center;">Evidence</th>
+                  <th style="white-space:nowrap;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="approvalTable">
 
-              <tr class="table-row-clickable" data-id="REQ-20239" onclick="openDrawer('REQ-20239','Arjun Pillai','₹1,45,00,000','CC-1042 — Mining Ops Capex','38','Critical','BREACH','high')" role="row" tabindex="0">
-                <td><input type="checkbox" aria-label="Select REQ-20239" onclick="event.stopPropagation()" /></td>
-                <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);">
-                  <span class="priority-dot high"></span>REQ-20239
-                </td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:var(--space-2);">
-                    <div style="width:28px;height:28px;border-radius:50%;background:var(--color-danger);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">AP</div>
-                    <div>
-                      <div style="font-size:var(--text-sm);font-weight:500;">Arjun Pillai</div>
-                      <div style="font-size:11px;color:var(--color-gray-400);">Mining Ops</div>
+                <!-- Row 1: Line Item 10 -->
+                <tr class="table-row-clickable" onclick="openLineItemModal(10)" role="row" tabindex="0">
+                  <td
+                    style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);text-align:center;">
+                    10</td>
+                  <td style="font-size:var(--text-xs);white-space:nowrap;">Underground UD Machine – 1HT</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:var(--space-2);">
+                      <div
+                        style="width:28px;height:28px;border-radius:50%;background:var(--color-danger);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        AP</div>
+                      <div style="min-width:0;">
+                        <div style="font-size:var(--text-sm);font-weight:500;white-space:nowrap;">Arjun Pillai</div>
+                        <div style="font-size:11px;color:var(--color-gray-400);white-space:nowrap;">Zinc Plant</div>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);">₹1,45,00,000</td>
-                <td style="font-size:var(--text-xs);color:var(--color-gray-600);">CC-1042 — Mining Ops</td>
-                <td><span class="score-pill low">38</span></td>
-                <td><span class="badge badge-rejected">Critical</span></td>
-                <td><span class="sla-timer breach">⚠ BREACHED — 6h</span></td>
-                <td><span class="badge badge-pending">Pending</span></td>
-                <td style="color:var(--color-gray-400);">›</td>
-              </tr>
+                  </td>
+                  <td><span
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;">CAPEX
+                      – Machinery</span></td>
+                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;text-align:center;">2
+                  </td>
+                  <td
+                    style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);text-align:right;white-space:nowrap;">
+                    18</td>
+                  <td style="font-size:var(--text-xs);font-family:var(--font-mono);white-space:nowrap;">ZN-05</td>
+                  <td style="font-size:var(--text-xs);white-space:nowrap;">WBS – Mine Development</td>
+                  <td style="font-size:var(--text-xs);font-family:var(--font-mono);white-space:nowrap;">MCI-ULD-001 |
+                    CER-2025-023</td>
+                  <td
+                    style="font-size:var(--text-xs);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                    title="1HT purified, Stage V engine, OEM datasheet attached">1HT purified, Stage V engine, OEM
+                    datasheet attached</td>
+                  <td style="font-size:var(--text-xs);white-space:nowrap;">OEM-A</td>
+                  <td><span
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Budgeted</span>
+                  </td>
+                  <td
+                    style="font-size:var(--text-xs);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                    title="Approved under pre-approved CAPEX">Approved under pre-approved CAPEX</td>
+                  <td style="text-align:center;"><span
+                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;"
+                      title="OEM_Datasheet_UDM.pdf"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
+                        style="flex-shrink:0;">
+                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
+                          stroke-width="1.5" stroke-linejoin="round" />
+                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                      </svg>OEM_Datasheet_UDM.pdf</span></td>
+                  <td><span
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Approved</span>
+                  </td>
+                </tr>
 
-              <tr class="table-row-clickable" data-id="REQ-20241" onclick="openDrawer('REQ-20241','Priya Venkataraman','₹92,50,000','CC-4011 — Zinc Refinery Capital','81','Medium','BREACH','medium')" role="row" tabindex="0">
-                <td><input type="checkbox" aria-label="Select REQ-20241" onclick="event.stopPropagation()" /></td>
-                <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);">
-                  <span class="priority-dot high"></span>REQ-20241
-                </td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:var(--space-2);">
-                    <div style="width:28px;height:28px;border-radius:50%;background:var(--color-teal);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">PV</div>
-                    <div>
-                      <div style="font-size:var(--text-sm);font-weight:500;">Priya Venkataraman</div>
-                      <div style="font-size:11px;color:var(--color-gray-400);">Zinc Refinery</div>
+                <!-- Row 2: Line Item 20 -->
+                <tr class="table-row-clickable" onclick="openLineItemModal(20)" role="row" tabindex="0">
+                  <td
+                    style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);text-align:center;">
+                    20</td>
+                  <td style="font-size:var(--text-xs);white-space:nowrap;">Hydraulic Drill Linings</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:var(--space-2);">
+                      <div
+                        style="width:28px;height:28px;border-radius:50%;background:var(--color-teal);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        PV</div>
+                      <div style="min-width:0;">
+                        <div style="font-size:var(--text-sm);font-weight:500;white-space:nowrap;">Priya Venkataraman
+                        </div>
+                        <div style="font-size:11px;color:var(--color-gray-400);white-space:nowrap;">Zinc Plant</div>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);">₹92,50,000</td>
-                <td style="font-size:var(--text-xs);color:var(--color-gray-600);">CC-4011 — Zinc Refinery</td>
-                <td><span class="score-pill high">81</span></td>
-                <td><span class="badge badge-at-risk">Medium</span></td>
-                <td><span class="sla-timer breach">⚠ BREACHED — 2h</span></td>
-                <td><span class="badge badge-pending">Pending</span></td>
-                <td style="color:var(--color-gray-400);">›</td>
-              </tr>
+                  </td>
+                  <td><span
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;">CAPEX
+                      – Machinery</span></td>
+                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;text-align:center;">1
+                  </td>
+                  <td
+                    style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);text-align:right;white-space:nowrap;">
+                    13.5</td>
+                  <td style="font-size:var(--text-xs);font-family:var(--font-mono);white-space:nowrap;">ZN-01</td>
+                  <td style="font-size:var(--text-xs);white-space:nowrap;">WBS – Mine Development</td>
+                  <td style="font-size:var(--text-xs);font-family:var(--font-mono);white-space:nowrap;">DHYD-002 |
+                    CDN-2025-021</td>
+                  <td
+                    style="font-size:var(--text-xs);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                    title="Iron oxides, underground shaft, 2 nos required">Iron oxides, underground shaft, 2 nos
+                    required</td>
+                  <td style="font-size:var(--text-xs);color:var(--color-gray-400);white-space:nowrap;">—</td>
+                  <td><span
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-warning-bg);color:var(--color-warning);white-space:nowrap;">Unbudgeted</span>
+                  </td>
+                  <td
+                    style="font-size:var(--text-xs);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                    title="Replacement necessity, procurement pipeline">Replacement necessity, procurement pipeline</td>
+                  <td style="text-align:center;"><span
+                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;"
+                      title="Drill_Linings_Spec.pdf"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
+                        style="flex-shrink:0;">
+                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
+                          stroke-width="1.5" stroke-linejoin="round" />
+                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                      </svg>Drill_Linings_Spec.pdf</span></td>
+                  <td><span
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not
+                      started</span></td>
+                </tr>
 
-              <tr class="table-row-clickable" data-id="REQ-20243" onclick="openDrawer('REQ-20243','Rohit Bhatia','₹78,50,000','CC-2018 — Smelter Unit Opex','72','Medium','3h 22m','medium')" role="row" tabindex="0">
-                <td><input type="checkbox" aria-label="Select REQ-20243" onclick="event.stopPropagation()" /></td>
-                <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);">
-                  <span class="priority-dot medium"></span>REQ-20243
-                </td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:var(--space-2);">
-                    <div style="width:28px;height:28px;border-radius:50%;background:var(--color-violet);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">RB</div>
-                    <div>
-                      <div style="font-size:var(--text-sm);font-weight:500;">Rohit Bhatia</div>
-                      <div style="font-size:11px;color:var(--color-gray-400);">Power Plant Ops</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);">₹78,50,000</td>
-                <td style="font-size:var(--text-xs);color:var(--color-gray-600);">CC-2018 — Smelter Unit</td>
-                <td><span class="score-pill medium">72</span></td>
-                <td><span class="badge badge-at-risk">Medium</span></td>
-                <td><span class="sla-timer warn">3h 22m left</span></td>
-                <td><span class="badge badge-pending">Pending</span></td>
-                <td style="color:var(--color-gray-400);">›</td>
-              </tr>
-
-              <tr class="table-row-clickable" data-id="REQ-20236" onclick="openDrawer('REQ-20236','Kavitha Nair','₹55,00,000','CC-3005 — Power Plant Maintenance','89','Low','18h 45m','low')" role="row" tabindex="0">
-                <td><input type="checkbox" aria-label="Select REQ-20236" onclick="event.stopPropagation()" /></td>
-                <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);">
-                  <span class="priority-dot medium"></span>REQ-20236
-                </td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:var(--space-2);">
-                    <div style="width:28px;height:28px;border-radius:50%;background:var(--color-medium-blue);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">KN</div>
-                    <div>
-                      <div style="font-size:var(--text-sm);font-weight:500;">Kavitha Nair</div>
-                      <div style="font-size:11px;color:var(--color-gray-400);">Power Plant</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);">₹55,00,000</td>
-                <td style="font-size:var(--text-xs);color:var(--color-gray-600);">CC-3005 — Power Plant</td>
-                <td><span class="score-pill high">89</span></td>
-                <td><span class="badge badge-approved">Low</span></td>
-                <td><span class="sla-timer ok">18h 45m left</span></td>
-                <td><span class="badge badge-pending">Pending</span></td>
-                <td style="color:var(--color-gray-400);">›</td>
-              </tr>
-
-              <tr class="table-row-clickable" data-id="REQ-20244" onclick="openDrawer('REQ-20244','Deepak Sharma','₹34,20,000','CC-5009 — Pit Operations','91','Low','22h 10m','low')" role="row" tabindex="0">
-                <td><input type="checkbox" aria-label="Select REQ-20244" onclick="event.stopPropagation()" /></td>
-                <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);">
-                  <span class="priority-dot low"></span>REQ-20244
-                </td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:var(--space-2);">
-                    <div style="width:28px;height:28px;border-radius:50%;background:var(--color-success);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">DS</div>
-                    <div>
-                      <div style="font-size:var(--text-sm);font-weight:500;">Deepak Sharma</div>
-                      <div style="font-size:11px;color:var(--color-gray-400);">Pit Operations</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);">₹34,20,000</td>
-                <td style="font-size:var(--text-xs);color:var(--color-gray-600);">CC-5009 — Pit Ops</td>
-                <td><span class="score-pill high">91</span></td>
-                <td><span class="badge badge-approved">Low</span></td>
-                <td><span class="sla-timer ok">22h 10m left</span></td>
-                <td><span class="badge badge-pending">Pending</span></td>
-                <td style="color:var(--color-gray-400);">›</td>
-              </tr>
-
-              <tr class="table-row-clickable" data-id="REQ-20240" onclick="openDrawer('REQ-20240','Meera Krishnamurthy','₹2,10,00,000','CC-1042 — Mining Ops Capex','44','High','BREACH','high')" role="row" tabindex="0">
-                <td><input type="checkbox" aria-label="Select REQ-20240" onclick="event.stopPropagation()" /></td>
-                <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);">
-                  <span class="priority-dot high"></span>REQ-20240
-                </td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:var(--space-2);">
-                    <div style="width:28px;height:28px;border-radius:50%;background:var(--color-danger);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">MK</div>
-                    <div>
-                      <div style="font-size:var(--text-sm);font-weight:500;">Meera Krishnamurthy</div>
-                      <div style="font-size:11px;color:var(--color-gray-400);">Mining Ops</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);">₹2,10,00,000</td>
-                <td style="font-size:var(--text-xs);color:var(--color-gray-600);">CC-1042 — Mining Ops</td>
-                <td><span class="score-pill low">44</span></td>
-                <td><span class="badge badge-rejected">High</span></td>
-                <td><span class="sla-timer breach">⚠ BREACHED — 14h</span></td>
-                <td><span class="badge badge-pending">Pending</span></td>
-                <td style="color:var(--color-gray-400);">›</td>
-              </tr>
-
-              <tr class="table-row-clickable" data-id="REQ-20245" onclick="openDrawer('REQ-20245','Vijay Rao','₹18,75,000','CC-6003 — Exploration Survey','95','Low','41h 0m','low')" role="row" tabindex="0">
-                <td><input type="checkbox" aria-label="Select REQ-20245" onclick="event.stopPropagation()" /></td>
-                <td style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-kpmg-blue);">
-                  <span class="priority-dot low"></span>REQ-20245
-                </td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:var(--space-2);">
-                    <div style="width:28px;height:28px;border-radius:50%;background:var(--color-warning);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">VR</div>
-                    <div>
-                      <div style="font-size:var(--text-sm);font-weight:500;">Vijay Rao</div>
-                      <div style="font-size:11px;color:var(--color-gray-400);">Exploration</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-gray-900);">₹18,75,000</td>
-                <td style="font-size:var(--text-xs);color:var(--color-gray-600);">CC-6003 — Exploration</td>
-                <td><span class="score-pill high">95</span></td>
-                <td><span class="badge badge-approved">Low</span></td>
-                <td><span class="sla-timer ok">41h 0m left</span></td>
-                <td><span class="badge badge-pending">Pending</span></td>
-                <td style="color:var(--color-gray-400);">›</td>
-              </tr>
-
-            </tbody>
+              </tbody>
           </table>
         </div>
 
