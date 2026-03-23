@@ -16,7 +16,7 @@
     /* ── Dashboard-specific styles ── */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: var(--space-4);
       margin-bottom: var(--space-6);
     }
@@ -416,6 +416,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
+
       .dash-row-main {
         grid-template-columns: 1fr;
       }
@@ -773,20 +774,10 @@
         <!-- Page Header -->
         <div class="page-header-strip">
           <div class="page-header-strip-left">
-            <h1>Budget Command Centre</h1>
+            <h1>Spend Request</h1>
             <p>Real-time overview of Vedanta's enterprise spend and approval pipeline</p>
           </div>
-          <div style="display:flex;align-items:center;gap:var(--space-3);">
-            <span class="fiscal-badge">FY 2024–25 &nbsp;|&nbsp; Q4</span>
-            <button class="btn btn-sm btn-secondary">
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8"
-                aria-hidden="true">
-                <line x1="6.5" y1="1" x2="6.5" y2="12" />
-                <line x1="1" y1="6.5" x2="12" y2="6.5" />
-              </svg>
-              Raise Request
-            </button>
-          </div>
+          <span class="fiscal-badge">FY 2024–25 &nbsp;|&nbsp; Q4</span>
         </div>
 
         <!-- KPI Cards -->
@@ -839,22 +830,6 @@
             </div>
           </a>
 
-          <a href="approval-queue.html" class="kpi-card amber" aria-label="47 pending requests">
-            <div class="kpi-icon" style="background:var(--color-warning-bg);">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--color-warning)"
-                stroke-width="1.6">
-                <circle cx="9" cy="9" r="7.5" />
-                <line x1="9" y1="5" x2="9" y2="9.5" stroke-linecap="round" />
-                <circle cx="9" cy="12.5" r="0.8" fill="var(--color-warning)" stroke="none" />
-              </svg>
-            </div>
-            <div class="kpi-label">Pending Requests</div>
-            <div class="kpi-value" style="color:var(--color-warning);">47</div>
-            <div class="kpi-sub">
-              <span style="color:var(--color-danger);font-weight:500;">8 breaching SLA</span>
-            </div>
-          </a>
-
         </div>
 
         <!-- Budget utilisation bar -->
@@ -889,7 +864,6 @@
                 <div class="card-title">Budget vs. Actuals — Top Cost Centres</div>
                 <div class="card-subtitle">FY 2024–25, all figures in ₹ Crore</div>
               </div>
-              <button class="btn btn-sm btn-ghost">View All</button>
             </div>
             <div class="chart-wrap" style="height:280px;">
               <canvas id="barChart" aria-label="Budget vs Actuals bar chart"></canvas>
@@ -928,13 +902,6 @@
                     </div>
                     <div class="donut-legend-value">₹187.55 Cr</div>
                   </div>
-                  <div class="donut-legend-item">
-                    <div class="donut-legend-label">
-                      <div class="donut-legend-swatch" style="background:var(--color-warning-border);"></div>
-                      Pending
-                    </div>
-                    <div class="donut-legend-value">₹38.20 Cr</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -946,11 +913,9 @@
         <div class="card" style="padding:0;overflow:hidden;margin-top:var(--space-6);">
           <div class="card-header">
             <div>
-              <div class="card-title">Purchase Requisition</div>
+              <div class="card-title"><strong>Purchase Requisition</strong></div>
               <div class="card-subtitle">Line items awaiting review and approval</div>
             </div>
-            <button class="btn btn-sm btn-secondary" onclick="window.location.href='approval-queue.html'">View
-              Queue</button>
           </div>
           <div style="overflow-x:auto;">
             <table class="data-table" role="grid" aria-label="Purchase requisitions" style="min-width:1600px;">
@@ -968,8 +933,6 @@
                   <th style="white-space:nowrap;min-width:200px;">Technical Specification / SOW</th>
                   <th style="white-space:nowrap;">Preferred Supplier</th>
                   <th style="white-space:nowrap;">Budgeted / Unbudgeted</th>
-                  <th style="white-space:nowrap;min-width:180px;">Justification / Remarks</th>
-                  <th style="white-space:nowrap;text-align:center;">Evidence</th>
                   <th style="white-space:nowrap;">Status</th>
                 </tr>
               </thead>
@@ -1012,19 +975,8 @@
                   <td><span
                       style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Budgeted</span>
                   </td>
-                  <td
-                    style="font-size:var(--text-xs);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
-                    title="Approved under pre-approved CAPEX">Approved under pre-approved CAPEX</td>
-                  <td style="text-align:center;"><span
-                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;"
-                      title="OEM_Datasheet_UDM.pdf"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
-                        style="flex-shrink:0;">
-                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
-                          stroke-width="1.5" stroke-linejoin="round" />
-                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                      </svg>OEM_Datasheet_UDM.pdf</span></td>
                   <td><span
-                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Approved</span>
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Submitted</span>
                   </td>
                 </tr>
 
@@ -1066,20 +1018,8 @@
                   <td><span
                       style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-warning-bg);color:var(--color-warning);white-space:nowrap;">Unbudgeted</span>
                   </td>
-                  <td
-                    style="font-size:var(--text-xs);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
-                    title="Replacement necessity, procurement pipeline">Replacement necessity, procurement pipeline</td>
-                  <td style="text-align:center;"><span
-                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;"
-                      title="Drill_Linings_Spec.pdf"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
-                        style="flex-shrink:0;">
-                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
-                          stroke-width="1.5" stroke-linejoin="round" />
-                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                      </svg>Drill_Linings_Spec.pdf</span></td>
                   <td><span
-                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not
-                      started</span></td>
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not Submitted</span></td>
                 </tr>
 
                 <!-- Row 3: Line Item 30 -->
@@ -1119,18 +1059,8 @@
                   <td><span
                       style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-warning-bg);color:var(--color-warning);white-space:nowrap;">Unbudgeted</span>
                   </td>
-                  <td style="font-size:var(--text-xs);color:var(--color-gray-400);white-space:nowrap;">—</td>
-                  <td style="text-align:center;"><span
-                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#FEF2F2;color:var(--color-danger);white-space:nowrap;"
-                      title="No file uploaded"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
-                        style="flex-shrink:0;">
-                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
-                          stroke-width="1.5" stroke-linejoin="round" />
-                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                      </svg>No file uploaded</span></td>
                   <td><span
-                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not
-                      started</span></td>
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not Submitted</span></td>
                 </tr>
 
                 <!-- Row 4: Line Item 40 -->
@@ -1168,18 +1098,8 @@
                   <td><span
                       style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Budgeted</span>
                   </td>
-                  <td style="font-size:var(--text-xs);color:var(--color-gray-400);white-space:nowrap;">—</td>
-                  <td style="text-align:center;"><span
-                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;"
-                      title="Gearbox_SOW.pdf"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
-                        style="flex-shrink:0;">
-                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
-                          stroke-width="1.5" stroke-linejoin="round" />
-                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                      </svg>Gearbox_SOW.pdf</span></td>
                   <td><span
-                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not
-                      started</span></td>
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not Submitted</span></td>
                 </tr>
 
                 <!-- Row 5: Line Item 50 -->
@@ -1218,20 +1138,8 @@
                   <td><span
                       style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Budgeted</span>
                   </td>
-                  <td
-                    style="font-size:var(--text-xs);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
-                    title="Planned maintenance scope">Planned maintenance scope</td>
-                  <td style="text-align:center;"><span
-                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#EBF0FB;color:var(--color-kpmg-blue);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;"
-                      title="AMC_SLA_UDFleet.pdf"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
-                        style="flex-shrink:0;">
-                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
-                          stroke-width="1.5" stroke-linejoin="round" />
-                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                      </svg>AMC_SLA_UDFleet.pdf</span></td>
                   <td><span
-                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not
-                      started</span></td>
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not Submitted</span></td>
                 </tr>
 
                 <!-- Row 6: Line Item 60 -->
@@ -1270,20 +1178,8 @@
                   <td><span
                       style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-success-bg);color:var(--color-success);white-space:nowrap;">Budgeted</span>
                   </td>
-                  <td
-                    style="font-size:var(--text-xs);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
-                    title="Planned maintenance consumptions">Planned maintenance consumptions</td>
-                  <td style="text-align:center;"><span
-                      style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:500;background:#FEF2F2;color:var(--color-danger);white-space:nowrap;"
-                      title="No file uploaded"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"
-                        style="flex-shrink:0;">
-                        <path d="M9 1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V6L9 1z" stroke="currentColor"
-                          stroke-width="1.5" stroke-linejoin="round" />
-                        <path d="M9 1v5h5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                      </svg>No file uploaded</span></td>
                   <td><span
-                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not
-                      started</span></td>
+                      style="display:inline-block;padding:2px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600;background:var(--color-gray-100);color:var(--color-gray-600);white-space:nowrap;">Not Submitted</span></td>
                 </tr>
 
               </tbody>
@@ -1291,9 +1187,7 @@
           </div>
           <div
             style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-5);border-top:1px solid var(--color-gray-200);background:var(--color-gray-50);">
-            <div style="font-size:var(--text-xs);color:var(--color-gray-500);">Showing 6 of 47 pending line items</div>
-            <button class="btn btn-sm btn-ghost" onclick="window.location.href='approval-queue.html'">View All
-              &rsaquo;</button>
+            <div style="font-size:var(--text-xs);color:var(--color-gray-500);">Showing 6 of 47 line items</div>
           </div>
         </div>
 
@@ -1431,7 +1325,7 @@
             borderRadius: 4,
           },
           {
-            label: 'Actuals',
+            label: 'Actual',
             data: [135, 72, 61, 88, 62],
             backgroundColor: '#00338D',
             borderRadius: 4,
@@ -1517,10 +1411,10 @@
     new Chart(donutCtx, {
       type: 'doughnut',
       data: {
-        labels: ['Consumed', 'Remaining', 'Pending'],
+        labels: ['Consumed', 'Remaining'],
         datasets: [{
-          data: [312.45, 149.35, 38.20],
-          backgroundColor: ['#00338D', '#DEE2E6', '#F59E0B'],
+          data: [312.45, 187.55],
+          backgroundColor: ['#00338D', '#DEE2E6'],
           borderWidth: 0,
           hoverOffset: 4
         }]
