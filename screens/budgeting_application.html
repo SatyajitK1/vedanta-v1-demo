@@ -492,7 +492,7 @@
           </svg>
         </div>
         <div class="kpi-label">Variance</div>
-        <div class="kpi-value" id="kpiVarianceVal">-₹100 Cr</div>
+        <div class="kpi-value" id="kpiVarianceVal">₹100 Cr</div>
         <div class="kpi-sub">
           <span class="kpi-tag" id="kpiVarianceTag">₹100 Cr headroom remaining</span>
         </div>
@@ -832,8 +832,7 @@
       const baseBudget = displayBudget;
       const variance   = d.actual - baseBudget;
       const headroom   = Math.abs(variance);
-      document.getElementById('kpiVarianceVal').textContent =
-        `${variance < 0 ? '-' : '+'}₹${headroom} Cr`;
+      document.getElementById('kpiVarianceVal').textContent = `₹${headroom} Cr`;
       document.getElementById('kpiVarianceVal').style.color =
         variance > 0 ? 'var(--c-danger)' : 'var(--c-text-900)';
       document.getElementById('kpiVarianceTag').textContent =
