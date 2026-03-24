@@ -2,7 +2,7 @@
 
 ## Overview
 
-The current `screens/` folder contains 10 HTML screens, all themed for the **Zinc Plant** (Hindustan Zinc). This plan details how to replicate every screen for the **Aluminum Plant** division of Vedanta, producing a parallel set of 10 screens in `screens/aluminum/`.
+The current `screens/` folder contains 10 HTML screens, all themed for the **Zinc Plant** (Hindustan Zinc). This plan details how to replicate the core screens for the **Aluminum Plant** division of Vedanta, producing a parallel set of 8 screens in `screens/aluminum/`.
 
 ---
 
@@ -38,9 +38,7 @@ screens/
     approval-queue.html
     analytics-dashboard.html
     audit-logs.html
-    app-shell.html
     design-system-preview.html
-    login.html
 ```
 
 All files import the shared design system via a **corrected relative path**:
@@ -50,32 +48,11 @@ All files import the shared design system via a **corrected relative path**:
 
 ## Screen-by-Screen Plan
 
-### 1. `login.html`
-**Source:** `screens/login.html`
-
-**Changes:**
-- Update subtitle/tagline: "Zinc Plant · Budget Planning & ACT" → "Aluminium Plant · Budget Planning & ACT"
-- Update any plant-specific logo text or plant reference in subheading
-- Credentials hint (if any) can remain generic
-
-**Data fixtures:** None — login is plant-agnostic.
+---
 
 ---
 
-### 2. `app-shell.html`
-**Source:** `screens/app-shell.html`
-
-**Changes:**
-- Sidebar plant label: "Zinc Plant" → "Aluminium Plant"
-- User profile name in header: use an Aluminium Plant persona (e.g., "Ramesh Iyer, Finance Controller — Aluminium")
-- All nav links remain identical in structure
-- Any breadcrumb showing "Zinc" → "Aluminium"
-
-**Data fixtures:** Minimal; this is a layout reference file.
-
----
-
-### 3. `design-system-preview.html`
+### 1. `design-system-preview.html`
 **Source:** `screens/design-system-preview.html`
 
 **Changes:**
@@ -88,7 +65,7 @@ All files import the shared design system via a **corrected relative path**:
 
 ---
 
-### 4. `dashboard.html` *(Finance Controller / Leadership home)*
+### 2. `dashboard.html` *(Finance Controller / Leadership home)*
 **Source:** `screens/dashboard.html`
 
 **Changes:**
@@ -115,7 +92,7 @@ Budget Year: FY 2025–26
 
 ---
 
-### 5. `budgeting_application.html`
+### 3. `budgeting_application.html`
 **Source:** `screens/budgeting_application.html`
 
 **Changes:**
@@ -144,7 +121,7 @@ Overheads & Others: ₹350 Cr
 
 ---
 
-### 6. `request-form.html`
+### 4. `request-form.html`
 **Source:** `screens/request-form.html`
 
 **Changes:**
@@ -171,7 +148,7 @@ Remaining after request: ₹1,05,00,000
 
 ---
 
-### 7. `validation-panel.html` *(Hero / Differentiator Screen)*
+### 5. `validation-panel.html` *(Hero / Differentiator Screen)*
 **Source:** `screens/validation-panel.html`
 
 **Changes:**
@@ -198,7 +175,7 @@ Validation score: 87/100
 
 ---
 
-### 8. `approval-queue.html`
+### 6. `approval-queue.html`
 **Source:** `screens/approval-queue.html`
 
 **Changes:**
@@ -220,7 +197,7 @@ Total pending value: ₹4.95 Cr
 
 ---
 
-### 9. `analytics-dashboard.html` *(Eval 360)*
+### 7. `analytics-dashboard.html` *(Eval 360)*
 **Source:** `screens/analytics-dashboard.html`
 
 **Changes:**
@@ -248,7 +225,7 @@ Top cost centers by spend:
 
 ---
 
-### 10. `audit-logs.html`
+### 8. `audit-logs.html`
 **Source:** `screens/audit-logs.html`
 
 **Changes:**
@@ -276,16 +253,14 @@ Requests tracked: 312
 
 Execute in this order to maximise shared context and efficiency:
 
-1. **`login.html`** — simplest, no data
-2. **`app-shell.html`** — establishes plant identity for all others
-3. **`design-system-preview.html`** — update sample chips/labels
-4. **`dashboard.html`** — most visible; complex data table
-5. **`budgeting_application.html`** — complex GL/line-item data
-6. **`request-form.html`** — form data + budget preview
-7. **`validation-panel.html`** — hero screen, most nuanced AI content
-8. **`approval-queue.html`** — queue data + drawer
-9. **`analytics-dashboard.html`** — chart labels + KPIs
-10. **`audit-logs.html`** — timeline entries
+1. **`design-system-preview.html`** — update sample chips/labels
+2. **`dashboard.html`** — most visible; complex data table
+3. **`budgeting_application.html`** — complex GL/line-item data
+4. **`request-form.html`** — form data + budget preview
+5. **`validation-panel.html`** — hero screen, most nuanced AI content
+6. **`approval-queue.html`** — queue data + drawer
+7. **`analytics-dashboard.html`** — chart labels + KPIs
+8. **`audit-logs.html`** — timeline entries
 
 ---
 
