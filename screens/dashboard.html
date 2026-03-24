@@ -874,6 +874,16 @@
             <div class="chart-wrap" style="height:280px;">
               <canvas id="barChart" aria-label="Budget vs Actuals bar chart"></canvas>
             </div>
+            <div style="display:flex;gap:var(--space-4);justify-content:flex-end;padding:var(--space-2) var(--space-4) var(--space-3);">
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-gray-600);font-family:'Inter',sans-serif;">
+                <div style="width:12px;height:12px;background:#00338D;border-radius:2px;flex-shrink:0;"></div>
+                Actual
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-gray-600);font-family:'Inter',sans-serif;">
+                <div style="width:12px;height:12px;background:rgba(0,51,141,0.12);border:1.5px solid #00338D;border-radius:2px;flex-shrink:0;"></div>
+                Budget
+              </div>
+            </div>
           </div>
 
           <!-- Right column: Donut + Alerts -->
@@ -1361,11 +1371,7 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            position: 'top',
-            align: 'end',
-            labels: { font: { family: 'Inter', size: 11 }, boxWidth: 12, padding: 14 }
-          },
+          legend: { display: false },
           tooltip: {
             callbacks: {
               label: ctx => ` ₹${ctx.parsed.y} Cr`
