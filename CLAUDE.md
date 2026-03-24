@@ -12,9 +12,11 @@ All screens live in `screens/`. The shared stylesheet is `assets/css/design-syst
 
 | File | Purpose |
 |---|---|
+| `screens/login.html` | User authentication and entry point |
 | `screens/design-system-preview.html` | Living style guide — verify components before editing screens |
 | `screens/app-shell.html` | Shared layout reference (sidebar + header + content area) |
 | `screens/dashboard.html` | Finance Controller / Leadership home |
+| `screens/budgeting_application.html` | Budgeting application core interface |
 | `screens/request-form.html` | Requestor flow — raise a spend request |
 | `screens/validation-panel.html` | ACT engine output — hero/differentiator screen |
 | `screens/approval-queue.html` | Approver flow — queue + detail view |
@@ -68,7 +70,7 @@ node export-to-figma.js
 
 | Doc | Location | Use for |
 |---|---|---|
-| Product architecture | `docs/product_decription.md` | Modules, user flows, AI agents, governance model |
+| Product architecture | `docs/product_description.md` | Modules, user flows, AI agents, governance model |
 | Screen hierarchy & personas | `docs/master_plan.md` | Which screens serve which persona, design principles |
 | KPMG brand guidelines | `docs/design.md` | Color system, typography rules, layout patterns |
 | Full execution spec | `docs/visual_design_plan.md` | Exact per-screen requirements and quality criteria |
