@@ -956,7 +956,7 @@
               <tbody id="approvalTable">
 
                 <!-- Row 1: Line Item 10 -->
-                <tr class="table-row-clickable" onclick="openLineItemModal(10)" role="row" tabindex="0">
+                <tr class="table-row-clickable" onclick="openLineItemModal('PR-2025-4201')" role="row" tabindex="0">
                   <td
                     style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);white-space:nowrap;">
                     PR-2025-4201</td>
@@ -1000,7 +1000,7 @@
                 </tr>
 
                 <!-- Row 2: Line Item 20 -->
-                <tr class="table-row-clickable" onclick="openLineItemModal(20)" role="row" tabindex="0">
+                <tr class="table-row-clickable" onclick="openLineItemModal('PR-2025-4202')" role="row" tabindex="0">
                   <td
                     style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);white-space:nowrap;">
                     PR-2025-4202</td>
@@ -1045,7 +1045,7 @@
                 </tr>
 
                 <!-- Row 3: Line Item 30 -->
-                <tr class="table-row-clickable" onclick="openLineItemModal(30)" role="row" tabindex="0">
+                <tr class="table-row-clickable" onclick="openLineItemModal('PR-2025-4203')" role="row" tabindex="0">
                   <td
                     style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);white-space:nowrap;">
                     PR-2025-4203</td>
@@ -1089,7 +1089,7 @@
                 </tr>
 
                 <!-- Row 4: Line Item 40 -->
-                <tr class="table-row-clickable" onclick="openLineItemModal(40)" role="row" tabindex="0">
+                <tr class="table-row-clickable" onclick="openLineItemModal('PR-2025-4204')" role="row" tabindex="0">
                   <td
                     style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);white-space:nowrap;">
                     PR-2025-4204</td>
@@ -1131,7 +1131,7 @@
                 </tr>
 
                 <!-- Row 5: Line Item 50 -->
-                <tr class="table-row-clickable" onclick="openLineItemModal(50)" role="row" tabindex="0">
+                <tr class="table-row-clickable" onclick="openLineItemModal('PR-2025-4205')" role="row" tabindex="0">
                   <td
                     style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);white-space:nowrap;">
                     PR-2025-4205</td>
@@ -1174,7 +1174,7 @@
                 </tr>
 
                 <!-- Row 6: Line Item 60 -->
-                <tr class="table-row-clickable" onclick="openLineItemModal(60)" role="row" tabindex="0">
+                <tr class="table-row-clickable" onclick="openLineItemModal('PR-2025-4206')" role="row" tabindex="0">
                   <td
                     style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);white-space:nowrap;">
                     PR-2025-4206</td>
@@ -1467,7 +1467,7 @@
 
     // ── Line Item Modal ──
     const lineItemData = {
-      10: {
+      'PR-2025-4201': {
         description: 'Underground LHD Machine (14T)',
         spendType: 'CAPEX – Machinery',
         spendTypeBg: '#EBF0FB',
@@ -1479,7 +1479,7 @@
         businessExplanation: `The new 14T LHD is required to support the approved mine expansion plan for the zinc underground block. Current fleet utilization is above optimal limits, resulting in cycle time inefficiencies and production risk.\n\nThis addition will:\n• Increase hauling capacity\n• Reduce equipment congestion\n• Improve movement reliability\n\nThe investment is part of the approved CAPEX plan under the Mine Expansion Project and aligns with long-term production and safety objectives.`,
         supportingEvidences: `• OEM quotation & compliance certificate – PDF\n• Technical evaluation note – PDF/PPT\n• Mine expansion approval – PDF\n• Budget confirmation – Email/PDF`
       },
-      20: {
+      'PR-2025-4202': {
         description: 'Hydraulic Drill Linings',
         spendType: 'CAPEX – Machinery',
         spendTypeBg: '#EBF0FB',
@@ -1491,7 +1491,7 @@
         businessExplanation: `Replacement of critically worn hydraulic drill linings in the underground shaft at Zinc Plant (ZN-01). Current linings have exceeded the recommended service life and present a safety and operational risk.\n\nThis replacement will:\n• Restore full drilling efficiency\n• Eliminate unplanned downtime risk\n• Comply with safety inspection mandates\n\nThe procurement is an emergency unbudgeted requirement arising from accelerated wear due to harder-than-anticipated rock formations encountered during Q3 operations.`,
         supportingEvidences: `• Condition assessment report – PDF\n• OEM replacement advisory – PDF\n• Safety compliance note – PDF\n• Maintenance inspection record – PDF`
       },
-      30: {
+      'PR-2025-4203': {
         description: 'Crusher Main Drive Motor Assembly',
         spendType: 'CAPEX – Replacement',
         spendTypeBg: '#FEF3C7',
@@ -1503,7 +1503,7 @@
         businessExplanation: `The existing 3.3 kV main drive motor on the primary crusher at ZN-C2 has shown signs of insulation degradation and elevated vibration levels. Predictive maintenance analysis indicates a high probability of failure within the next 45 days.\n\nReplacement is required to:\n• Prevent unplanned crusher shutdown impacting ore processing\n• Avoid cascading production loss estimated at ₹4–6 Cr per week\n• Maintain plant availability targets above 92%\n\nThis is an unbudgeted emergency replacement sanctioned under the plant reliability framework.`,
         supportingEvidences: `• Failure analysis report – PDF\n• OEM quote – PDF\n• Asset replacement justification – PPT\n• Predictive maintenance log – PDF`
       },
-      40: {
+      'PR-2025-4204': {
         description: 'Conveyor Gearbox',
         spendType: 'OPEX – Services',
         spendTypeBg: '#F0FDF4',
@@ -1515,7 +1515,7 @@
         businessExplanation: `Scheduled overhaul of the main conveyor gearbox at Zinc Plant (ZN-C2) as per the annual maintenance plan. This overhaul is part of the planned OPEX maintenance cycle to ensure conveyor availability and prevent unscheduled stoppages.\n\nScope of work includes:\n• Full disassembly and inspection\n• Replacement of gear rolls and bearings\n• Reassembly, alignment, and commissioning\n\nThis expenditure is within the approved maintenance budget for FY 2024–25 under Cost Center – Procurement.`,
         supportingEvidences: `• Maintenance plan reference – PDF\n• Gearbox SOW – PDF\n• Vendor quotation – PDF\n• Previous overhaul records – PDF`
       },
-      50: {
+      'PR-2025-4205': {
         description: 'OEM AMC – UD Fleet (Annual)',
         spendType: 'CAPEX – Services',
         spendTypeBg: '#EBF0FB',
@@ -1527,7 +1527,7 @@
         businessExplanation: `Annual Maintenance Contract (AMC) renewal for the underground fleet at ZN-05 with the OEM-approved service provider. The contract covers scheduled preventive maintenance, 24×7 breakdown support, and supply of critical spare parts for all UD equipment.\n\nKey deliverables under the AMC:\n• 6 scheduled services per machine per year\n• Guaranteed response SLA of 4 hours for critical breakdowns\n• OEM-certified technicians for all services\n• Real-time fleet health monitoring dashboard\n\nThis is a budgeted annual renewal aligned with the CAPEX maintenance plan.`,
         supportingEvidences: `• AMC agreement draft – PDF\n• SLA terms – PDF\n• Fleet utilization report – PDF\n• OEM service capability statement – PDF`
       },
-      60: {
+      'PR-2025-4206': {
         description: 'Hydraulic Cylinder Sets',
         spendType: 'OPEX – Spares',
         spendTypeBg: '#F0FDF4',
@@ -1541,11 +1541,11 @@
       }
     };
 
-    function openLineItemModal(lineNum) {
-      const data = lineItemData[lineNum];
+    function openLineItemModal(prNum) {
+      const data = lineItemData[prNum];
       if (!data) return;
 
-      document.getElementById('modalHeading').textContent = `Line Item ${lineNum} – ${data.description}`;
+      document.getElementById('modalHeading').textContent = `${prNum} / Line Item 10 – ${data.description}`;
 
       const spendEl = document.getElementById('modalSpendType');
       spendEl.textContent = data.spendType;
