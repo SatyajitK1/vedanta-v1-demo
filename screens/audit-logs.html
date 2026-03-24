@@ -918,11 +918,12 @@
     </nav>
 
     <div class="sidebar-footer">
-      <div class="sidebar-user" role="button" tabindex="0" aria-label="User: Rajesh Kumar">
-        <div class="sidebar-user-avatar" aria-hidden="true">RK</div>
+      <div class="sidebar-user" style="pointer-events:none;cursor:default;">
+        <div class="sidebar-user-avatar">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+        </div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Rajesh Kumar</div>
-          <div class="sidebar-user-role">Finance Controller</div>
+          <div class="sidebar-user-name">User</div>
         </div>
       </div>
       <button class="sidebar-logout-btn" onclick="handleLogout()" aria-label="Logout">
@@ -971,13 +972,11 @@
           <span class="notif-badge" aria-hidden="true">5</span>
         </button>
       </div>
-      <div class="header-user">
-        <div class="header-user-avatar" aria-hidden="true">RK</div>
-        <div class="header-user-info">
-          <div class="header-user-name">Rajesh Kumar</div>
-          <div class="header-user-role">Finance Controller</div>
+      <div class="header-user" style="flex-direction:column;align-items:center;gap:3px;cursor:default;pointer-events:none;">
+        <div class="header-user-avatar" style="width:34px;height:34px;border-radius:50%;background:#F1F5F9;border:1.5px solid #CBD5E1;box-shadow:0 1px 3px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;color:#475569;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>
+        <div style="font-size:10px;font-weight:600;color:#0F172A;white-space:nowrap;">User</div>
       </div>
     </div>
   </header>

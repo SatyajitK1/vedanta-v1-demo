@@ -1,0 +1,38 @@
+[
+  {
+    "PR NO.": "PR-2025-4201",
+    "PR LINE ITEM": "10",
+    "STATUS": "Approved",
+    "REQUESTOR": "AS\nAmit Sharma\nDrilling Ops",
+    "PLANT CODE": "AL-DR-01",
+    "MATERIAL / SERVICE DESCRIPTION": "Drilling Fluid – Aluminium Project",
+    "TECHNICAL SPECIFICATION / SOW": "High-temperature drilling fluid compatible with aluminium ore geology",
+    "SPEND TYPE": "CAPEX – Drilling / Process Consumables",
+    "BUDGETED / UNBUDGETED": "Budgeted",
+    "QTY": "Lot",
+    "EST. VALUE (₹ CR)": "6.5",
+    "ACCOUNT ASSIGNMENT": "WBS – Aluminium CAPEX Project",
+    "ASSET CODE / CER NO.": "CER-AL-2025-045",
+    "SAFETY SCORE / KPIS": "HSE compliance, zero-spill KPI",
+    "PREFERRED SUPPLIERS": "Approved Drilling Chemical Vendors",
+    "JUSTIFICATION / REMARKS": "Required for drilling operations under approved aluminium CAPEX"
+  },
+  {
+    "PR NO.": "PR-2025-4202",
+    "PR LINE ITEM": "10",
+    "STATUS": "In Review",
+    "REQUESTOR": "VP\nVikram Patel\nLogistics",
+    "PLANT CODE": "AL-RJ-01",
+    "MATERIAL / SERVICE DESCRIPTION": "Fuels – RJ Aluminium Operations",
+    "TECHNICAL SPECIFICATION / SOW": "HSD / furnace fuel supply for plant and logistics",
+    "SPEND TYPE": "OPEX – Fuels",
+    "BUDGETED / UNBUDGETED": "Budgeted",
+    "QTY": "Lot",
+    "EST. VALUE (₹ CR)": "4.2",
+    "ACCOUNT ASSIGNMENT": "Cost Center – Aluminium O&M",
+    "ASSET CODE / CER NO.": "NA",
+    "SAFETY SCORE / KPIS": "Safety compliance, uninterrupted supply KPI",
+    "PREFERRED SUPPLIERS": "Approved Fuel Vendors",
+    "JUSTIFICATION / REMARKS": "Routine fuel requirement for RJ aluminium operations"
+  }
+]
