@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/design-system.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <style>
     /* ── Split Panel Layout ── */
     .split-panel {
@@ -472,6 +473,356 @@
     @media (max-width: 1200px) {
       .split-panel { grid-template-columns: 1fr; }
     }
+
+    /* ── Agentic Review Workspace ── */
+    #agenticWorkspace {
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .agentic-workspace-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) var(--space-5);
+      background: linear-gradient(135deg, var(--color-kpmg-blue) 0%, var(--color-medium-blue) 100%);
+      color: white;
+    }
+
+    .agentic-workspace-title {
+      font-size: var(--text-base);
+      font-weight: var(--font-bold);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .agentic-pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4ADE80;
+      box-shadow: 0 0 0 0 rgba(74,222,128,0.6);
+      animation: agenticPulse 1.6s infinite;
+    }
+
+    @keyframes agenticPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }
+      70%  { box-shadow: 0 0 0 8px rgba(74,222,128,0); }
+      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+    }
+
+    .agentic-split {
+      display: grid;
+      grid-template-columns: 62% 38%;
+      height: 720px;
+    }
+
+    .agentic-left {
+      border-right: 1px solid var(--color-gray-200);
+      padding: var(--space-4);
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+      height: 720px;
+    }
+
+    .agentic-right {
+      padding: var(--space-4);
+      background: var(--color-white);
+      overflow-y: auto;
+      height: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .agentic-meta-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--color-gray-100);
+      margin-bottom: var(--space-4);
+    }
+
+    .agentic-agent-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--color-info-bg);
+      border: 1.5px solid var(--color-info-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .agentic-agent-name {
+      font-size: var(--text-base);
+      font-weight: var(--font-bold);
+      color: var(--color-gray-900);
+      line-height: 1.2;
+    }
+
+    .agentic-agent-status {
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      margin-top: 3px;
+      display: inline-block;
+    }
+
+    .agentic-agent-status.running {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+    }
+
+    .agentic-agent-status.complete {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+      border: 1px solid var(--color-success-border);
+    }
+
+    .agentic-agent-status.warning {
+      background: var(--color-warning-bg);
+      color: var(--color-warning);
+      border: 1px solid var(--color-warning-border);
+    }
+
+    .agentic-meta-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .agentic-meta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .agentic-meta-label {
+      font-size: 10px;
+      font-weight: var(--font-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-gray-400);
+    }
+
+    .agentic-meta-value {
+      font-size: var(--text-sm);
+      color: var(--color-gray-800);
+      font-weight: var(--font-medium);
+      line-height: 1.5;
+    }
+
+    .agentic-meta-value.mono {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+    }
+
+    .agentic-check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      background: var(--color-gray-50);
+      border: 1px solid var(--color-gray-100);
+    }
+
+    .agentic-check-row.pass  { background: var(--color-success-bg); border-color: var(--color-success-border); }
+    .agentic-check-row.warn  { background: var(--color-warning-bg); border-color: var(--color-warning-border); }
+    .agentic-check-row.fail  { background: var(--color-danger-bg); border-color: var(--color-danger-border); }
+
+    .agentic-check-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .agentic-check-text {
+      font-size: var(--text-xs);
+      color: var(--color-gray-700);
+      line-height: 1.5;
+    }
+
+    .agentic-insight-box {
+      padding: var(--space-3) var(--space-4);
+      background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+      border: 1px solid #C7D2FE;
+      border-left: 3px solid #6366F1;
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      color: #3730A3;
+      line-height: 1.6;
+    }
+
+    .agentic-verdict-box {
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      border: 2px solid;
+      margin-top: var(--space-2);
+    }
+
+    .agentic-verdict-box.pass {
+      background: var(--color-success-bg);
+      border-color: var(--color-success-border);
+    }
+
+    .agentic-verdict-box.warn {
+      background: var(--color-warning-bg);
+      border-color: var(--color-warning-border);
+    }
+
+    .agentic-verdict-title {
+      font-size: var(--text-base);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--space-2);
+    }
+
+    .agentic-verdict-box.pass .agentic-verdict-title { color: var(--color-success); }
+    .agentic-verdict-box.warn .agentic-verdict-title { color: var(--color-warning); }
+
+    .agentic-verdict-narrative {
+      font-size: var(--text-xs);
+      line-height: 1.6;
+      color: var(--color-gray-700);
+    }
+
+    /* D3 Node animations */
+    @keyframes nodeGlow {
+      0%   { filter: drop-shadow(0 0 4px rgba(59,130,246,0.4)); }
+      50%  { filter: drop-shadow(0 0 10px rgba(59,130,246,0.8)); }
+      100% { filter: drop-shadow(0 0 4px rgba(59,130,246,0.4)); }
+    }
+
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -24; }
+    }
+
+    @keyframes metaFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes doaCardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .meta-fade-in {
+      animation: metaFadeIn 0.4s ease forwards;
+    }
+
+    .flow-edge-active {
+      animation: dashFlow 0.5s linear infinite;
+    }
+
+    .node-running {
+      animation: nodeGlow 1.2s ease-in-out infinite;
+    }
+
+    /* DOA summary table */
+    #doaSummaryTable {
+      display: none;
+      border-top: 1px solid var(--color-gray-200);
+      padding: var(--space-5);
+      animation: metaFadeIn 0.5s ease forwards;
+    }
+
+    .doa-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+
+    .doa-table th {
+      background: var(--color-kpmg-blue);
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: var(--font-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .doa-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+    .doa-table th:last-child  { border-radius: 0 var(--radius-sm) 0 0; }
+
+    .doa-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--color-gray-100);
+      color: var(--color-gray-800);
+      vertical-align: middle;
+    }
+
+    .doa-table tr:last-child td { border-bottom: none; }
+    .doa-table tr:hover td { background: var(--color-gray-50); }
+
+    .doa-table td.mono {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+    }
+
+    .doa-action-btn {
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: var(--font-semibold);
+      cursor: pointer;
+      border: 1.5px solid;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+    }
+
+    .doa-action-btn.approve {
+      background: var(--color-success-bg);
+      border-color: var(--color-success-border);
+      color: var(--color-success);
+    }
+
+    .doa-action-btn.approve:hover { background: #d1fae5; }
+
+    .doa-action-btn.clarify {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-300);
+      color: var(--color-gray-700);
+    }
+
+    .doa-action-btn.clarify:hover { background: var(--color-gray-100); }
+
+    .doa-action-btn.reject {
+      background: var(--color-white);
+      border-color: var(--color-danger-border);
+      color: var(--color-danger);
+    }
+
+    .doa-action-btn.reject:hover { background: var(--color-danger-bg); }
+
+    .doa-table-row-animate {
+      animation: metaFadeIn 0.5s ease forwards;
+    }
+
+    .validation-cluster-rect {
+      fill: #F0F4FF;
+      stroke: #6366F1;
+      stroke-width: 1.5;
+      stroke-dasharray: 6,4;
+      rx: 10;
+    }
   </style>
 </head>
 <body>
@@ -630,8 +981,7 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-5);">
         <div>
           <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:4px;">
-            <h1 style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-gray-900);margin:0;">ACT Engine — Validation Report</h1>
-            <span class="badge badge-at-risk">Validation Complete</span>
+            <h1 style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-gray-900);margin:0;">DOA Approval</h1>
           </div>
           <p style="font-size:var(--text-sm);color:var(--color-gray-500);margin:0;">
             Request REQ-20243 — Analysed by ACT v3.2 &nbsp;·&nbsp; Completed 22 Mar 2025, 10:24 IST
@@ -646,17 +996,24 @@
         </div>
       </div>
 
+
       <!-- ── Submitted from DoA Queue ── -->
       <div id="doaSubmittedSection" style="display:none;margin-bottom:var(--space-5);">
-        <div style="font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-gray-400);margin-bottom:var(--space-3);">Submitted for DoA Review</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-3);">
+          <div style="font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-gray-400);">Submitted for DoA Review</div>
+          <button onclick="clearDoaSubmitted()" style="font-size:11px;color:var(--color-gray-400);background:none;border:1px solid var(--color-gray-200);border-radius:var(--radius-md);padding:2px 10px;cursor:pointer;transition:all 150ms;" onmouseover="this.style.color='var(--color-danger)';this.style.borderColor='var(--color-danger)';" onmouseout="this.style.color='var(--color-gray-400)';this.style.borderColor='var(--color-gray-200)';">Clear</button>
+        </div>
         <div id="doaSubmittedList" style="display:flex;flex-direction:column;gap:var(--space-2);"></div>
       </div>
 
-      <!-- Split panel -->
-      <div class="split-panel">
+      <!-- ── Agentic Review Workspaces (accordion) ── -->
+      <div id="agenticWorkspacesList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:var(--space-5);"></div>
 
-        <!-- ── LEFT: Request Details ── -->
-        <div class="card" style="padding:0;">
+      <!-- DOA decisions container (populated per-PR by showDoaSummaryTable) -->
+      <div id="doaSummaryTable" style="display:none;flex-direction:column;gap:12px;margin-bottom:var(--space-5);"></div>
+
+      <!-- Split panel (removed) -->
+      <div style="display:none;">
 
           <div style="padding:var(--space-4) var(--space-5) var(--space-3);border-bottom:1px solid var(--color-gray-200);">
             <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -749,11 +1106,9 @@
           </div>
         </div>
 
-        <!-- ── RIGHT: Validation Results ── -->
-        <div style="display:flex;flex-direction:column;gap:var(--space-4);">
-
-          <!-- Validation Score Card -->
-          <div class="card" style="padding:0;overflow:hidden;">
+        <!-- ── RIGHT: Validation Results (removed) ── -->
+        <div style="display:none;">
+          <div>
 
             <div class="validation-status-bar">
               <div>
@@ -1128,6 +1483,7 @@
     document.getElementById('prDetailModalOverlay').style.display = 'none';
   }
 
+
   // ── Load DoA submitted items from approval queue ──
   (function loadDoaSubmitted() {
     const items = JSON.parse(localStorage.getItem('doaSubmitted') || '[]');
@@ -1135,9 +1491,11 @@
     const section = document.getElementById('doaSubmittedSection');
     const list    = document.getElementById('doaSubmittedList');
     section.style.display = '';
+    list.innerHTML = '';
     items.forEach((item, idx) => {
       const card = document.createElement('div');
       card.style.cssText = 'display:flex;align-items:center;gap:16px;padding:12px 16px;background:#fff;border:1px solid #E4E4E7;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.06);';
+      card.setAttribute('data-pr-card', item.pr);
       card.innerHTML = `
         <div style="width:32px;height:32px;border-radius:50%;background:var(--color-info-bg);border:1.5px solid var(--color-light-blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-mono);font-size:0.8rem;font-weight:700;color:var(--color-kpmg-blue);">${idx + 1}</div>
         <div style="flex:1;min-width:0;">
@@ -1145,6 +1503,7 @@
             <span style="font-family:var(--font-mono);font-size:0.8rem;font-weight:700;color:#111827;">${item.pr}</span>
             <span style="font-size:0.75rem;color:#374151;">Line ${item.line}</span>
             <span style="font-size:0.75rem;font-weight:500;color:#111827;">${item.desc}</span>
+            <span data-pr-status="${item.pr}" style="display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid #BFDBFE;background:#EFF6FF;color:#2563EB;white-space:nowrap;">In-Review</span>
           </div>
           <div style="font-size:11px;color:#374151;margin-top:2px;">
             Requestor: <strong style="color:#111827;">${item.requestor}</strong> &nbsp;·&nbsp; Value: <strong style="color:#111827;">${item.value}</strong> &nbsp;·&nbsp; DoA Reviewer: <strong style="color:#111827;">${item.doa}</strong>
@@ -1152,108 +1511,929 @@
         </div>
         <div style="font-size:11px;color:#374151;white-space:nowrap;">${item.time}</div>
         <button onclick="openPrDetailModal(${JSON.stringify(item).replace(/"/g, '&quot;')})" title="View PR details" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:1.5px solid #D1D5DB;background:white;color:#374151;cursor:pointer;flex-shrink:0;transition:all 150ms;" onmouseover="this.style.borderColor='var(--color-kpmg-blue)';this.style.color='var(--color-kpmg-blue)';" onmouseout="this.style.borderColor='#D1D5DB';this.style.color='#374151';"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="1.2"/><rect x="7" y="7.5" width="2" height="5" rx="1"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button>
-        <button onclick="this.textContent='Running…';this.disabled=true;" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;font-size:11px;font-weight:600;border:1.5px solid var(--color-kpmg-blue);border-radius:6px;background:white;color:var(--color-kpmg-blue);cursor:pointer;white-space:nowrap;transition:all 150ms;" onmouseover="this.style.background='var(--color-kpmg-blue)';this.style.color='white';" onmouseout="if(!this.disabled){this.style.background='white';this.style.color='var(--color-kpmg-blue)';}">Run agentic review →</button>
+        <button onclick="startAgenticReview(${JSON.stringify(item).replace(/"/g, '&quot;')}, this)" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;font-size:11px;font-weight:600;border:1.5px solid var(--color-kpmg-blue);border-radius:6px;background:white;color:var(--color-kpmg-blue);cursor:pointer;white-space:nowrap;transition:all 150ms;" onmouseover="if(!this.disabled){this.style.background='var(--color-kpmg-blue)';this.style.color='white';}" onmouseout="if(!this.disabled){this.style.background='white';this.style.color='var(--color-kpmg-blue)';}">Run agentic review →</button>
       `;
       list.appendChild(card);
     });
   })();
+
+  function clearDoaSubmitted() {
+    localStorage.removeItem('doaSubmitted');
+    localStorage.removeItem('doaDecisions');
+    document.getElementById('doaSubmittedSection').style.display = 'none';
+    document.getElementById('doaSubmittedList').innerHTML = '';
+    document.getElementById('agenticWorkspacesList').innerHTML = '';
+    const summary = document.getElementById('doaSummaryTable');
+    if (summary) { summary.style.display = 'none'; summary.innerHTML = ''; }
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  AGENTIC REVIEW — D3 Multi-Agent Graph Engine
+  // ════════════════════════════════════════════════════════════
+
+  // ── Hard-coded PR data ──
+  const AGENTIC_PRS = {
+    'PR-2025-4201': {
+      pr: 'PR-2025-4201', line: '10',
+      desc: 'O&M Services – RJ Pipeline (Annual)',
+      spendType: 'OPEX – Services', budgeted: 'Budgeted',
+      value: '₹3.80 Cr', requestor: 'Rajan Mehta',
+      plant: 'RJ-PL-01', supplier: 'EPC-O&M Vendor',
+      branch: 'opex'
+    },
+    'PR-2025-4202': {
+      pr: 'PR-2025-4202', line: '10',
+      desc: 'Mechanical CAPEX – Oil Pipeline Pumping Facilities',
+      spendType: 'CAPEX – Mechanical (Oil)', budgeted: 'Budgeted',
+      value: '₹22.00 Cr', requestor: 'Suresh Iyer',
+      plant: 'OIL-PL-01', supplier: 'OEM-A, OEM-B',
+      cer: 'CER-OIL-2025-011', branch: 'capex'
+    }
+  };
+
+  // ── Node definitions ──
+  // cx, cy = center of node; w overrides NODE_W for cluster sub-nodes
+  const NODE_W = 222, NODE_H = 78;
+  const NODES = [
+    { id: 'intake',       label: 'PR Intake Agent',             purpose: 'Parses & validates PR metadata',          icon: '📥', cx: 290, cy: 68  },
+    { id: 'categorizer',  label: 'Categorizer Agent',           purpose: 'Routes PR to OPEX or CAPEX pipeline',     icon: '🗂', cx: 290, cy: 206 },
+    { id: 'opex',         label: 'OPEX Branch Agent',           purpose: 'Validates recurring OPEX compliance',      icon: '🔧', cx: 141, cy: 354 },
+    { id: 'capex',        label: 'CAPEX Branch Agent',          purpose: 'Validates CAPEX CER, WBS & sanctions',     icon: '🏗', cx: 439, cy: 354 },
+    { id: 'consolidation',label: 'Consolidation Agent',         purpose: 'Merges branch data into unified record',   icon: '🔀', cx: 290, cy: 502 },
+    { id: 'vendor',       label: 'Vendor Governance Agent',     purpose: 'Checks panel status & L1 compliance',     icon: '🏢', cx: 290, cy: 640 },
+    { id: 'prebid',       label: 'Pre-Bid & Stakeholder Agent', purpose: 'Reviews docs & stakeholder approvals',    icon: '📋', cx: 290, cy: 778 },
+    { id: 'evidence',     label: 'Evidence Validation',         purpose: 'Interprets attached documents',            icon: '📄', cx: 112, cy: 928, w: 158 },
+    { id: 'policy',       label: 'Policy & NFA Agent',          purpose: 'Checks NFA & policy clauses',             icon: '📜', cx: 290, cy: 928, w: 158 },
+    { id: 'budget',       label: 'Budget Validation',           purpose: 'Verifies allocation & headroom',           icon: '💰', cx: 468, cy: 928, w: 158 },
+    { id: 'commodity',    label: 'Commodity & Index Agent',     purpose: 'Benchmarks price vs market indices',      icon: '📊', cx: 290, cy: 1090 },
+    { id: 'deviation',    label: 'Deviation Detection Agent',   purpose: 'Flags & classifies all deviations',       icon: '🔍', cx: 290, cy: 1228 },
+    { id: 'verdict',      label: 'Verdict Generation Agent',    purpose: 'Issues final DOA-ready verdict',           icon: '⚖', cx: 290, cy: 1366 },
+  ];
+
+  // ── Edges (from → to) ──
+  const EDGES = [
+    { from: 'intake',       to: 'categorizer'  },
+    { from: 'categorizer',  to: 'opex'         },
+    { from: 'categorizer',  to: 'capex'        },
+    { from: 'opex',         to: 'consolidation'},
+    { from: 'capex',        to: 'consolidation'},
+    { from: 'consolidation',to: 'vendor'       },
+    { from: 'vendor',       to: 'prebid'       },
+    { from: 'prebid',       to: 'evidence'     },
+    { from: 'prebid',       to: 'policy'       },
+    { from: 'prebid',       to: 'budget'       },
+    { from: 'evidence',     to: 'commodity'    },
+    { from: 'policy',       to: 'commodity'    },
+    { from: 'budget',       to: 'commodity'    },
+    { from: 'commodity',    to: 'deviation'    },
+    { from: 'deviation',    to: 'verdict'      },
+  ];
+
+  // ── Validation cluster bounding box ──
+  const CLUSTER = { x: 22, y: 856, width: 540, height: 146, label: 'VALIDATION CLUSTER' };
+
+  // ── Agent execution sequence (per PR branch) ──
+  function getAgentSequence(branch) {
+    const common = ['intake','categorizer'];
+    const branchStep = branch === 'opex' ? 'opex' : 'capex';
+    const rest = ['consolidation','vendor','prebid','evidence','policy','budget','commodity','deviation','verdict'];
+    return [...common, branchStep, ...rest];
+  }
+
+  // ── Agent metadata content ──
+  function getAgentMeta(agentId, branch) {
+    const isOpex = branch === 'opex';
+    const meta = {
+      intake: {
+        icon: '📥', name: 'PR Intake Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'PR Number', value: 'PR-2025-4201 · Line 10' },
+          { label: 'Requestor', value: 'Rajan Mehta' },
+          { label: 'Plant Code', value: 'RJ-PL-01' },
+          { label: 'Spend Type Detected', value: 'OPEX – Services' },
+          { label: 'Status', value: 'Extracted & Validated' },
+        ] : [
+          { label: 'PR Number', value: 'PR-2025-4202 · Line 10' },
+          { label: 'Requestor', value: 'Suresh Iyer' },
+          { label: 'Plant Code', value: 'OIL-PL-01' },
+          { label: 'CER Number', value: 'CER-OIL-2025-011' },
+          { label: 'Spend Type Detected', value: 'CAPEX – Mechanical' },
+          { label: 'Status', value: 'Extracted & Validated' },
+        ],
+        checks: [], insight: null
+      },
+      categorizer: {
+        icon: '🗂', name: 'Categorizer Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'Classification', value: 'OPEX – Services (Annual O&M)' },
+          { label: 'Path Selected', value: 'OPEX Validation Pipeline' },
+        ] : [
+          { label: 'Classification', value: 'CAPEX – Mechanical (Oil)' },
+          { label: 'Path Selected', value: 'CAPEX Validation Pipeline' },
+        ],
+        checks: [],
+        insight: isOpex
+          ? 'Recurring operational expenditure for pipeline continuity. Routed to OPEX compliance workflow.'
+          : 'Capital expenditure for oil pipeline infrastructure. Routed to CAPEX compliance workflow with CER verification.'
+      },
+      opex: {
+        icon: '🔧', name: 'OPEX Branch Agent', status: 'complete',
+        rows: [
+          { label: 'Scope', value: 'Annual O&M – RJ Pipeline' },
+          { label: 'SLA Target', value: 'Pipeline availability ≥ 98%' },
+          { label: 'NFA Required', value: 'Not required (Budgeted OPEX < ₹5 Cr)' },
+        ],
+        checks: [
+          { type: 'pass', text: 'Recurring nature confirmed. Annual cycle validated.' },
+          { type: 'pass', text: 'No NFA required for budgeted OPEX below ₹5 Cr limit.' },
+        ],
+        insight: 'Annual O&M scope is operationally critical for pipeline availability. All recurring OPEX checks passed.'
+      },
+      capex: {
+        icon: '🏗', name: 'CAPEX Branch Agent', status: 'complete',
+        rows: [
+          { label: 'CER', value: 'CER-OIL-2025-011 — verified & active' },
+          { label: 'WBS', value: 'Oil Pipeline Project — confirmed' },
+          { label: 'Specification', value: 'API-compliant — confirmed' },
+          { label: 'Sanctioned Limit', value: '₹25 Cr | Requested: ₹22 Cr — within limit' },
+        ],
+        checks: [
+          { type: 'pass', text: 'CER-OIL-2025-011 active and within sanctioned CAPEX limit.' },
+          { type: 'pass', text: 'API-compliant specification confirmed. WBS mapping validated.' },
+        ],
+        insight: 'CAPEX is linked to approved project milestone. CER and WBS are in order. Spend within sanctioned envelope.'
+      },
+      consolidation: {
+        icon: '🔀', name: 'Consolidation Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'Budget Head', value: 'Cost Center – Pipeline O&M' },
+          { label: 'Spend Quantum', value: '₹3.80 Cr' },
+          { label: 'Data Source', value: 'OPEX pipeline consolidated' },
+        ] : [
+          { label: 'WBS', value: 'Oil Pipeline Project' },
+          { label: 'CER', value: 'CER-OIL-2025-011' },
+          { label: 'Spend Quantum', value: '₹22 Cr' },
+          { label: 'Data Source', value: 'CAPEX pipeline consolidated' },
+        ],
+        checks: [],
+        insight: isOpex
+          ? 'OPEX data consolidated. Budget head confirmed. Spend quantum locked for downstream validation.'
+          : 'CAPEX data consolidated. WBS and CER cross-referenced. Spend quantum locked for downstream validation.'
+      },
+      vendor: {
+        icon: '🏢', name: 'Vendor Governance Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'Supplier', value: 'EPC-O&M Vendor' },
+          { label: 'Panel Status', value: 'Approved L1 Vendor' },
+          { label: 'Empanelment', value: 'Active for pipeline O&M assets' },
+        ] : [
+          { label: 'Preferred Suppliers', value: 'OEM-A, OEM-B' },
+          { label: 'Panel Status', value: 'Both on approved CAPEX panel' },
+          { label: 'Evaluation', value: 'Competitive bids obtained — OEM-A selected L1' },
+        ],
+        checks: [
+          { type: 'pass', text: isOpex
+            ? 'Vendor on approved O&M panel with active empanelment. No governance deviation.'
+            : 'L1 vendor evaluation completed. OEM-A technically superior with better delivery commitment.' },
+        ],
+        insight: isOpex
+          ? 'Vendor governance compliant. Panel status confirmed. No deviation in vendor selection process.'
+          : 'Competitive procurement followed. OEM-A selected on merit. Vendor governance fully compliant.'
+      },
+      prebid: {
+        icon: '📋', name: 'Pre-Bid & Stakeholder Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'SLA Document', value: 'Reviewed and attached' },
+          { label: 'Stakeholder Sign-offs', value: 'Plant Head + Finance confirmed' },
+        ] : [
+          { label: 'API Compliance Doc', value: 'Reviewed and verified' },
+          { label: 'Technical Evaluation Note', value: 'Approved by Engineering Head' },
+          { label: 'Project Milestone Sign-off', value: 'Confirmed' },
+        ],
+        checks: [
+          { type: 'pass', text: isOpex
+            ? 'SLA document covers operations, preventive maintenance, and emergency response.'
+            : 'All pre-bid documentation complete. Technical and compliance approvals in order.' },
+        ],
+        insight: null
+      },
+      evidence: {
+        icon: '📄', name: 'Evidence Validation Agent', status: 'complete',
+        rows: [],
+        checks: isOpex ? [
+          { type: 'pass', text: 'File 1: O&M service agreement — scope covers operations, preventive maintenance, emergency response. ✓ PASS' },
+          { type: 'pass', text: 'File 2: Historical contract benchmarked — pricing consistent with prior year + 3.2% escalation. ✓ PASS' },
+        ] : [
+          { type: 'pass', text: 'OEM quotation (OEM-A & OEM-B) — comparative evaluation complete. ✓ PASS' },
+          { type: 'pass', text: 'API compliance certificate — valid, scope matches specification. ✓ PASS' },
+          { type: 'pass', text: 'CER-OIL-2025-011 — active, within sanctioned amount. ✓ PASS' },
+        ],
+        insight: null
+      },
+      policy: {
+        icon: '📜', name: 'Policy & NFA Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'NFA Applicability', value: 'Not required (Budgeted OPEX, value < ₹5 Cr limit)' },
+          { label: 'Policy Check', value: 'Compliant with MM Policy Clause 4.2' },
+        ] : [
+          { label: 'NFA Requirement', value: 'Required for CAPEX > ₹10 Cr — NFA obtained & approved' },
+          { label: 'Policy Check', value: 'Compliant with CAPEX Policy Clause 7.1' },
+        ],
+        checks: [
+          { type: 'pass', text: isOpex
+            ? 'No NFA required. Policy compliance confirmed under clause 4.2 for recurring services.'
+            : 'NFA obtained and approved. Policy compliance confirmed under CAPEX clause 7.1.' },
+        ],
+        insight: null
+      },
+      budget: {
+        icon: '💰', name: 'Budget Validation Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'Budget Head', value: 'Cost Center – Pipeline O&M (active)' },
+          { label: 'Allocated', value: '₹4.20 Cr' },
+          { label: 'Requested', value: '₹3.80 Cr' },
+          { label: 'Headroom', value: '₹0.40 Cr' },
+        ] : [
+          { label: 'WBS Allocation', value: '₹25 Cr' },
+          { label: 'Requested', value: '₹22 Cr' },
+          { label: 'Headroom', value: '₹3 Cr' },
+          { label: 'Q4 Utilisation', value: '88% — within acceptable limits' },
+        ],
+        checks: [
+          { type: 'pass', text: isOpex
+            ? 'Budget head active. Requested amount well within allocated headroom. ✓ PASS'
+            : 'WBS allocation confirmed. Requested spend within sanctioned envelope. ✓ PASS' },
+        ],
+        insight: null
+      },
+      commodity: {
+        icon: '📊', name: 'Commodity & Index Analysis Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'CPI (Services)', value: '+3.2% YoY — quoted escalation = 3.2%' },
+          { label: 'WPI (Industrial Services)', value: '+2.9% YoY' },
+          { label: 'Classification', value: 'Within Tolerance' },
+        ] : [
+          { label: 'LME Zinc', value: '+4.8% QoQ (galvanised components)' },
+          { label: 'Steel Price Index', value: '+3.1% YoY' },
+          { label: 'OEM-A Premium vs Index', value: '+1.7% above steel index' },
+          { label: 'Classification', value: 'Acceptable Deviation' },
+        ],
+        checks: [],
+        insight: isOpex
+          ? 'Price escalation fully aligned with CPI movement. No excess margin detected. Within tolerance.'
+          : 'Marginal premium over index movement justified by OEM-A\'s superior delivery timeline (6 weeks vs 10 weeks for OEM-B). Project schedule risk mitigated.'
+      },
+      deviation: {
+        icon: '🔍', name: 'Deviation Detection Agent', status: 'complete',
+        rows: isOpex ? [
+          { label: 'Deviation 1', value: 'Minor cost escalation (3.2%) vs prior contract' },
+          { label: 'Classification', value: 'ACCEPTABLE — aligned with CPI; justified by scope continuity' },
+          { label: 'Vendor Deviation', value: 'None' },
+          { label: 'SLA Deviation', value: 'None' },
+          { label: 'Overall', value: '1 acceptable deviation' },
+        ] : [
+          { label: 'Vendor Deviation', value: 'None — L1 selection process followed' },
+          { label: 'Price Variance', value: '+1.7% above commodity index — ACCEPTABLE' },
+          { label: 'SLA / Scope Deviation', value: 'None' },
+          { label: 'Overall', value: 'No critical deviations' },
+        ],
+        checks: [],
+        insight: isOpex
+          ? 'One acceptable deviation identified. Non-blocking. Fully justified by CPI movement and scope continuity.'
+          : 'No critical deviations. Price premium is justified and traceable. All governance checks passed.'
+      },
+      verdict: {
+        icon: '⚖', name: 'Verdict Generation Agent',
+        status: isOpex ? 'warning' : 'complete',
+        rows: isOpex ? [
+          { label: 'Verdict', value: 'PASS-WITH-DEVIATION' },
+          { label: 'Deviations', value: '1 (non-blocking)' },
+        ] : [
+          { label: 'Verdict', value: 'PASS' },
+          { label: 'Deviations', value: 'None critical' },
+        ],
+        checks: [],
+        insight: null,
+        verdict: isOpex ? 'warn' : 'pass',
+        narrative: isOpex
+          ? 'PR-2025-4201 is recommended for approval. The 3.2% cost escalation aligns with CPI movement and is non-blocking. All policy, budget, and vendor checks passed. Deviations are acceptable and traceable.'
+          : 'PR-2025-4202 is recommended for unconditional approval. All policy, budget, vendor, and compliance checks passed. The marginal price premium over LME is justified and non-blocking. CER and NFA are in order.'
+      },
+    };
+    return meta[agentId] || null;
+  }
+
+  // ── State ──
+  let agenticActive = false;
+  let agenticNodeStates = {};
+  let agentLogs = [];
+  let agenticRunBtn = null;
+  let currentSvgId = '';
+  let currentMetaPanelId = '';
+  let currentDoaTableId = '';
+
+  // ── Toggle accordion workspace body ──
+  function toggleWorkspacePanel(prKey) {
+    const body = document.getElementById('ws-body-' + prKey);
+    const chevron = document.getElementById('ws-chevron-' + prKey);
+    if (!body) return;
+    const isCollapsed = body.style.display === 'none';
+    body.style.display = isCollapsed ? '' : 'none';
+    if (chevron) chevron.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
+  }
+
+  // ── Collapse all workspace panels except the given one ──
+  function collapseOtherWorkspaces(exceptPrKey) {
+    document.querySelectorAll('[data-ws-body]').forEach(body => {
+      if (body.getAttribute('data-ws-body') !== exceptPrKey) {
+        body.style.display = 'none';
+        const chevron = document.getElementById('ws-chevron-' + body.getAttribute('data-ws-body'));
+        if (chevron) chevron.style.transform = 'rotate(-90deg)';
+      }
+    });
+  }
+
+  // ── Main entry point ──
+  function startAgenticReview(item, btn) {
+    if (agenticActive) return;
+    agenticActive = true;
+
+    agenticRunBtn = btn || null;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Running…';
+      btn.style.background = '#F3F4F6';
+      btn.style.color = '#9CA3AF';
+      btn.style.borderColor = '#D1D5DB';
+    }
+
+    const prId = item.pr;
+    const prKey = prId.replace(/[^a-z0-9]/gi, '');
+    const prData = AGENTIC_PRS[prId] || AGENTIC_PRS['PR-2025-4201'];
+    const branch = prData.branch;
+
+    // Set per-PR element IDs
+    currentSvgId      = 'agenticSvg-' + prKey;
+    currentMetaPanelId = 'agenticMeta-' + prKey;
+    currentDoaTableId  = 'doaPanel-' + prKey;
+
+    // Collapse other open workspaces
+    collapseOtherWorkspaces(prKey);
+
+    // Create workspace panel if it doesn't exist yet
+    const container = document.getElementById('agenticWorkspacesList');
+    let panel = document.getElementById('ws-panel-' + prKey);
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.id = 'ws-panel-' + prKey;
+      panel.style.cssText = 'background:white;border:1px solid #E4E7EB;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);';
+      panel.innerHTML = `
+        <!-- Accordion header -->
+        <div onclick="toggleWorkspacePanel('${prKey}')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid #E4E7EB;background:#F8FAFC;user-select:none;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#3B82F6;flex-shrink:0;" id="ws-dot-${prKey}"></div>
+          <div style="flex:1;">
+            <span style="font-size:12px;font-weight:700;color:#111827;font-family:var(--font-mono);">${prId}</span>
+            <span style="font-size:11px;color:#6B7280;margin-left:8px;">${prData.spendType}</span>
+          </div>
+          <span id="ws-status-${prKey}" style="font-size:10px;font-weight:600;color:#3B82F6;background:#EFF6FF;padding:2px 8px;border-radius:999px;border:1px solid #BFDBFE;">Running</span>
+          <svg id="ws-chevron-${prKey}" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#6B7280" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><path d="M3 5l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- Accordion body -->
+        <div id="ws-body-${prKey}" data-ws-body="${prKey}">
+          <div class="agentic-split">
+            <div class="agentic-left">
+              <div style="width:580px;">
+                <svg id="${currentSvgId}" width="580" height="1430" style="display:block;margin:0 auto;"></svg>
+              </div>
+            </div>
+            <div class="agentic-right" id="${currentMetaPanelId}">
+              <div style="color:var(--color-gray-400);font-size:var(--text-xs);text-align:center;padding:var(--space-6);" data-placeholder>Agent logs will appear here…</div>
+            </div>
+          </div>
+          <div id="${currentDoaTableId}" style="display:none;flex-direction:column;gap:10px;padding:16px;border-top:1px solid #E4E7EB;"></div>
+        </div>
+      `;
+      container.appendChild(panel);
+    }
+
+    // Scroll to the new panel
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+    // Reset node states
+    agentLogs = [];
+    agenticNodeStates = {};
+    NODES.forEach(n => {
+      const isInactiveBranch = (n.id === 'opex' && branch === 'capex') || (n.id === 'capex' && branch === 'opex');
+      agenticNodeStates[n.id] = isInactiveBranch ? 'inactive' : 'idle';
+    });
+
+    drawAgenticGraph(branch);
+
+    const sequence = getAgentSequence(branch);
+    runAgentSequence(sequence, branch, 0, prId);
+  }
+
+  // ── Draw the D3 graph ──
+  function drawAgenticGraph(branch) {
+    const svg = d3.select('#' + currentSvgId);
+    svg.selectAll('*').remove();
+
+    // Defs for gradients and markers
+    const defs = svg.append('defs');
+
+    // Arrow marker
+    defs.append('marker')
+      .attr('id', 'arrowEnd')
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 8)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', '#CBD5E1');
+
+    defs.append('marker')
+      .attr('id', 'arrowEndActive')
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 8)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', '#3B82F6');
+
+    defs.append('marker')
+      .attr('id', 'arrowEndDone')
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 8)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', '#22C55E');
+
+    // Validation cluster background
+    const clusterG = svg.append('g').attr('class', 'cluster-group');
+    clusterG.append('rect')
+      .attr('id', 'validationCluster')
+      .attr('x', CLUSTER.x)
+      .attr('y', CLUSTER.y)
+      .attr('width', CLUSTER.width)
+      .attr('height', CLUSTER.height)
+      .attr('rx', 12)
+      .attr('fill', '#F5F3FF')
+      .attr('stroke', '#A5B4FC')
+      .attr('stroke-width', 1.5)
+      .attr('stroke-dasharray', '7,4');
+
+    clusterG.append('text')
+      .attr('x', CLUSTER.x + 12)
+      .attr('y', CLUSTER.y + 18)
+      .attr('font-size', '10')
+      .attr('font-family', 'Inter, sans-serif')
+      .attr('font-weight', '700')
+      .attr('fill', '#6366F1')
+      .attr('text-transform', 'uppercase')
+      .attr('letter-spacing', '0.08em')
+      .text('VALIDATION CLUSTER');
+
+    // Build node lookup
+    const nodeById = {};
+    NODES.forEach(n => { nodeById[n.id] = n; });
+
+    // Draw edges
+    const edgeGroup = svg.append('g').attr('class', 'edges');
+    EDGES.forEach(e => {
+      const src = nodeById[e.from];
+      const tgt = nodeById[e.to];
+      if (!src || !tgt) return;
+
+      // Calculate start and end points (bottom center of src, top center of tgt)
+      const x1 = src.cx;
+      const y1 = src.cy + NODE_H / 2;
+      const x2 = tgt.cx;
+      const y2 = tgt.cy - NODE_H / 2;
+      // (cx is already the geometric center regardless of w)
+
+      let pathD;
+      if (Math.abs(x1 - x2) < 2) {
+        // Straight vertical
+        pathD = `M${x1},${y1} L${x2},${y2}`;
+      } else {
+        // Curved path for diagonal edges
+        const midY = (y1 + y2) / 2;
+        pathD = `M${x1},${y1} C${x1},${midY} ${x2},${midY} ${x2},${y2}`;
+      }
+
+      edgeGroup.append('path')
+        .attr('class', 'graph-edge')
+        .attr('data-from', e.from)
+        .attr('data-to', e.to)
+        .attr('d', pathD)
+        .attr('fill', 'none')
+        .attr('stroke', '#CBD5E1')
+        .attr('stroke-width', 1.5)
+        .attr('marker-end', 'url(#arrowEnd)');
+    });
+
+    // Draw nodes
+    const nodeGroup = svg.append('g').attr('class', 'nodes');
+    NODES.forEach(n => {
+      const state = agenticNodeStates[n.id] || 'idle';
+      const g = nodeGroup.append('g')
+        .attr('class', 'agent-node')
+        .attr('id', 'node-' + n.id)
+        .attr('transform', `translate(${n.cx - (n.w || NODE_W)/2}, ${n.cy - NODE_H/2})`);
+
+      renderNodeRect(g, n, state);
+    });
+  }
+
+  function getNodeColors(state) {
+    switch (state) {
+      case 'running':  return { fill: '#EFF6FF', stroke: '#3B82F6', strokeW: 2 };
+      case 'complete': return { fill: '#F0FDF4', stroke: '#22C55E', strokeW: 1.5 };
+      case 'warning':  return { fill: '#FFFBEB', stroke: '#F59E0B', strokeW: 1.5 };
+      case 'inactive': return { fill: '#F1F5F9', stroke: '#E2E8F0', strokeW: 1 };
+      default:         return { fill: '#F8FAFC', stroke: '#D1D5DB', strokeW: 1 };
+    }
+  }
+
+  function renderNodeRect(g, n, state) {
+    g.selectAll('*').remove();
+
+    const nw = n.w || NODE_W;
+    const colors = getNodeColors(state);
+
+    g.append('rect')
+      .attr('width', nw)
+      .attr('height', NODE_H)
+      .attr('rx', 10)
+      .attr('fill', colors.fill)
+      .attr('stroke', colors.stroke)
+      .attr('stroke-width', colors.strokeW)
+      .style('filter', state === 'running' ? 'drop-shadow(0 0 8px rgba(59,130,246,0.45))' : 'drop-shadow(0 1px 4px rgba(0,0,0,0.09))');
+
+    // Icon
+    g.append('text')
+      .attr('x', 12)
+      .attr('y', 28)
+      .attr('font-size', '15')
+      .text(n.icon);
+
+    // Agent name
+    const labelColor = state === 'inactive' ? '#94A3B8' : state === 'running' ? '#1D4ED8' : '#1E293B';
+    const maxChars = nw < 180 ? 16 : 24;
+    const shortLabel = n.label.length > maxChars ? n.label.substring(0, maxChars) + '…' : n.label;
+
+    g.append('text')
+      .attr('x', 33)
+      .attr('y', 25)
+      .attr('font-size', '11')
+      .attr('font-family', 'Inter, sans-serif')
+      .attr('font-weight', '700')
+      .attr('fill', labelColor)
+      .text(shortLabel);
+
+    // Purpose line (what agent does)
+    if (n.purpose && nw >= 180) {
+      const maxP = 28;
+      const shortPurpose = n.purpose.length > maxP ? n.purpose.substring(0, maxP) + '…' : n.purpose;
+      g.append('text')
+        .attr('x', 33)
+        .attr('y', 40)
+        .attr('font-size', '9')
+        .attr('font-family', 'Inter, sans-serif')
+        .attr('fill', '#6B7280')
+        .text(shortPurpose);
+    }
+
+    // Output / state line
+    const stateLabels = { running: '⏳ Executing…', complete: '✓ Completed', warning: '⚠ Pass with deviation', idle: '○ Waiting', inactive: '— Not applicable' };
+    const stateColors = { running: '#3B82F6', complete: '#16A34A', warning: '#D97706', idle: '#9CA3AF', inactive: '#CBD5E1' };
+    const stateY = n.purpose && nw >= 180 ? 58 : 46;
+
+    g.append('text')
+      .attr('x', 12)
+      .attr('y', stateY)
+      .attr('font-size', '9')
+      .attr('font-family', 'Inter, sans-serif')
+      .attr('font-weight', '600')
+      .attr('fill', stateColors[state] || '#9CA3AF')
+      .text(stateLabels[state] || '');
+
+    // Status dot top-right
+    const dotColors = { running: '#3B82F6', complete: '#22C55E', warning: '#F59E0B', idle: '#D1D5DB', inactive: '#E5E7EB' };
+    const dotX = nw - 13;
+    g.append('circle').attr('cx', dotX).attr('cy', 13).attr('r', 5).attr('fill', dotColors[state] || '#D1D5DB');
+    if (state === 'complete') {
+      g.append('text').attr('x', dotX).attr('y', 17).attr('text-anchor', 'middle').attr('font-size', '7').attr('fill', 'white').attr('font-weight', '700').text('✓');
+    } else if (state === 'warning') {
+      g.append('text').attr('x', dotX).attr('y', 17).attr('text-anchor', 'middle').attr('font-size', '7').attr('fill', 'white').attr('font-weight', '700').text('!');
+    }
+  }
+
+  // ── Update a single node ──
+  function updateNodeState(nodeId, newState) {
+    agenticNodeStates[nodeId] = newState;
+    const nodeById = {};
+    NODES.forEach(n => { nodeById[n.id] = n; });
+    const n = nodeById[nodeId];
+    if (!n) return;
+    const g = d3.select('#' + currentSvgId + ' #node-' + nodeId);
+    renderNodeRect(g, n, newState);
+  }
+
+  // ── Update edges ──
+  function updateEdgeState(fromId, toId, state) {
+    const edgeSel = d3.select('#' + currentSvgId + ` [data-from="${fromId}"][data-to="${toId}"]`);
+    if (edgeSel.empty()) return;
+    if (state === 'active') {
+      edgeSel
+        .attr('stroke', '#3B82F6')
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', '8,4')
+        .attr('marker-end', 'url(#arrowEndActive)')
+        .classed('flow-edge-active', true);
+    } else if (state === 'done') {
+      edgeSel
+        .attr('stroke', '#22C55E')
+        .attr('stroke-width', 1.8)
+        .attr('stroke-dasharray', null)
+        .attr('marker-end', 'url(#arrowEndDone)')
+        .classed('flow-edge-active', false);
+    }
+  }
+
+  // ── Append one agent's log entry to the right panel ──
+  function appendAgentLog(agentId, branch, isActive) {
+    const meta = getAgentMeta(agentId, branch);
+    if (!meta) return;
+
+    const panel = document.getElementById(currentMetaPanelId);
+
+    // Remove placeholder text on first real entry
+    const placeholder = panel.querySelector('[data-placeholder]');
+    if (placeholder) placeholder.remove();
+
+    // Update any previously-active entry to completed styling
+    panel.querySelectorAll('.agent-log-entry.active').forEach(el => {
+      el.classList.remove('active');
+      el.style.borderColor = '#E4E7EB';
+      el.style.background = '#FAFBFC';
+    });
+
+    // Build the entry card
+    const statusCls = meta.status === 'warning' ? 'warning' : isActive ? 'running' : 'complete';
+    const statusLabel = meta.status === 'warning' ? '⚠ Pass with Deviation' : isActive ? '⏳ Running…' : '✓ Completed';
+    const statusColor = meta.status === 'warning' ? '#D97706' : isActive ? '#3B82F6' : '#16A34A';
+
+    let inner = '';
+
+    // Rows
+    if (meta.rows && meta.rows.length) {
+      inner += '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px;">';
+      meta.rows.forEach(r => {
+        inner += `<div style="display:flex;gap:8px;font-size:11px;">
+          <span style="color:#6B7280;min-width:110px;flex-shrink:0;">${r.label}</span>
+          <span style="color:#111827;font-weight:500;">${r.value}</span>
+        </div>`;
+      });
+      inner += '</div>';
+    }
+
+    // Checks
+    if (meta.checks && meta.checks.length) {
+      inner += '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px;">';
+      meta.checks.forEach(c => {
+        const icons = { pass: '✅', warn: '⚠️', fail: '❌' };
+        inner += `<div style="font-size:11px;color:#374151;display:flex;gap:6px;align-items:flex-start;">
+          <span style="flex-shrink:0;">${icons[c.type] || '✅'}</span>
+          <span>${c.text}</span>
+        </div>`;
+      });
+      inner += '</div>';
+    }
+
+    // Insight
+    if (meta.insight) {
+      inner += `<div style="font-size:11px;color:#4338CA;background:#EEF2FF;border-radius:6px;padding:6px 8px;margin-top:4px;">
+        <strong style="display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">Agent Insight</strong>
+        ${meta.insight}
+      </div>`;
+    }
+
+    // Verdict
+    if (meta.verdict) {
+      const verdictLabels = { pass: '✅ PASS', warn: '⚠️ PASS-WITH-DEVIATION' };
+      const verdictBg = meta.verdict === 'warn' ? '#FFFBEB' : '#F0FDF4';
+      const verdictBorder = meta.verdict === 'warn' ? '#FDE68A' : '#BBF7D0';
+      inner += `<div style="margin-top:6px;padding:8px 10px;border-radius:8px;background:${verdictBg};border:1.5px solid ${verdictBorder};">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">${verdictLabels[meta.verdict]}</div>
+        <div style="font-size:11px;color:#374151;line-height:1.5;">${meta.narrative}</div>
+      </div>`;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'agent-log-entry' + (isActive ? ' active' : '');
+    div.style.cssText = `border:1.5px solid ${isActive ? '#3B82F6' : '#E4E7EB'};border-radius:10px;padding:10px 12px;background:${isActive ? '#EFF6FF' : '#FAFBFC'};flex-shrink:0;transition:all 0.3s;`;
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:${inner ? '8px' : '0'};">
+        <span style="font-size:16px;">${meta.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:#111827;">${meta.name}</div>
+          <span style="font-size:10px;font-weight:600;color:${statusColor};">${statusLabel}</span>
+        </div>
+      </div>
+      ${inner}
+    `;
+
+    panel.appendChild(div);
+    // Auto-scroll to bottom
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  // ── Stop all flowing edge animations ──
+  function stopAllEdgeAnimations() {
+    d3.select('#' + currentSvgId).selectAll('.flow-edge-active').each(function() {
+      const el = d3.select(this);
+      el.attr('stroke-dasharray', null)
+        .attr('stroke', '#22C55E')
+        .attr('stroke-width', 1.8)
+        .attr('marker-end', 'url(#arrowEndDone)')
+        .classed('flow-edge-active', false);
+    });
+  }
+
+  // ── Agent sequence runner ──
+  function runAgentSequence(sequence, branch, idx, prId) {
+    if (idx >= sequence.length) {
+      stopAllEdgeAnimations();
+      // Update header dot and status badge to completed
+      const prKey = (prId||'').replace(/[^a-z0-9]/gi,'');
+      const dot = document.getElementById('ws-dot-' + prKey);
+      const badge = document.getElementById('ws-status-' + prKey);
+      if (dot) dot.style.background = '#16A34A';
+      if (badge) { badge.textContent = 'Completed'; badge.style.background = '#F0FDF4'; badge.style.color = '#16A34A'; badge.style.borderColor = '#86EFAC'; }
+      if (agenticRunBtn) {
+        agenticRunBtn.textContent = 'Completed ✓';
+        agenticRunBtn.style.background = '#F0FDF4';
+        agenticRunBtn.style.color = '#16A34A';
+        agenticRunBtn.style.borderColor = '#86EFAC';
+      }
+      agenticActive = false;
+      setTimeout(() => showDoaSummaryTable(prId), 700);
+      return;
+    }
+
+    const agentId = sequence[idx];
+    const nodeById = {};
+    NODES.forEach(n => { nodeById[n.id] = n; });
+
+    // Set previous agent as complete/warning and add completed log entry
+    if (idx > 0) {
+      const prevId = sequence[idx - 1];
+      const prevMeta = getAgentMeta(prevId, branch);
+      const finalState = (prevMeta && prevMeta.status === 'warning') ? 'warning' : 'complete';
+      updateNodeState(prevId, finalState);
+
+      // Mark edges from previous → current as done
+      EDGES.filter(e => e.to === agentId && e.from === prevId).forEach(e => {
+        updateEdgeState(e.from, e.to, 'done');
+      });
+      // Convergence edges at consolidation
+      if (agentId === 'consolidation') {
+        EDGES.filter(e => e.to === 'consolidation').forEach(e => {
+          updateEdgeState(e.from, e.to, 'done');
+        });
+      }
+      // Convergence edges at commodity (from cluster)
+      if (agentId === 'commodity') {
+        EDGES.filter(e => e.to === 'commodity').forEach(e => {
+          updateEdgeState(e.from, e.to, 'done');
+        });
+      }
+
+    }
+
+    // Set current agent running
+    updateNodeState(agentId, 'running');
+
+    // Activate incoming edges
+    EDGES.filter(e => e.to === agentId).forEach(e => {
+      if (agenticNodeStates[e.from] === 'complete' || agenticNodeStates[e.from] === 'warning') {
+        updateEdgeState(e.from, e.to, 'active');
+      }
+    });
+
+    // Append log entry for this agent
+    appendAgentLog(agentId, branch, true);
+
+    // Scroll graph panel to current node
+    const n = nodeById[agentId];
+    if (n) {
+      const svgEl = document.getElementById(currentSvgId);
+      const leftPanel = svgEl ? svgEl.closest('.agentic-left') : null;
+      if (leftPanel) leftPanel.scrollTop = Math.max(0, n.cy - 220);
+    }
+
+    const delay = 2000;
+    setTimeout(() => runAgentSequence(sequence, branch, idx + 1, prId), delay);
+  }
+
+  // ── Submit DoA decision → localStorage (read by approval-queue.html) ──
+  function submitDoaDecision(btn, prNo) {
+    const form = btn.closest('.doa-decision-form');
+    const selected = form.querySelector('input[name="doaDecision-' + prNo.replace(/[^a-z0-9]/gi,'') + '"]:checked');
+    const comment = form.querySelector('textarea').value.trim();
+    if (!selected) { alert('Please select a decision before submitting.'); return; }
+
+    const decisionMap = { approve: 'Approved', reject: 'Rejected', hold: 'Put on Hold', inreview: 'In-Review' };
+    const decision = decisionMap[selected.value] || selected.value;
+
+    // Persist for approval-queue.html to read
+    const existing = JSON.parse(localStorage.getItem('doaDecisions') || '{}');
+    existing[prNo] = { decision, comment, time: new Date().toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) };
+    localStorage.setItem('doaDecisions', JSON.stringify(existing));
+
+    // Update status tag on the submitted PR card
+    const statusTag = document.querySelector(`[data-pr-status="${prNo}"]`);
+    if (statusTag) {
+      const tagColors = {
+        'Approved':    'background:#F0FDF4;color:#16A34A;border-color:#86EFAC;',
+        'Rejected':    'background:#FEF2F2;color:#DC2626;border-color:#FCA5A5;',
+        'Put on Hold': 'background:#FFFBEB;color:#D97706;border-color:#FDE68A;',
+        'In-Review':   'background:#EFF6FF;color:#2563EB;border-color:#BFDBFE;',
+      };
+      const style = tagColors[decision] || tagColors['In-Review'];
+      statusTag.style.cssText = `display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid;white-space:nowrap;${style}`;
+      statusTag.textContent = decision;
+    }
+
+    // Show confirmation inline
+    form.innerHTML = `<div style="padding:10px 14px;border-radius:8px;background:#F0FDF4;border:1.5px solid #86EFAC;font-size:12px;font-weight:600;color:#15803D;">
+      ✓ <strong>${decision}</strong> recorded for ${prNo}. Approval Queue updated.
+    </div>`;
+  }
+
+  // ── Show DOA decision panel — one card per PR inside its own workspace ──
+  function showDoaSummaryTable(prId) {
+    const prKey = (prId||'').replace(/[^a-z0-9]/gi,'');
+    const doaPanel = document.getElementById('doaPanel-' + prKey);
+    if (!doaPanel) return;
+    doaPanel.innerHTML = '';
+
+    const prMeta = {
+      'PR-2025-4201': { desc: 'O&M Services – RJ Pipeline (Annual)', verdict: '⚠️ PASS-WITH-DEVIATION', verdictColor: '#D97706' },
+      'PR-2025-4202': { desc: 'Mechanical CAPEX – Oil Pipeline Pumping Facilities', verdict: '✅ PASS', verdictColor: '#16A34A' },
+    };
+    const row = prMeta[prId] || prMeta['PR-2025-4201'];
+
+    const card = document.createElement('div');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+        <div>
+          <span style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:#111827;">${prId}</span>
+          <span style="font-size:11px;color:#6B7280;margin-left:8px;">${row.desc}</span>
+        </div>
+        <span style="margin-left:auto;font-size:12px;font-weight:700;color:${row.verdictColor};">${row.verdict}</span>
+      </div>
+      <div class="doa-decision-form">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border:1.5px solid #86EFAC;border-radius:8px;background:#F0FDF4;color:#15803D;">
+            <input type="radio" name="doaDecision-${prKey}" value="approve" style="accent-color:#16A34A;"> Approve
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border:1.5px solid #FCA5A5;border-radius:8px;background:#FEF2F2;color:#DC2626;">
+            <input type="radio" name="doaDecision-${prKey}" value="reject" style="accent-color:#DC2626;"> Reject
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border:1.5px solid #FDE68A;border-radius:8px;background:#FFFBEB;color:#D97706;">
+            <input type="radio" name="doaDecision-${prKey}" value="hold" style="accent-color:#D97706;"> Hold
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border:1.5px solid #BFDBFE;border-radius:8px;background:#EFF6FF;color:#2563EB;">
+            <input type="radio" name="doaDecision-${prKey}" value="inreview" style="accent-color:#2563EB;"> In-Review
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-end;">
+          <textarea rows="2" style="flex:1;box-sizing:border-box;font-size:12px;border:1px solid #D1D5DB;border-radius:8px;padding:7px 10px;resize:none;font-family:Inter,sans-serif;outline:none;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#D1D5DB'">Reviewed</textarea>
+          <button onclick="submitDoaDecision(this, '${prId}')" style="font-size:12px;font-weight:700;padding:7px 18px;border-radius:8px;border:none;background:#00338D;color:white;cursor:pointer;white-space:nowrap;flex-shrink:0;">Submit Decision</button>
+        </div>
+      </div>
+    `;
+    doaPanel.appendChild(card);
+    doaPanel.style.display = 'flex';
+  }
 
   // ── Sidebar toggle ──
   document.getElementById('sidebarToggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('collapsed');
   });
 
-  // ── Score Bar ──
-  requestAnimationFrame(() => {
-    document.getElementById('scoreBarFill').style.width = '72%';
-  });
-
-  // ── What-If Modal ──
-  const modal = document.getElementById('whatifModal');
-
-  function animateCounters() {
-    // Animate all .whatif-stat-value elements that contain numeric content
-    modal.querySelectorAll('.whatif-stat-value').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(6px)';
-      el.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-    });
-    // Stagger reveal
-    modal.querySelectorAll('.whatif-stat-value').forEach((el, i) => {
-      setTimeout(() => {
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, 80 + i * 60);
-    });
-    // Animate scenario headers
-    modal.querySelectorAll('.whatif-scenario').forEach((el, i) => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateX(' + (i === 0 ? '-10px' : '10px') + ')';
-      el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-      setTimeout(() => {
-        el.style.opacity = '1';
-        el.style.transform = 'translateX(0)';
-      }, i * 80);
-    });
-  }
-
-  document.getElementById('whatifBtn').addEventListener('click', () => {
-    modal.classList.add('open');
-    // Reset then animate
-    requestAnimationFrame(() => requestAnimationFrame(animateCounters));
-  });
-
-  function closeModal() {
-    modal.classList.remove('open');
-  }
-
-  document.getElementById('whatifClose').addEventListener('click', closeModal);
-  document.getElementById('whatifClose2').addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-  // ── Burn Rate Chart ──
-  const burnCtx = document.getElementById('burnRateChart').getContext('2d');
-  const weeks = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10', 'W11', 'W12'];
-  new Chart(burnCtx, {
-    type: 'line',
-    data: {
-      labels: weeks,
-      datasets: [
-        {
-          label: 'Approve (₹ Cr/week)',
-          data: [4.2, 4.1, 4.3, 4.0, 4.2, 3.9, 4.1, 4.0, 3.8, 3.9, 3.7, 3.6],
-          borderColor: '#B45309',
-          backgroundColor: 'rgba(180,83,9,0.07)',
-          tension: 0.4,
-          borderWidth: 2,
-          fill: true,
-        },
-        {
-          label: 'Reject (₹ Cr/week)',
-          data: [3.8, 3.7, 3.9, 3.6, 3.8, 3.5, 3.7, 3.6, 3.4, 3.5, 3.3, 3.2],
-          borderColor: '#00338D',
-          backgroundColor: 'rgba(0,51,141,0.05)',
-          tension: 0.4,
-          borderWidth: 2,
-          borderDash: [5, 4],
-          fill: true,
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { font: { family: 'Inter', size: 11 }, boxWidth: 12 } },
-        tooltip: { callbacks: { label: ctx => ` ₹${ctx.parsed.y} Cr/week` } }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#6C757D' } },
-        y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'Inter', size: 11 }, color: '#6C757D', callback: v => `₹${v} Cr` } }
-      }
-    }
-  });
 </script>
 <style>
 .sidebar-logout-btn {
