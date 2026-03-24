@@ -1,0 +1,35 @@
+{
+  "PR-RJ-0001": [
+    {
+      "PR Line Item": "05",
+      "Material/Service Description": "O&M Services – RJ Pipeline (Annual)",
+      "Spend Type": "OPEX – Services",
+      "Qty": 1,
+      "Estimated Value (₹ Cr)": 3.80,
+      "Plant Code": "RJ-PL-01",
+      "Account Assignment": "Cost Center - Pipeline O&M",
+      "Asset Code / CER No.": "NA",
+      "Technical Specification / SOW": "Operation & maintenance of RJ pipeline, SLA attached",
+      "Safety Score / KPIs": "Pipeline availability ≥ 98%",
+      "Preferred Suppliers": "EPC-O&M Vendor",
+      "Budgeted / Unbudgeted": "Budgeted",
+      "Justification / Remarks": "Annual O&M requirement for continuous pipeline operations"
+    }
+  ],
+  "PR-OIL-0002": [
+    {
+      "PR Line Item": "06",
+      "Material/Service Description": "Mechanical CAPEX – Oil Pipeline Pumping Facilities",
+      "Spend Type": "CAPEX – Mechanical (Oil)",
+      "Qty": 1,
+      "Estimated Value (₹ Cr)": 22.00,
+      "Plant Code": "OIL-PL-01",
+      "Account Assignment": "WBS – Oil Pipeline Project",
+      "Asset Code / CER No.": "CER-OIL-2025-011",
+      "Technical Specification / SOW": "API-compliant pumps, piping & instrumentation scope attached",
+      "Safety Score / KPIs": "Safety score ≥ 90%",
+      "Preferred Suppliers": "OEM-A, OEM-B",
+      "Budgeted / Unbudgeted": "Budgeted",
+      "Justification / Remarks": "Approved mechanical CAPEX for oil pipeline project"
+    }
+}
