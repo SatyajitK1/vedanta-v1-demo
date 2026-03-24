@@ -1,0 +1,8 @@
+docs/
+figma-exports/
+figma-plugin/
+export-to-figma.js
+build-figma-plugin.js
+.playwright-mcp/
+.claude/
+CLAUDE.md
