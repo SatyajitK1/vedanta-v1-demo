@@ -600,6 +600,14 @@
           <div class="sidebar-user-role">Department Head</div>
         </div>
       </div>
+      <button class="sidebar-logout-btn" onclick="handleLogout()" aria-label="Logout">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>
+          <path d="M10 11l3-3-3-3"/>
+          <path d="M13 8H6"/>
+        </svg>
+        Logout
+      </button>
     </div>
   </aside>
 
@@ -1280,5 +1288,35 @@
   <div class="toast-icon" id="toastIcon">✔</div>
   <span id="toastMsg"></span>
 </div>
+<style>
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.sidebar-logout-btn:hover {
+  background: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.5);
+  color: #fff;
+}
+</style>
+<script>
+function handleLogout() {
+  if (confirm('Are you sure you want to logout?')) {
+    window.location.href = 'login.html';
+  }
+}
+</script>
 </body>
 </html>
