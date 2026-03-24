@@ -1233,7 +1233,7 @@
       const existing = JSON.parse(localStorage.getItem('doaSubmitted') || '[]');
       // avoid duplicate
       if (!existing.find(x => x.pr === data.pr && x.line === data.line)) {
-        existing.unshift(data);
+        existing.push(data);
         localStorage.setItem('doaSubmitted', JSON.stringify(existing));
       }
     }, 1000);
