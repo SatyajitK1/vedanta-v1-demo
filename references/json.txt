@@ -1,7 +1,7 @@
 {
-  "PR-RJ-0001": [
+  "PR-2025-4201": [
     {
-      "PR Line Item": "05",
+      "PR Line Item": "10",
       "Material/Service Description": "O&M Services – RJ Pipeline (Annual)",
       "Spend Type": "OPEX – Services",
       "Qty": 1,
@@ -16,9 +16,9 @@
       "Justification / Remarks": "Annual O&M requirement for continuous pipeline operations"
     }
   ],
-  "PR-OIL-0002": [
+  "PR-2025-4202": [
     {
-      "PR Line Item": "06",
+      "PR Line Item": "10",
       "Material/Service Description": "Mechanical CAPEX – Oil Pipeline Pumping Facilities",
       "Spend Type": "CAPEX – Mechanical (Oil)",
       "Qty": 1,
@@ -32,4 +32,5 @@
       "Budgeted / Unbudgeted": "Budgeted",
       "Justification / Remarks": "Approved mechanical CAPEX for oil pipeline project"
     }
+  ]
 }
