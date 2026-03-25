@@ -881,106 +881,72 @@
 
   function renderSRFlowCards(cards) {
     var container = document.getElementById('sr-flow-container');
-    container.innerHTML = cards.map(function(c) {
+    
+    var tableHeader = '<div class="card" style="border-radius:var(--radius-lg);border:1px solid var(--color-gray-200);box-shadow:var(--shadow-xs);background:var(--color-white);overflow:hidden;"><div style="overflow-x:auto;">' + 
+      '<table class="data-table" style="width:100%;border-collapse:collapse;font-size:var(--text-sm);">' +
+      '<thead>' +
+        '<tr style="background:var(--color-gray-50);">' +
+          '<th style="padding:var(--space-3) var(--space-4);text-align:left;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Request Details</th>' +
+          '<th style="padding:var(--space-3) var(--space-4);text-align:left;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Amount & Type</th>' +
+          '<th style="padding:var(--space-3) var(--space-4);text-align:left;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Requestor</th>' +
+          '<th style="padding:var(--space-3) var(--space-4);text-align:center;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Checks</th>' +
+          '<th style="padding:var(--space-3) var(--space-4);text-align:center;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">ACT Score</th>' +
+          '<th style="padding:var(--space-3) var(--space-4);text-align:left;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Decision</th>' +
+        '</tr>' +
+      '</thead>' +
+      '<tbody>';
+
+    var tableRows = cards.map(function(c, i) {
       var isApproved = c.decision === 'Approved';
-      var cardClass = isApproved ? 'approved' : 'rejected';
       var decisionColor = isApproved ? '#15803D' : '#DC2626';
       var decisionBg   = isApproved ? '#F0FDF4'  : '#FEF2F2';
       var budgetedHtml = c.budgeted
-        ? '<span style="padding:2px 7px;border-radius:var(--radius-full);font-size:10px;font-weight:600;background:#F0FDF4;color:#15803D;">Budgeted</span>'
-        : '<span style="padding:2px 7px;border-radius:var(--radius-full);font-size:10px;font-weight:600;background:#FEF3C7;color:#92400E;">Unbudgeted</span>';
-
-      // checks HTML
-      var checksHtml = c.checks.map(function(ck) {
-        var iconClass = ck.pass ? 'pass' : 'fail';
-        var icon = ck.pass ? '✓' : '✗';
-        return '<div class="sr-check-row"><div class="sr-check-icon ' + iconClass + '">' + icon + '</div><div><div style="font-size:11px;font-weight:600;color:var(--color-gray-800);">' + ck.label + '</div><div style="font-size:10px;color:var(--color-gray-500);margin-top:1px;">' + ck.detail + '</div></div></div>';
-      }).join('');
+        ? '<span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;background:#F0FDF4;color:#15803D;margin-top:4px;">Budgeted</span>'
+        : '<span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;background:#FEF3C7;color:#92400E;margin-top:4px;">Unbudgeted</span>';
 
       var passCount = c.checks.filter(function(ck){ return ck.pass; }).length;
       var checkSummaryColor = passCount === 4 ? '#15803D' : passCount >= 2 ? '#D97706' : '#DC2626';
+      var rowBg = i % 2 === 0 ? '' : 'background:var(--color-gray-50);';
 
-      return '<div class="sr-flow-card ' + cardClass + '" style="margin-top:var(--space-3);">' +
-        // Header
-        '<div class="sr-flow-header">' +
-          '<div style="display:flex;flex-direction:column;gap:4px;">' +
-            '<div style="display:flex;align-items:center;gap:var(--space-3);">' +
-              '<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;color:var(--color-kpmg-blue);">' + c.pr + '</span>' +
-              '<span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">' + c.desc + '</span>' +
-              '<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;color:var(--color-gray-900);">' + c.amount + '</span>' +
-              '<span style="padding:2px 8px;border-radius:var(--radius-full);font-size:10px;font-weight:600;background:#EBF0FB;color:var(--color-kpmg-blue);">' + c.spendType + '</span>' +
-              budgetedHtml +
+      return '<tr style="' + rowBg + 'border-bottom:1px solid var(--color-gray-100);">' +
+        '<td style="padding:var(--space-3) var(--space-4);">' +
+          '<div style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;color:var(--color-kpmg-blue);">' + c.pr + '</div>' +
+          '<div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--color-gray-900);margin-top:2px;">' + c.desc + '</div>' +
+          '<div style="font-size:11px;color:var(--color-gray-500);margin-top:4px;">Raised ' + c.raised + ' &nbsp;·&nbsp; ' + c.costCentre + '</div>' +
+        '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);">' +
+          '<div style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:700;color:var(--color-gray-900);">' + c.amount + '</div>' +
+          '<div style="font-size:11px;color:var(--color-gray-600);margin-top:2px;">' + c.spendType + '</div>' +
+          budgetedHtml +
+        '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);">' +
+          '<div style="display:flex;align-items:center;gap:var(--space-2);">' +
+            '<div style="width:28px;height:28px;border-radius:50%;background:' + c.requestor.avatarBg + ';color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + c.requestor.initials + '</div>' +
+            '<div>' +
+              '<div style="font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);">' + c.requestor.name + '</div>' +
+              '<div style="font-size:11px;color:var(--color-gray-500);">' + c.requestor.role + '</div>' +
             '</div>' +
-            '<div style="font-size:11px;color:var(--color-gray-400);">Raised ' + c.raised + ' &nbsp;·&nbsp; ' + c.costCentre + '</div>' +
           '</div>' +
-          '<span style="padding:4px 14px;border-radius:var(--radius-full);font-size:12px;font-weight:700;background:' + decisionBg + ';color:' + decisionColor + ';flex-shrink:0;">' + c.decision + '</span>' +
-        '</div>' +
-        // Flow Steps
-        '<div class="sr-flow-steps">' +
-          // Step 1: Spend Request
-          '<div class="sr-flow-step">' +
-            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num">1</div><span class="sr-step-label">Spend Request</span></div>' +
-            '<div class="sr-step-divider"></div>' +
-            '<div style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:700;color:var(--color-gray-900);">' + c.amount + '</div>' +
-            '<div style="font-size:11px;color:var(--color-gray-600);">' + c.spendType + '</div>' +
-            '<div style="font-size:11px;color:var(--color-gray-500);margin-top:2px;">Raised ' + c.raised + '</div>' +
-            '<div style="margin-top:var(--space-2);">' + budgetedHtml + '</div>' +
-          '</div>' +
-          // Arrow
-          '<div class="sr-flow-connector">&#8594;</div>' +
-          // Step 2: Requestor
-          '<div class="sr-flow-step">' +
-            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num">2</div><span class="sr-step-label">Requestor</span></div>' +
-            '<div class="sr-step-divider"></div>' +
-            '<div style="display:flex;align-items:center;gap:var(--space-2);margin-top:2px;">' +
-              '<div style="width:32px;height:32px;border-radius:50%;background:' + c.requestor.avatarBg + ';color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + c.requestor.initials + '</div>' +
-              '<div><div style="font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);">' + c.requestor.name + '</div><div style="font-size:10px;color:var(--color-gray-500);">' + c.requestor.role + '</div></div>' +
-            '</div>' +
-            '<div style="font-size:11px;color:var(--color-gray-600);margin-top:var(--space-2);">' + c.requestor.dept + '</div>' +
-            '<div style="font-family:var(--font-mono);font-size:10px;color:var(--color-gray-400);margin-top:2px;">' + c.costCentre + '</div>' +
-          '</div>' +
-          // Arrow
-          '<div class="sr-flow-connector">&#8594;</div>' +
-          // Step 3: Agentic Flow
-          '<div class="sr-flow-step">' +
-            '<div style="display:flex;align-items:center;gap:var(--space-2);">' +
-              '<div class="sr-step-num" style="background:var(--color-medium-blue);">3</div>' +
-              '<span class="sr-step-label">Agentic Checks</span>' +
-              '<span style="margin-left:auto;font-size:10px;font-weight:700;color:' + checkSummaryColor + ';">' + passCount + '/4 passed</span>' +
-            '</div>' +
-            '<div class="sr-step-divider"></div>' +
-            '<div style="display:flex;flex-direction:column;gap:var(--space-2);">' + checksHtml + '</div>' +
-          '</div>' +
-          // Arrow
-          '<div class="sr-flow-connector">&#8594;</div>' +
-          // Step 4: ACT Score
-          '<div class="sr-flow-step">' +
-            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num" style="background:#483698;">4</div><span class="sr-step-label">ACT Score</span></div>' +
-            '<div class="sr-step-divider"></div>' +
-            '<div style="display:flex;align-items:baseline;gap:6px;margin-top:4px;">' +
-              '<span class="sr-act-score ' + c.actClass + '">' + c.actScore + '</span>' +
-              '<span style="font-size:var(--text-xs);color:var(--color-gray-500);">/ 100</span>' +
-            '</div>' +
-            '<div style="font-size:11px;font-weight:600;color:var(--color-gray-700);margin-top:2px;">' + c.actLabel + '</div>' +
-            '<div style="font-size:10px;color:var(--color-gray-500);margin-top:var(--space-2);line-height:1.4;">' + c.actReco + '</div>' +
-          '</div>' +
-          // Arrow
-          '<div class="sr-flow-connector">&#8594;</div>' +
-          // Step 5: Decision
-          '<div class="sr-flow-step" style="background:' + decisionBg + ';border-color:' + (isApproved ? '#BBF7D0' : '#FECACA') + ';">' +
-            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num" style="background:' + decisionColor + ';">5</div><span class="sr-step-label">Decision</span></div>' +
-            '<div class="sr-step-divider" style="background:' + (isApproved ? '#BBF7D0' : '#FECACA') + ';"></div>' +
-            '<div style="font-size:var(--text-base);font-weight:700;color:' + decisionColor + ';margin-top:4px;">' + c.decision + '</div>' +
-            '<div style="display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2);">' +
-              '<div style="width:24px;height:24px;border-radius:50%;background:' + decisionColor + ';color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + c.decisionBy.split(' ').map(function(w){return w[0];}).join('') + '</div>' +
-              '<div><div style="font-size:11px;font-weight:600;color:var(--color-gray-800);">' + c.decisionBy + '</div><div style="font-size:10px;color:var(--color-gray-500);">' + c.decisionRole + '</div></div>' +
-            '</div>' +
-            '<div style="font-size:11px;color:var(--color-gray-600);margin-top:var(--space-2);">' + c.decisionDate + '</div>' +
-            '<div style="font-size:10px;color:var(--color-gray-400);margin-top:1px;">TAT: ' + c.tat + '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
+        '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:center;">' +
+          '<div style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;color:' + checkSummaryColor + ';">' + passCount + '/4</div>' +
+          '<div style="font-size:10px;color:var(--color-gray-500);margin-top:2px;">Passed</div>' +
+        '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:center;">' +
+          '<div class="sr-act-score ' + c.actClass + '" style="font-size:1.5rem;">' + c.actScore + '</div>' +
+          '<div style="font-size:11px;font-weight:600;color:var(--color-gray-700);margin-top:2px;">' + c.actLabel + '</div>' +
+        '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);">' +
+          '<span style="padding:4px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:700;background:' + decisionBg + ';color:' + decisionColor + ';">' + c.decision + '</span>' +
+          '<div style="font-size:11px;color:var(--color-gray-600);margin-top:6px;">By ' + c.decisionBy + '</div>' +
+          '<div style="font-size:10px;color:var(--color-gray-400);margin-top:2px;">TAT: ' + c.tat + '</div>' +
+        '</td>' +
+      '</tr>';
     }).join('');
+
+    var tableFooter = '</tbody></table></div></div>';
+    
+    container.innerHTML = tableHeader + tableRows + tableFooter;
   }
 
   // ── Init PR chart ──
