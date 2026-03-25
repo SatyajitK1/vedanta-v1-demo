@@ -311,6 +311,36 @@
       .kpi-strip { grid-template-columns: repeat(2, 1fr); }
       .health-score-layout { grid-template-columns: 1fr; gap: var(--space-5); }
     }
+
+    /* ── Spend Request Flow Cards ── */
+    .sr-flow-card { background:var(--color-white); border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-xs); overflow:hidden; margin-bottom:var(--space-4); position:relative; }
+    .sr-flow-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+    .sr-flow-card.approved::before { background:var(--color-success-border); }
+    .sr-flow-card.rejected::before { background:var(--color-danger); }
+    .sr-flow-header { padding:var(--space-4) var(--space-5); border-bottom:1px solid var(--color-gray-100); display:flex; justify-content:space-between; align-items:flex-start; }
+    .sr-flow-steps { display:grid; grid-template-columns:1fr 28px 1.2fr 28px 1.4fr 28px 1.1fr 28px 1.1fr; align-items:stretch; padding:var(--space-4) var(--space-5); gap:0; }
+    .sr-flow-step { background:var(--color-gray-50); border:1px solid var(--color-gray-100); border-radius:var(--radius-md); padding:var(--space-3) var(--space-4); display:flex; flex-direction:column; gap:var(--space-2); }
+    .sr-flow-connector { display:flex; align-items:center; justify-content:center; color:var(--color-gray-300); font-size:18px; font-weight:300; }
+    .sr-step-num { width:20px; height:20px; border-radius:50%; background:var(--color-kpmg-blue); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .sr-step-label { font-size:10px; font-weight:var(--font-bold); text-transform:uppercase; letter-spacing:0.08em; color:var(--color-gray-400); }
+    .sr-step-divider { height:1px; background:var(--color-gray-200); margin:2px 0; }
+    .sr-check-row { display:flex; align-items:flex-start; gap:5px; font-size:11px; color:var(--color-gray-700); line-height:1.35; }
+    .sr-check-icon { width:14px; height:14px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; flex-shrink:0; margin-top:1px; }
+    .sr-check-icon.pass { background:var(--color-success-bg); color:var(--color-success); }
+    .sr-check-icon.fail { background:var(--color-danger-bg); color:var(--color-danger); }
+    .sr-act-score { font-family:var(--font-mono); font-size:2rem; font-weight:var(--font-bold); line-height:1; }
+    .sr-act-score.strong { color:var(--color-success); }
+    .sr-act-score.moderate { color:var(--color-warning); }
+    .sr-act-score.risk { color:var(--color-danger); }
+
+    /* ── Entity Toggle ── */
+    .page-header-strip { display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-4); }
+    .page-header-strip-left { display:flex; flex-direction:column; gap:2px; }
+    .bu-toggle-box { display:flex; align-items:center; gap:var(--space-2); }
+    .bu-toggle-label { font-size:var(--text-xs); font-weight:var(--font-semibold); text-transform:uppercase; letter-spacing:0.07em; color:var(--color-gray-400); }
+    .bu-toggle { display:flex; background:var(--color-gray-100); border:1px solid var(--color-gray-200); border-radius:var(--radius-full); padding:3px; gap:2px; }
+    .bu-toggle-btn { padding:5px 16px; border-radius:999px; border:none; background:transparent; font-size:var(--text-xs); font-weight:var(--font-bold); letter-spacing:0.06em; color:var(--color-gray-500); cursor:pointer; transition:all var(--transition-fast); }
+    .bu-toggle-btn.active { background:var(--color-kpmg-blue); color:#fff; box-shadow:0 1px 4px rgba(0,51,141,0.18); }
   </style>
 </head>
 <body>
@@ -461,39 +491,25 @@
     <div class="content-area">
 
       <!-- Page header -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);">
-        <div>
+      <div class="page-header-strip">
+        <div class="page-header-strip-left">
           <h1 style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-gray-900);margin:0 0 4px;">Eval 360 — Analytics Dashboard</h1>
           <p style="font-size:var(--text-sm);color:var(--color-gray-500);margin:0;">Enterprise financial health, budget performance, and approval intelligence — FY 2024–25</p>
         </div>
-        <span style="font-size:var(--text-xs);color:var(--color-gray-400);">Last updated: 22 Mar 2025, 14:45 IST</span>
+        <div style="display:flex;align-items:center;gap:var(--space-4);">
+          <span style="font-size:var(--text-xs);color:var(--color-gray-400);">Last updated: 22 Mar 2025, 14:45 IST</span>
+          <div class="bu-toggle-box">
+            <span class="bu-toggle-label">Entity</span>
+            <div class="bu-toggle" role="group" aria-label="Business unit selector">
+              <button class="bu-toggle-btn active" type="button" onclick="switchEntityAD('Zinc')">ZINC</button>
+              <button class="bu-toggle-btn" type="button" onclick="switchEntityAD('Aluminium')">ALUMINIUM</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Filters Bar -->
       <div class="analytics-filters" role="search" aria-label="Analytics filters">
-        <label>Period</label>
-        <div class="date-range-group">
-          <select class="form-select" style="width:130px;font-size:var(--text-xs);">
-            <option>Q4 FY 2024–25</option>
-            <option>Q3 FY 2024–25</option>
-            <option>H2 FY 2024–25</option>
-            <option>Full Year FY 2024–25</option>
-          </select>
-          <input type="date" class="form-input" value="2024-10-01" style="width:130px;font-size:var(--text-xs);" aria-label="From date" />
-          <span style="line-height:36px;font-size:var(--text-xs);color:var(--color-gray-500);">to</span>
-          <input type="date" class="form-input" value="2025-03-31" style="width:130px;font-size:var(--text-xs);" aria-label="To date" />
-        </div>
-        <div class="filter-separator"></div>
-        <label>Cost Centre</label>
-        <select class="form-select" style="width:200px;font-size:var(--text-xs);">
-          <option>All Cost Centres</option>
-          <option>CC-1042 — Mining Ops</option>
-          <option>CC-2018 — Smelter Unit</option>
-          <option>CC-3005 — Power Plant</option>
-          <option>CC-4011 — Zinc Refinery</option>
-          <option>CC-5009 — Pit Operations</option>
-        </select>
-        <div class="filter-separator"></div>
         <label>Department</label>
         <select class="form-select" style="width:160px;font-size:var(--text-xs);">
           <option>All Departments</option>
@@ -506,323 +522,118 @@
         <button class="btn btn-sm btn-ghost">Reset</button>
       </div>
 
-      <!-- Financial Health Score Banner -->
-      <div class="health-score-card" role="region" aria-label="Financial health score">
-        <div class="health-score-layout">
-          <div class="health-score-main">
-            <div class="health-score-tag">Financial Health Score</div>
-            <div class="health-score-number">74</div>
-            <div class="health-score-label">/ 100 &nbsp;— Satisfactory</div>
-          </div>
-          <div class="health-score-pillars">
-            <div class="health-pillar">
-              <div class="health-pillar-value">82</div>
-              <div class="health-pillar-bar"><div class="health-pillar-fill" style="width:82%;"></div></div>
-              <div class="health-pillar-label">Budget Control</div>
-            </div>
-            <div class="health-pillar">
-              <div class="health-pillar-value">68</div>
-              <div class="health-pillar-bar"><div class="health-pillar-fill" style="width:68%;"></div></div>
-              <div class="health-pillar-label">Forecast Accuracy</div>
-            </div>
-            <div class="health-pillar">
-              <div class="health-pillar-value">71</div>
-              <div class="health-pillar-bar"><div class="health-pillar-fill" style="width:71%;"></div></div>
-              <div class="health-pillar-label">SLA Compliance</div>
-            </div>
-            <div class="health-pillar">
-              <div class="health-pillar-value">79</div>
-              <div class="health-pillar-bar"><div class="health-pillar-fill" style="width:79%;"></div></div>
-              <div class="health-pillar-label">Policy Adherence</div>
-            </div>
-          </div>
-          <div style="text-align:center;background:rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5);">
-            <div style="font-size:var(--text-xs);opacity:0.65;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">vs. Last Quarter</div>
-            <div style="font-family:var(--font-mono);font-size:var(--text-xl);font-weight:bold;">+4 pts</div>
-            <div style="font-size:11px;opacity:0.65;margin-top:2px;">Q3 was 70/100</div>
-          </div>
-        </div>
-      </div>
 
-      <!-- KPI Strip -->
-      <div class="kpi-strip" role="region" aria-label="Key financial metrics">
-        <div class="kpi-strip-card blue">
-          <div class="kpi-strip-label">Total Budget Consumed</div>
-          <div class="kpi-strip-value">₹312.45 Cr</div>
-          <div class="kpi-strip-sub"><span class="kpi-delta warn">62.5%</span> of ₹500 Cr envelope</div>
-        </div>
-        <div class="kpi-strip-card teal">
-          <div class="kpi-strip-label">YTD Savings vs. Plan</div>
-          <div class="kpi-strip-value">₹18.2 Cr</div>
-          <div class="kpi-strip-sub"><span class="kpi-delta up">+3.6%</span> under budget YTD</div>
-        </div>
-        <div class="kpi-strip-card green">
-          <div class="kpi-strip-label">Forecast Year-End Surplus</div>
-          <div class="kpi-strip-value">₹24.8 Cr</div>
-          <div class="kpi-strip-sub"><span class="kpi-delta up">+2.1 Cr</span> vs. last forecast</div>
-        </div>
-        <div class="kpi-strip-card violet">
-          <div class="kpi-strip-label">Requests Processed (YTD)</div>
-          <div class="kpi-strip-value">1,247</div>
-          <div class="kpi-strip-sub"><span class="kpi-delta up">94.2%</span> approval rate</div>
-        </div>
-      </div>
+      <!-- ── Row 1: Spend Requests + PR Overview ── -->
+      <div class="analytics-row" style="display:grid;grid-template-columns:1fr 2fr;gap:var(--space-4);margin-bottom:var(--space-4);">
 
-      <!-- Row 1: Budget vs Actuals + Burn Rate Trend -->
-      <div class="analytics-row two-col">
+        <!-- Spend Requests -->
+        <div class="card" style="border-radius:var(--radius-lg);border:1px solid var(--color-gray-200);box-shadow:var(--shadow-xs);background:var(--color-white);overflow:hidden;">
+          <div class="card-header" style="padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--color-gray-100);">
+            <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">Spend Requests</div>
+            <div style="font-size:var(--text-xs);color:var(--color-gray-400);margin-top:2px;">YTD summary by status</div>
+          </div>
+          <div class="card-body" style="padding:var(--space-4) var(--space-5);">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-bottom:var(--space-4);">
+              <div style="background:var(--color-gray-50);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);border:1px solid var(--color-gray-100);">
+                <div style="font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.07em;color:var(--color-gray-400);margin-bottom:4px;">Total</div>
+                <div id="sr-total" style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-gray-900);">1,247</div>
+              </div>
+              <div style="background:var(--color-success-bg);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);border:1px solid var(--color-success-border);">
+                <div style="font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.07em;color:var(--color-success);margin-bottom:4px;">Approved</div>
+                <div id="sr-approved" style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-success);">1,174</div>
+                <div id="sr-approved-pct" style="font-size:var(--text-xs);color:var(--color-success);font-weight:var(--font-semibold);">94.2%</div>
+              </div>
+              <div style="background:var(--color-danger-bg);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);border:1px solid rgba(220,38,38,0.2);">
+                <div style="font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.07em;color:var(--color-danger);margin-bottom:4px;">Rejected</div>
+                <div id="sr-rejected" style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-danger);">52</div>
+                <div id="sr-rejected-pct" style="font-size:var(--text-xs);color:var(--color-danger);font-weight:var(--font-semibold);">4.2%</div>
+              </div>
+              <div style="background:var(--color-warning-bg);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);border:1px solid var(--color-warning-border);">
+                <div style="font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.07em;color:var(--color-warning);margin-bottom:4px;">Pending</div>
+                <div id="sr-pending" style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-warning);">21</div>
+                <div id="sr-pending-pct" style="font-size:var(--text-xs);color:var(--color-warning);font-weight:var(--font-semibold);">1.7%</div>
+              </div>
+            </div>
+            <!-- Status distribution bar -->
+            <div style="font-size:var(--text-xs);color:var(--color-gray-500);margin-bottom:var(--space-2);">Status Distribution</div>
+            <div style="display:flex;height:8px;border-radius:var(--radius-full);overflow:hidden;gap:2px;">
+              <div id="sr-bar-approved" style="height:100%;background:#16A34A;border-radius:var(--radius-full) 0 0 var(--radius-full);width:94.2%;transition:width 0.3s;"></div>
+              <div id="sr-bar-rejected" style="height:100%;background:var(--color-danger);width:4.2%;transition:width 0.3s;"></div>
+              <div id="sr-bar-pending" style="height:100%;background:var(--color-warning);border-radius:0 var(--radius-full) var(--radius-full) 0;width:1.7%;transition:width 0.3s;"></div>
+            </div>
+            <div style="display:flex;gap:var(--space-4);margin-top:var(--space-2);">
+              <span style="font-size:10px;color:var(--color-gray-500);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:#16A34A;display:inline-block;"></span>Approved</span>
+              <span style="font-size:10px;color:var(--color-gray-500);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-danger);display:inline-block;"></span>Rejected</span>
+              <span style="font-size:10px;color:var(--color-gray-500);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-warning);display:inline-block;"></span>Pending</span>
+            </div>
+          </div>
+        </div>
 
-        <!-- Budget vs Actuals -->
-        <div class="card">
-          <div class="card-header">
+        <!-- Purchase Requisition Overview -->
+        <div class="card" style="border-radius:var(--radius-lg);border:1px solid var(--color-gray-200);box-shadow:var(--shadow-xs);background:var(--color-white);overflow:hidden;">
+          <div class="card-header" style="padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--color-gray-100);display:flex;justify-content:space-between;align-items:center;">
             <div>
-              <div class="card-title">Budget vs. Actuals — Cost Centres</div>
-              <div class="card-subtitle">FY 2024–25, all figures in ₹ Crore</div>
-            </div>
-            <div style="display:flex;gap:var(--space-2);">
-              <button class="filter-btn active" style="font-size:10px;padding:2px 8px;">Bar</button>
-              <button class="filter-btn" style="font-size:10px;padding:2px 8px;">Table</button>
+              <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">Purchase Requisition Overview</div>
+              <div style="font-size:var(--text-xs);color:var(--color-gray-400);margin-top:2px;">Month-by-month volume with approval / rejection breakdown</div>
             </div>
           </div>
-          <div style="padding:var(--space-2) var(--space-5) var(--space-4);height:280px;">
-            <canvas id="budgetActualsChart" aria-label="Budget vs Actuals grouped bar chart"></canvas>
+          <div class="card-body" style="padding:var(--space-4) var(--space-5);">
+            <canvas id="pr-chart-canvas" style="max-height:220px;"></canvas>
+            <div style="display:flex;gap:var(--space-6);margin-top:var(--space-4);padding-top:var(--space-3);border-top:1px solid var(--color-gray-100);">
+              <div>
+                <div style="font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.07em;color:var(--color-gray-400);margin-bottom:2px;">Total PRs (YTD)</div>
+                <div id="pr-total" style="font-family:var(--font-mono);font-size:var(--text-xl);font-weight:var(--font-bold);color:var(--color-gray-900);">677</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.07em;color:var(--color-gray-400);margin-bottom:2px;">Approval Rate</div>
+                <div id="pr-approval-rate" style="font-family:var(--font-mono);font-size:var(--text-xl);font-weight:var(--font-bold);color:#16A34A;">94.2%</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.07em;color:var(--color-gray-400);margin-bottom:2px;">Rejection Rate</div>
+                <div id="pr-rejection-rate" style="font-family:var(--font-mono);font-size:var(--text-xl);font-weight:var(--font-bold);color:var(--color-danger);">5.8%</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Burn Rate Trend -->
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Burn Rate Trend</div>
-              <div class="card-subtitle">Monthly consumption with Q4 forecast (₹ Crore)</div>
-            </div>
-            <span class="badge badge-at-risk" style="font-size:10px;">Forecast Active</span>
-          </div>
-          <div style="padding:var(--space-2) var(--space-5) var(--space-4);height:280px;">
-            <canvas id="burnRateChart" aria-label="Burn rate trend line chart"></canvas>
+
+      </div><!-- /Row 1 -->
+
+      <!-- ── Row 2: DOA User Overview ── -->
+      <div class="card" style="border-radius:var(--radius-lg);border:1px solid var(--color-gray-200);box-shadow:var(--shadow-xs);background:var(--color-white);overflow:hidden;margin-bottom:var(--space-4);">
+        <div class="card-header" style="padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--color-gray-100);display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">DOA User Overview</div>
+            <div style="font-size:var(--text-xs);color:var(--color-gray-400);margin-top:2px;">Approver-level activity and SLA performance — FY 2024–25</div>
           </div>
         </div>
-
-      </div>
-
-      <!-- Row 2: Variance Table + Right panel (Forecast Gauge + Approval Metrics) -->
-      <div class="analytics-row wide-narrow">
-
-        <!-- Variance Analysis Table -->
-        <div class="card" style="padding:0;">
-          <div class="card-header" style="padding:var(--space-4) var(--space-5);">
-            <div>
-              <div class="card-title">Variance Analysis</div>
-              <div class="card-subtitle">Cost centres with highest budget variance — sorted by magnitude</div>
-            </div>
-            <button class="btn btn-sm btn-ghost">Export CSV</button>
-          </div>
-          <div style="overflow-x:auto;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Cost Centre</th>
-                  <th>Budget (Cr)</th>
-                  <th>Actuals (Cr)</th>
-                  <th>Variance (Cr)</th>
-                  <th>Variance %</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div style="font-size:var(--text-sm);font-weight:500;">Mining Ops Capex</div>
-                    <div style="font-size:11px;color:var(--color-gray-400);">CC-1042</div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">120.00</td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">135.20</td>
-                  <td>
-                    <div class="variance-cell negative">
-                      <div class="var-bar" style="width:40px;background:var(--color-danger);"></div>
-                      -15.20
-                    </div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-danger);font-weight:600;">-12.7%</td>
-                  <td><span class="badge badge-rejected">Over Budget</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-size:var(--text-sm);font-weight:500;">Zinc Refinery Capital</div>
-                    <div style="font-size:11px;color:var(--color-gray-400);">CC-4011</div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">110.00</td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">104.30</td>
-                  <td>
-                    <div class="variance-cell positive">
-                      <div class="var-bar" style="width:16px;background:var(--color-success-border);"></div>
-                      +5.70
-                    </div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-success);font-weight:600;">+5.2%</td>
-                  <td><span class="badge badge-approved">Within Budget</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-size:var(--text-sm);font-weight:500;">Smelter Unit Opex</div>
-                    <div style="font-size:11px;color:var(--color-gray-400);">CC-2018</div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">95.00</td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">90.80</td>
-                  <td>
-                    <div class="variance-cell positive">
-                      <div class="var-bar" style="width:12px;background:var(--color-success-border);"></div>
-                      +4.20
-                    </div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-success);font-weight:600;">+4.4%</td>
-                  <td><span class="badge badge-approved">Within Budget</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-size:var(--text-sm);font-weight:500;">Power Plant Maintenance</div>
-                    <div style="font-size:11px;color:var(--color-gray-400);">CC-3005</div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">80.00</td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">78.50</td>
-                  <td>
-                    <div class="variance-cell positive">
-                      <div class="var-bar" style="width:6px;background:var(--color-success-border);"></div>
-                      +1.50
-                    </div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-success);font-weight:600;">+1.9%</td>
-                  <td><span class="badge badge-approved">Within Budget</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-size:var(--text-sm);font-weight:500;">Pit Operations</div>
-                    <div style="font-size:11px;color:var(--color-gray-400);">CC-5009</div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">75.00</td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">76.80</td>
-                  <td>
-                    <div class="variance-cell negative">
-                      <div class="var-bar" style="width:8px;background:var(--color-warning-border);"></div>
-                      -1.80
-                    </div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-warning);font-weight:600;">-2.4%</td>
-                  <td><span class="badge badge-at-risk">At Risk</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-size:var(--text-sm);font-weight:500;">Exploration &amp; Survey</div>
-                    <div style="font-size:11px;color:var(--color-gray-400);">CC-6003</div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">60.00</td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);">46.40</td>
-                  <td>
-                    <div class="variance-cell positive">
-                      <div class="var-bar" style="width:28px;background:var(--color-teal);"></div>
-                      +13.60
-                    </div>
-                  </td>
-                  <td style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-teal);font-weight:600;">+22.7%</td>
-                  <td><span class="badge badge-approved">Under Budget</span></td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr style="background:var(--color-gray-50);">
-                  <td style="font-weight:700;font-size:var(--text-sm);">Total</td>
-                  <td style="font-family:var(--font-mono);font-weight:700;font-size:var(--text-sm);">540.00</td>
-                  <td style="font-family:var(--font-mono);font-weight:700;font-size:var(--text-sm);">532.00</td>
-                  <td><div class="variance-cell positive" style="font-weight:700;"><div class="var-bar" style="width:10px;background:var(--color-success-border);"></div>+8.00</div></td>
-                  <td style="font-family:var(--font-mono);font-weight:700;color:var(--color-success);">+1.5%</td>
-                  <td><span class="badge badge-approved">Net Positive</span></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr style="background:var(--color-gray-50);">
+                <th style="padding:var(--space-3) var(--space-4);text-align:left;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">User</th>
+                <th style="padding:var(--space-3) var(--space-4);text-align:left;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Role</th>
+                <th style="padding:var(--space-3) var(--space-4);text-align:right;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Reviewed</th>
+                <th style="padding:var(--space-3) var(--space-4);text-align:right;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Approved</th>
+                <th style="padding:var(--space-3) var(--space-4);text-align:right;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Rejected</th>
+                <th style="padding:var(--space-3) var(--space-4);text-align:right;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Avg TAT</th>
+                <th style="padding:var(--space-3) var(--space-4);text-align:right;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">SLA Compliance</th>
+                <th style="padding:var(--space-3) var(--space-4);text-align:center;font-size:var(--text-xs);font-weight:var(--font-semibold);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-gray-500);border-bottom:1px solid var(--color-gray-200);">Status</th>
+              </tr>
+            </thead>
+            <tbody id="doa-table-body"></tbody>
+          </table>
         </div>
+      </div><!-- /Row 2 -->
 
-        <!-- Right column: Forecast Gauge + Approval Metrics -->
-        <div style="display:flex;flex-direction:column;gap:var(--space-4);">
-
-          <!-- Forecast Accuracy -->
-          <div class="card" style="padding:0;">
-            <div class="card-header" style="padding:var(--space-4) var(--space-5);">
-              <div class="card-title">Forecast Accuracy</div>
-            </div>
-            <div class="gauge-card-body">
-              <div style="position:relative;width:180px;height:100px;">
-                <canvas id="forecastGauge" aria-label="Forecast accuracy gauge chart"></canvas>
-                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;pointer-events:none;">
-                  <div class="gauge-needle-pct">84%</div>
-                  <div class="gauge-needle-sub">Accuracy Rate</div>
-                </div>
-              </div>
-              <div style="width:100%;font-size:var(--text-xs);color:var(--color-gray-500);text-align:center;line-height:1.5;max-width:200px;">
-                Forecast vs. actuals across last 12 months. Industry benchmark: 80%.
-              </div>
-              <div style="display:flex;gap:var(--space-2);width:100%;">
-                <div style="flex:1;background:var(--color-success-bg);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);text-align:center;">
-                  <div style="font-family:var(--font-mono);font-weight:700;color:var(--color-success);">+4 pp</div>
-                  <div style="font-size:10px;color:var(--color-gray-400);">vs. Q3</div>
-                </div>
-                <div style="flex:1;background:var(--color-info-bg);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);text-align:center;">
-                  <div style="font-family:var(--font-mono);font-weight:700;color:var(--color-medium-blue);">80%</div>
-                  <div style="font-size:10px;color:var(--color-gray-400);">Benchmark</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Approval Cycle Metrics -->
-          <div class="card" style="padding:0;">
-            <div class="card-header" style="padding:var(--space-4) var(--space-5);">
-              <div class="card-title">Approval Cycle Metrics</div>
-            </div>
-            <div class="metric-list">
-              <div class="metric-item">
-                <span class="metric-label">Avg. Time to Approve</span>
-                <span class="metric-value">
-                  18.4 hrs
-                  <span class="kpi-delta up" style="font-size:10px;">-2.1h</span>
-                </span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">SLA Compliance Rate</span>
-                <span class="metric-value">
-                  71.2%
-                  <span class="kpi-delta down" style="font-size:10px;">-5.3pp</span>
-                </span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Escalations (Q4 YTD)</span>
-                <span class="metric-value">
-                  34
-                  <span class="kpi-delta down" style="font-size:10px;">+8</span>
-                </span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Auto-Approved (ACT)</span>
-                <span class="metric-value">
-                  218
-                  <span class="kpi-delta up" style="font-size:10px;">17.5%</span>
-                </span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Rejected Rate</span>
-                <span class="metric-value">5.8%</span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">CFO Reviews Required</span>
-                <span class="metric-value">62</span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Approval Rate (FY YTD)</span>
-                <span class="metric-value" style="color:var(--color-success);">94.2%</span>
-              </div>
-            </div>
-          </div>
-
+      <!-- ── Row 3: Spend Request Flow Overview ── -->
+      <div style="margin-bottom:var(--space-4);">
+        <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+          <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">Spend Request Overview</div>
+          <div style="font-size:var(--text-xs);color:var(--color-gray-400);">End-to-end lifecycle — 2 representative purchase requisitions</div>
         </div>
-      </div>
+        <div id="sr-flow-container"></div>
+      </div><!-- /Row 3 -->
 
     </div><!-- /content-area -->
   </main>
@@ -834,115 +645,385 @@
     document.getElementById('sidebar').classList.toggle('collapsed');
   });
 
-  // ── Budget vs Actuals Chart ──
-  const baCtx = document.getElementById('budgetActualsChart').getContext('2d');
-  new Chart(baCtx, {
+  // ── Entity data ──
+  var AD_DATA = {
+    Zinc: {
+      healthScore: '74', healthLabel: '/ 100 \u00a0\u2014 Satisfactory',
+      pillars: { bc: 82, fa: 68, sla: 71, pa: 79 },
+      qoqDelta: '+4 pts', qoqPrev: 'Q3 was 70/100',
+      kpi: {
+        consumed: '₹312.45 Cr', consumedPct: '62.5%', consumedSub: 'of ₹500 Cr envelope',
+        savings: '₹18.2 Cr', savingsPct: '+3.6%', savingsSub: 'under budget YTD',
+        surplus: '₹24.8 Cr', surplusDelta: '+2.1 Cr', surplusSub: 'vs. last forecast',
+        requests: '1,247', requestsRate: '94.2%'
+      },
+      baLabels: ['Mining Ops', 'Zinc Refinery', 'Smelter Unit', 'Power Plant', 'Pit Ops', 'Exploration'],
+      baBudget: [120, 110, 95, 80, 75, 60],
+      baActuals: [135.2, 104.3, 90.8, 78.5, 76.8, 46.4],
+      baOver: [true, false, false, false, true, false],
+      brActuals: [32.1, 28.4, 30.8, 33.2, 29.1, 31.5, 35.8, 27.9, 34.2, 38.1, 36.4, null],
+      brForecast: [null, null, null, null, null, null, null, null, null, null, 36.4, 34.8],
+      gaugePct: 84, gaugeQoQ: '+4 pp',
+      metrics: {
+        approveTime: '18.4 hrs', approveDelta: '-2.1h', approveDeltaClass: 'up',
+        sla: '71.2%', slaDelta: '-5.3pp', slaDeltaClass: 'down',
+        esc: '34', escDelta: '+8', escDeltaClass: 'down',
+        auto: '218', autoPct: '17.5%',
+        rejected: '5.8%', cfo: '62', approvalRate: '94.2%'
+      },
+      variance: [
+        { name: 'Mining Ops Capex', cc: 'CC-1042', budget: '120.00', actuals: '135.20', varVal: '-15.20', varPct: '-12.7%', varClass: 'negative', barW: '40px', barColor: 'var(--color-danger)', pctColor: 'var(--color-danger)', badge: 'badge-rejected', badgeText: 'Over Budget' },
+        { name: 'Zinc Refinery Capital', cc: 'CC-4011', budget: '110.00', actuals: '104.30', varVal: '+5.70', varPct: '+5.2%', varClass: 'positive', barW: '16px', barColor: 'var(--color-success-border)', pctColor: 'var(--color-success)', badge: 'badge-approved', badgeText: 'Within Budget' },
+        { name: 'Smelter Unit Opex', cc: 'CC-2018', budget: '95.00', actuals: '90.80', varVal: '+4.20', varPct: '+4.4%', varClass: 'positive', barW: '12px', barColor: 'var(--color-success-border)', pctColor: 'var(--color-success)', badge: 'badge-approved', badgeText: 'Within Budget' },
+        { name: 'Power Plant Maintenance', cc: 'CC-3005', budget: '80.00', actuals: '78.50', varVal: '+1.50', varPct: '+1.9%', varClass: 'positive', barW: '6px', barColor: 'var(--color-success-border)', pctColor: 'var(--color-success)', badge: 'badge-approved', badgeText: 'Within Budget' },
+        { name: 'Pit Operations', cc: 'CC-5009', budget: '75.00', actuals: '76.80', varVal: '-1.80', varPct: '-2.4%', varClass: 'negative', barW: '8px', barColor: 'var(--color-warning-border)', pctColor: 'var(--color-warning)', badge: 'badge-at-risk', badgeText: 'At Risk' },
+        { name: 'Exploration &amp; Survey', cc: 'CC-6003', budget: '60.00', actuals: '46.40', varVal: '+13.60', varPct: '+22.7%', varClass: 'positive', barW: '28px', barColor: 'var(--color-teal)', pctColor: 'var(--color-teal)', badge: 'badge-approved', badgeText: 'Under Budget' }
+      ],
+      varianceTotals: { budget: '540.00', actuals: '532.00', varVal: '+8.00', varPct: '+1.5%', varClass: 'positive', barW: '10px', barColor: 'var(--color-success-border)', pctColor: 'var(--color-success)', badge: 'badge-approved', badgeText: 'Net Positive' },
+      prApproved: [42, 38, 51, 47, 55, 49, 61, 44, 58, 63, 57, 52],
+      prRejected: [8, 6, 9, 11, 7, 10, 12, 8, 14, 11, 9, 13],
+      prTotal: '677', prApprovalRate: '94.2%', prRejectionRate: '5.8%',
+      sr: { total: '1,247', approved: '1,174', approvedPct: '94.2%', rejected: '52', rejectedPct: '4.2%', pending: '21', pendingPct: '1.7%', barApproved: '94.2%', barRejected: '4.2%', barPending: '1.7%' },
+      doaUsers: [
+        { name: 'Rajesh Sharma',  role: 'CFO',                reviewed: 148, approved: 139, rejected: 9,  tat: '6.2 hrs',  sla: 96, slaBadge: 'badge-approved' },
+        { name: 'Meena Iyer',     role: 'Finance Controller', reviewed: 312, approved: 291, rejected: 21, tat: '14.8 hrs', sla: 88, slaBadge: 'badge-approved' },
+        { name: 'Arvind Patel',   role: 'HOD — Mining',       reviewed: 201, approved: 184, rejected: 17, tat: '19.4 hrs', sla: 76, slaBadge: 'badge-approved' },
+        { name: 'Sunita Rao',     role: 'HOD — Smelter',      reviewed: 187, approved: 172, rejected: 15, tat: '22.1 hrs', sla: 71, slaBadge: 'badge-at-risk' },
+        { name: 'Deepak Nair',    role: 'VP — Operations',    reviewed: 243, approved: 231, rejected: 12, tat: '11.3 hrs', sla: 91, slaBadge: 'badge-approved' },
+        { name: 'Priya Menon',    role: 'GM — Finance',       reviewed: 156, approved: 148, rejected: 8,  tat: '17.6 hrs', sla: 82, slaBadge: 'badge-approved' }
+      ],
+      srFlowCards: [
+        {
+          pr: 'PR-2025-4201', desc: 'O&M Services – RJ Pipeline (Annual)', amount: '₹3.80 Cr',
+          spendType: 'OPEX – Services', budgeted: true, raised: '14 Mar 2025', costCentre: 'CC-5501',
+          requestor: { name: 'Rajan Mehta', initials: 'RM', avatarBg: '#00338D', dept: 'Pipeline Operations', role: 'HOD – Pipeline' },
+          checks: [
+            { label: 'Budget Availability', pass: true,  detail: 'Annual O&M provision confirmed in CC-5501' },
+            { label: 'Policy Compliance',   pass: true,  detail: 'Within single-approval limit (₹5 Cr)' },
+            { label: 'DOA Authority',       pass: true,  detail: 'HOD authority sufficient for amount' },
+            { label: 'Vendor Validation',   pass: true,  detail: 'EPC-O&M Vendor on approved list' }
+          ],
+          actScore: 86, actLabel: 'Strong',       actClass: 'strong',
+          actReco: 'Approve — all checks passed, SLA-backed annual O&M within budget envelope',
+          decision: 'Approved', decisionBy: 'Deepak Nair', decisionRole: 'VP – Operations', decisionDate: '16 Mar 2025', tat: '2 days'
+        },
+        {
+          pr: 'PR-2025-4202', desc: 'Mechanical CAPEX – Oil Pipeline Pumping Facilities', amount: '₹22.00 Cr',
+          spendType: 'CAPEX – Mechanical (Oil)', budgeted: true, raised: '19 Mar 2025', costCentre: 'WBS-OIL-001',
+          requestor: { name: 'Suresh Iyer', initials: 'SI', avatarBg: '#0D9488', dept: 'Projects – Oil', role: 'PM – Oil Pipeline' },
+          checks: [
+            { label: 'Budget Availability', pass: true,  detail: 'WBS allocation confirmed (CER-OIL-2025-011)' },
+            { label: 'Policy Compliance',   pass: false, detail: 'Exceeds ₹5 Cr single-approval threshold' },
+            { label: 'DOA Authority',       pass: false, detail: 'Board approval required for CAPEX > ₹10 Cr' },
+            { label: 'Vendor Validation',   pass: true,  detail: 'OEM-A and OEM-B on approved vendor list' }
+          ],
+          actScore: 52, actLabel: 'High Risk',    actClass: 'risk',
+          actReco: 'Escalate — CAPEX exceeds DOA authority; Board approval required before proceeding',
+          decision: 'Escalated', decisionBy: 'Rajesh Sharma', decisionRole: 'CFO', decisionDate: '21 Mar 2025', tat: '2 days'
+        }
+      ]
+    },
+    Aluminium: {
+      healthScore: '71', healthLabel: '/ 100 \u00a0\u2014 Satisfactory',
+      pillars: { bc: 78, fa: 64, sla: 68, pa: 74 },
+      qoqDelta: '+2 pts', qoqPrev: 'Q3 was 69/100',
+      kpi: {
+        consumed: '₹187.30 Cr', consumedPct: '58.2%', consumedSub: 'of ₹322 Cr envelope',
+        savings: '₹9.4 Cr', savingsPct: '+2.8%', savingsSub: 'under budget YTD',
+        surplus: '₹14.6 Cr', surplusDelta: '+0.8 Cr', surplusSub: 'vs. last forecast',
+        requests: '843', requestsRate: '91.8%'
+      },
+      baLabels: ['Al. Smelter', 'Calcination', 'Power Plant', 'Port Ops', 'Refinery', 'Captive Power'],
+      baBudget: [85, 72, 65, 48, 55, 42],
+      baActuals: [91.4, 69.2, 62.8, 52.3, 53.1, 38.6],
+      baOver: [true, false, false, true, false, false],
+      brActuals: [21.4, 19.8, 22.1, 23.6, 20.9, 22.4, 25.1, 19.2, 23.8, 27.4, 26.1, null],
+      brForecast: [null, null, null, null, null, null, null, null, null, null, 26.1, 24.4],
+      gaugePct: 81, gaugeQoQ: '+1 pp',
+      metrics: {
+        approveTime: '21.2 hrs', approveDelta: '+0.8h', approveDeltaClass: 'down',
+        sla: '66.4%', slaDelta: '-8.1pp', slaDeltaClass: 'down',
+        esc: '27', escDelta: '+5', escDeltaClass: 'down',
+        auto: '143', autoPct: '16.9%',
+        rejected: '8.2%', cfo: '48', approvalRate: '91.8%'
+      },
+      variance: [
+        { name: 'Aluminium Smelter Capex', cc: 'CC-7001', budget: '85.00', actuals: '91.40', varVal: '-6.40', varPct: '-7.5%', varClass: 'negative', barW: '28px', barColor: 'var(--color-danger)', pctColor: 'var(--color-danger)', badge: 'badge-rejected', badgeText: 'Over Budget' },
+        { name: 'Calcination Plant', cc: 'CC-7018', budget: '72.00', actuals: '69.20', varVal: '+2.80', varPct: '+3.9%', varClass: 'positive', barW: '10px', barColor: 'var(--color-success-border)', pctColor: 'var(--color-success)', badge: 'badge-approved', badgeText: 'Within Budget' },
+        { name: 'Power Plant Opex', cc: 'CC-7005', budget: '65.00', actuals: '62.80', varVal: '+2.20', varPct: '+3.4%', varClass: 'positive', barW: '8px', barColor: 'var(--color-success-border)', pctColor: 'var(--color-success)', badge: 'badge-approved', badgeText: 'Within Budget' },
+        { name: 'Port Operations', cc: 'CC-7022', budget: '48.00', actuals: '52.30', varVal: '-4.30', varPct: '-9.0%', varClass: 'negative', barW: '20px', barColor: 'var(--color-danger)', pctColor: 'var(--color-danger)', badge: 'badge-rejected', badgeText: 'Over Budget' },
+        { name: 'Refinery Unit', cc: 'CC-7011', budget: '55.00', actuals: '53.10', varVal: '+1.90', varPct: '+3.5%', varClass: 'positive', barW: '6px', barColor: 'var(--color-success-border)', pctColor: 'var(--color-success)', badge: 'badge-approved', badgeText: 'Within Budget' },
+        { name: 'Captive Power Plant', cc: 'CC-7031', budget: '42.00', actuals: '38.60', varVal: '+3.40', varPct: '+8.1%', varClass: 'positive', barW: '14px', barColor: 'var(--color-teal)', pctColor: 'var(--color-teal)', badge: 'badge-approved', badgeText: 'Under Budget' }
+      ],
+      varianceTotals: { budget: '367.00', actuals: '367.40', varVal: '-0.40', varPct: '-0.1%', varClass: 'negative', barW: '4px', barColor: 'var(--color-warning-border)', pctColor: 'var(--color-warning)', badge: 'badge-at-risk', badgeText: 'At Risk' },
+      prApproved: [31, 28, 35, 33, 40, 36, 44, 29, 41, 47, 43, 38],
+      prRejected: [7, 5, 8, 9, 6, 9, 11, 7, 12, 9, 8, 11],
+      prTotal: '466', prApprovalRate: '91.6%', prRejectionRate: '8.4%',
+      sr: { total: '843', approved: '774', approvedPct: '91.8%', rejected: '48', rejectedPct: '5.7%', pending: '21', pendingPct: '2.5%', barApproved: '91.8%', barRejected: '5.7%', barPending: '2.5%' },
+      doaUsers: [
+        { name: 'Anil Kapoor',    role: 'CFO — Aluminium',    reviewed: 112, approved: 103, rejected: 9,  tat: '7.8 hrs',  sla: 94, slaBadge: 'badge-approved' },
+        { name: 'Rekha Bose',     role: 'Finance Controller', reviewed: 241, approved: 219, rejected: 22, tat: '18.2 hrs', sla: 81, slaBadge: 'badge-approved' },
+        { name: 'Suresh Pillai',  role: 'HOD — Smelter',      reviewed: 163, approved: 148, rejected: 15, tat: '24.6 hrs', sla: 68, slaBadge: 'badge-at-risk' },
+        { name: 'Nandini Joshi',  role: 'HOD — Power',        reviewed: 142, approved: 131, rejected: 11, tat: '21.3 hrs', sla: 72, slaBadge: 'badge-at-risk' },
+        { name: 'Kiran Reddy',    role: 'VP — Operations',    reviewed: 198, approved: 186, rejected: 12, tat: '13.1 hrs', sla: 88, slaBadge: 'badge-approved' },
+        { name: 'Pooja Shah',     role: 'GM — Finance',       reviewed: 119, approved: 109, rejected: 10, tat: '20.4 hrs', sla: 74, slaBadge: 'badge-at-risk' }
+      ],
+      srFlowCards: [
+        {
+          pr: 'PR-2025-4201', desc: 'Drilling Fluid – Aluminium Project', amount: '₹6.50 Cr',
+          spendType: 'CAPEX – Drilling', budgeted: true, raised: '15 Mar 2025', costCentre: 'AL-DR-01',
+          requestor: { name: 'Amit Sharma', initials: 'AS', avatarBg: '#00338D', dept: 'Drilling Ops', role: 'HOD – Drilling' },
+          checks: [
+            { label: 'Budget Availability', pass: true,  detail: 'WBS allocation confirmed (CER-AL-2025-045)' },
+            { label: 'Policy Compliance',   pass: false, detail: 'Exceeds ₹5 Cr single-approval threshold' },
+            { label: 'DOA Authority',       pass: true,  detail: 'VP authority verified with dual approval' },
+            { label: 'Vendor Validation',   pass: true,  detail: 'Approved Drilling Chemical Vendors on record' }
+          ],
+          actScore: 71, actLabel: 'Moderate',     actClass: 'risk',
+          actReco: 'Approve with condition — dual-approval required per policy for CAPEX > ₹5 Cr',
+          decision: 'Approved', decisionBy: 'Kiran Reddy', decisionRole: 'VP – Operations', decisionDate: '17 Mar 2025', tat: '2 days'
+        },
+        {
+          pr: 'PR-2025-4202', desc: 'Fuels – RJ Aluminium Operations', amount: '₹4.20 Cr',
+          spendType: 'OPEX – Fuels', budgeted: true, raised: '17 Mar 2025', costCentre: 'AL-RJ-01',
+          requestor: { name: 'Vikram Patel', initials: 'VP', avatarBg: '#0D9488', dept: 'Logistics', role: 'Manager – Logistics' },
+          checks: [
+            { label: 'Budget Availability', pass: true,  detail: 'Annual fuel budget confirmed in Cost Center – Aluminium O&M' },
+            { label: 'Policy Compliance',   pass: true,  detail: 'Within single-approval limit (₹5 Cr)' },
+            { label: 'DOA Authority',       pass: true,  detail: 'HOD authority sufficient for OPEX amount' },
+            { label: 'Vendor Validation',   pass: true,  detail: 'Approved Fuel Vendors on record' }
+          ],
+          actScore: 84, actLabel: 'Strong',       actClass: 'strong',
+          actReco: 'Approve — all checks passed, routine OPEX within approved budget envelope',
+          decision: 'Approved', decisionBy: 'Rekha Bose', decisionRole: 'Finance Controller', decisionDate: '19 Mar 2025', tat: '2 days'
+        }
+      ]
+    }
+  };
+
+  var currentADEntity = 'Zinc';
+
+  // ── switchEntityAD ──
+  function switchEntityAD(entity) {
+    if (entity === currentADEntity) return;
+    currentADEntity = entity;
+    var d = AD_DATA[entity];
+
+    // Toggle buttons
+    document.querySelectorAll('.bu-toggle-btn').forEach(function(btn) {
+      var t = btn.textContent.trim();
+      btn.classList.toggle('active', (entity === 'Zinc' && t === 'ZINC') || (entity === 'Aluminium' && t === 'ALUMINIUM'));
+    });
+
+    // Health score (guarded — elements may not exist in all layouts)
+    function _upd(id, prop, val) { var e = document.getElementById(id); if (e) e[prop] = val; }
+    function _updStyle(id, prop, val) { var e = document.getElementById(id); if (e) e.style[prop] = val; }
+    _upd('ad-health-score', 'textContent', d.healthScore);
+    _upd('ad-health-label', 'innerHTML', d.healthLabel);
+    _upd('ad-pillar-bc', 'textContent', d.pillars.bc);
+    _updStyle('ad-pillar-bc-bar', 'width', d.pillars.bc + '%');
+    _upd('ad-pillar-fa', 'textContent', d.pillars.fa);
+    _updStyle('ad-pillar-fa-bar', 'width', d.pillars.fa + '%');
+    _upd('ad-pillar-sla', 'textContent', d.pillars.sla);
+    _updStyle('ad-pillar-sla-bar', 'width', d.pillars.sla + '%');
+    _upd('ad-pillar-pa', 'textContent', d.pillars.pa);
+    _updStyle('ad-pillar-pa-bar', 'width', d.pillars.pa + '%');
+    _upd('ad-qoq-delta', 'textContent', d.qoqDelta);
+    _upd('ad-qoq-prev', 'textContent', d.qoqPrev);
+
+    // PR chart
+    prChart.data.datasets[0].data = d.prApproved;
+    prChart.data.datasets[1].data = d.prRejected;
+    prChart.update();
+    document.getElementById('pr-total').textContent = d.prTotal;
+    document.getElementById('pr-approval-rate').textContent = d.prApprovalRate;
+    document.getElementById('pr-rejection-rate').textContent = d.prRejectionRate;
+
+    // Spend Requests
+    var sr = d.sr;
+    document.getElementById('sr-total').textContent = sr.total;
+    document.getElementById('sr-approved').textContent = sr.approved;
+    document.getElementById('sr-approved-pct').textContent = sr.approvedPct;
+    document.getElementById('sr-rejected').textContent = sr.rejected;
+    document.getElementById('sr-rejected-pct').textContent = sr.rejectedPct;
+    document.getElementById('sr-pending').textContent = sr.pending;
+    document.getElementById('sr-pending-pct').textContent = sr.pendingPct;
+    document.getElementById('sr-bar-approved').style.width = sr.barApproved;
+    document.getElementById('sr-bar-rejected').style.width = sr.barRejected;
+    document.getElementById('sr-bar-pending').style.width = sr.barPending;
+
+    // DOA table
+    renderDOATable(d.doaUsers);
+
+    // Spend Request Flow Cards
+    renderSRFlowCards(d.srFlowCards);
+  }
+
+  function renderDOATable(users) {
+    var tbody = document.getElementById('doa-table-body');
+    tbody.innerHTML = users.map(function(u, i) {
+      var rowBg = i % 2 === 0 ? '' : 'background:var(--color-gray-50);';
+      var slaPct = u.sla + '%';
+      var slaColor = u.sla >= 90 ? 'var(--color-success)' : u.sla >= 75 ? 'var(--color-gray-700)' : 'var(--color-warning)';
+      var badgeLabel = u.slaBadge === 'badge-approved' ? 'On Track' : 'At Risk';
+      return '<tr style="' + rowBg + 'border-bottom:1px solid var(--color-gray-100);">' +
+        '<td style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">' + u.name + '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-gray-600);">' + u.role + '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">' + u.reviewed + '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-success);">' + u.approved + '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-danger);">' + u.rejected + '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-gray-700);">' + u.tat + '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--font-semibold);color:' + slaColor + ';">' + slaPct + '</td>' +
+        '<td style="padding:var(--space-3) var(--space-4);text-align:center;"><span class="badge ' + u.slaBadge + '">' + badgeLabel + '</span></td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function renderSRFlowCards(cards) {
+    var container = document.getElementById('sr-flow-container');
+    container.innerHTML = cards.map(function(c) {
+      var isApproved = c.decision === 'Approved';
+      var cardClass = isApproved ? 'approved' : 'rejected';
+      var decisionColor = isApproved ? '#15803D' : '#DC2626';
+      var decisionBg   = isApproved ? '#F0FDF4'  : '#FEF2F2';
+      var budgetedHtml = c.budgeted
+        ? '<span style="padding:2px 7px;border-radius:var(--radius-full);font-size:10px;font-weight:600;background:#F0FDF4;color:#15803D;">Budgeted</span>'
+        : '<span style="padding:2px 7px;border-radius:var(--radius-full);font-size:10px;font-weight:600;background:#FEF3C7;color:#92400E;">Unbudgeted</span>';
+
+      // checks HTML
+      var checksHtml = c.checks.map(function(ck) {
+        var iconClass = ck.pass ? 'pass' : 'fail';
+        var icon = ck.pass ? '✓' : '✗';
+        return '<div class="sr-check-row"><div class="sr-check-icon ' + iconClass + '">' + icon + '</div><div><div style="font-size:11px;font-weight:600;color:var(--color-gray-800);">' + ck.label + '</div><div style="font-size:10px;color:var(--color-gray-500);margin-top:1px;">' + ck.detail + '</div></div></div>';
+      }).join('');
+
+      var passCount = c.checks.filter(function(ck){ return ck.pass; }).length;
+      var checkSummaryColor = passCount === 4 ? '#15803D' : passCount >= 2 ? '#D97706' : '#DC2626';
+
+      return '<div class="sr-flow-card ' + cardClass + '" style="margin-top:var(--space-3);">' +
+        // Header
+        '<div class="sr-flow-header">' +
+          '<div style="display:flex;flex-direction:column;gap:4px;">' +
+            '<div style="display:flex;align-items:center;gap:var(--space-3);">' +
+              '<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;color:var(--color-kpmg-blue);">' + c.pr + '</span>' +
+              '<span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-gray-900);">' + c.desc + '</span>' +
+              '<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;color:var(--color-gray-900);">' + c.amount + '</span>' +
+              '<span style="padding:2px 8px;border-radius:var(--radius-full);font-size:10px;font-weight:600;background:#EBF0FB;color:var(--color-kpmg-blue);">' + c.spendType + '</span>' +
+              budgetedHtml +
+            '</div>' +
+            '<div style="font-size:11px;color:var(--color-gray-400);">Raised ' + c.raised + ' &nbsp;·&nbsp; ' + c.costCentre + '</div>' +
+          '</div>' +
+          '<span style="padding:4px 14px;border-radius:var(--radius-full);font-size:12px;font-weight:700;background:' + decisionBg + ';color:' + decisionColor + ';flex-shrink:0;">' + c.decision + '</span>' +
+        '</div>' +
+        // Flow Steps
+        '<div class="sr-flow-steps">' +
+          // Step 1: Spend Request
+          '<div class="sr-flow-step">' +
+            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num">1</div><span class="sr-step-label">Spend Request</span></div>' +
+            '<div class="sr-step-divider"></div>' +
+            '<div style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:700;color:var(--color-gray-900);">' + c.amount + '</div>' +
+            '<div style="font-size:11px;color:var(--color-gray-600);">' + c.spendType + '</div>' +
+            '<div style="font-size:11px;color:var(--color-gray-500);margin-top:2px;">Raised ' + c.raised + '</div>' +
+            '<div style="margin-top:var(--space-2);">' + budgetedHtml + '</div>' +
+          '</div>' +
+          // Arrow
+          '<div class="sr-flow-connector">&#8594;</div>' +
+          // Step 2: Requestor
+          '<div class="sr-flow-step">' +
+            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num">2</div><span class="sr-step-label">Requestor</span></div>' +
+            '<div class="sr-step-divider"></div>' +
+            '<div style="display:flex;align-items:center;gap:var(--space-2);margin-top:2px;">' +
+              '<div style="width:32px;height:32px;border-radius:50%;background:' + c.requestor.avatarBg + ';color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + c.requestor.initials + '</div>' +
+              '<div><div style="font-size:var(--text-sm);font-weight:600;color:var(--color-gray-900);">' + c.requestor.name + '</div><div style="font-size:10px;color:var(--color-gray-500);">' + c.requestor.role + '</div></div>' +
+            '</div>' +
+            '<div style="font-size:11px;color:var(--color-gray-600);margin-top:var(--space-2);">' + c.requestor.dept + '</div>' +
+            '<div style="font-family:var(--font-mono);font-size:10px;color:var(--color-gray-400);margin-top:2px;">' + c.costCentre + '</div>' +
+          '</div>' +
+          // Arrow
+          '<div class="sr-flow-connector">&#8594;</div>' +
+          // Step 3: Agentic Flow
+          '<div class="sr-flow-step">' +
+            '<div style="display:flex;align-items:center;gap:var(--space-2);">' +
+              '<div class="sr-step-num" style="background:var(--color-medium-blue);">3</div>' +
+              '<span class="sr-step-label">Agentic Checks</span>' +
+              '<span style="margin-left:auto;font-size:10px;font-weight:700;color:' + checkSummaryColor + ';">' + passCount + '/4 passed</span>' +
+            '</div>' +
+            '<div class="sr-step-divider"></div>' +
+            '<div style="display:flex;flex-direction:column;gap:var(--space-2);">' + checksHtml + '</div>' +
+          '</div>' +
+          // Arrow
+          '<div class="sr-flow-connector">&#8594;</div>' +
+          // Step 4: ACT Score
+          '<div class="sr-flow-step">' +
+            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num" style="background:#483698;">4</div><span class="sr-step-label">ACT Score</span></div>' +
+            '<div class="sr-step-divider"></div>' +
+            '<div style="display:flex;align-items:baseline;gap:6px;margin-top:4px;">' +
+              '<span class="sr-act-score ' + c.actClass + '">' + c.actScore + '</span>' +
+              '<span style="font-size:var(--text-xs);color:var(--color-gray-500);">/ 100</span>' +
+            '</div>' +
+            '<div style="font-size:11px;font-weight:600;color:var(--color-gray-700);margin-top:2px;">' + c.actLabel + '</div>' +
+            '<div style="font-size:10px;color:var(--color-gray-500);margin-top:var(--space-2);line-height:1.4;">' + c.actReco + '</div>' +
+          '</div>' +
+          // Arrow
+          '<div class="sr-flow-connector">&#8594;</div>' +
+          // Step 5: Decision
+          '<div class="sr-flow-step" style="background:' + decisionBg + ';border-color:' + (isApproved ? '#BBF7D0' : '#FECACA') + ';">' +
+            '<div style="display:flex;align-items:center;gap:var(--space-2);"><div class="sr-step-num" style="background:' + decisionColor + ';">5</div><span class="sr-step-label">Decision</span></div>' +
+            '<div class="sr-step-divider" style="background:' + (isApproved ? '#BBF7D0' : '#FECACA') + ';"></div>' +
+            '<div style="font-size:var(--text-base);font-weight:700;color:' + decisionColor + ';margin-top:4px;">' + c.decision + '</div>' +
+            '<div style="display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2);">' +
+              '<div style="width:24px;height:24px;border-radius:50%;background:' + decisionColor + ';color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + c.decisionBy.split(' ').map(function(w){return w[0];}).join('') + '</div>' +
+              '<div><div style="font-size:11px;font-weight:600;color:var(--color-gray-800);">' + c.decisionBy + '</div><div style="font-size:10px;color:var(--color-gray-500);">' + c.decisionRole + '</div></div>' +
+            '</div>' +
+            '<div style="font-size:11px;color:var(--color-gray-600);margin-top:var(--space-2);">' + c.decisionDate + '</div>' +
+            '<div style="font-size:10px;color:var(--color-gray-400);margin-top:1px;">TAT: ' + c.tat + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── Init PR chart ──
+  var prChart = new Chart(document.getElementById('pr-chart-canvas'), {
     type: 'bar',
     data: {
-      labels: ['Mining Ops', 'Zinc Refinery', 'Smelter Unit', 'Power Plant', 'Pit Ops', 'Exploration'],
+      labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
       datasets: [
         {
-          label: 'Budget',
-          data: [120, 110, 95, 80, 75, 60],
-          backgroundColor: 'rgba(0,51,141,0.12)',
-          borderColor: '#00338D',
-          borderWidth: 1.5,
+          label: 'Approved',
+          data: AD_DATA.Zinc.prApproved,
+          backgroundColor: 'rgba(22,163,74,0.75)',
           borderRadius: 3,
+          borderSkipped: false
         },
         {
-          label: 'Actuals',
-          data: [135.2, 104.3, 90.8, 78.5, 76.8, 46.4],
-          backgroundColor: (ctx) => {
-            const over = [true, false, false, false, true, false];
-            return over[ctx.dataIndex] ? 'rgba(192,18,44,0.85)' : '#00338D';
-          },
+          label: 'Rejected',
+          data: AD_DATA.Zinc.prRejected,
+          backgroundColor: 'rgba(220,38,38,0.75)',
           borderRadius: 3,
+          borderSkipped: false
         }
       ]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
       plugins: {
-        legend: { position: 'top', align: 'end', labels: { font: { family: 'Inter', size: 11 }, boxWidth: 12 } },
-        tooltip: { callbacks: { label: ctx => ` ₹${ctx.parsed.y} Cr` } }
+        legend: { position: 'top', labels: { font: { family: 'Inter', size: 11 }, boxWidth: 12, padding: 16 } },
+        tooltip: { mode: 'index', intersect: false }
       },
       scales: {
-        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 10 }, color: '#6C757D' } },
-        y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'Inter', size: 11 }, color: '#6C757D', callback: v => `₹${v} Cr` } }
+        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 } } },
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'Inter', size: 11 }, stepSize: 10 } }
       }
     }
   });
 
-  // ── Burn Rate Trend Chart ──
-  const brCtx = document.getElementById('burnRateChart').getContext('2d');
-  const months = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-  const actuals = [32.1, 28.4, 30.8, 33.2, 29.1, 31.5, 35.8, 27.9, 34.2, 38.1, 36.4, null];
-  const forecast = [null, null, null, null, null, null, null, null, null, null, 36.4, 34.8];
+  // ── Init DOA table ──
+  renderDOATable(AD_DATA.Zinc.doaUsers);
 
-  new Chart(brCtx, {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        {
-          label: 'Actual Burn (₹ Cr/month)',
-          data: actuals,
-          borderColor: '#00338D',
-          backgroundColor: 'rgba(0,51,141,0.06)',
-          tension: 0.4,
-          borderWidth: 2.5,
-          fill: true,
-          pointRadius: 4,
-          pointBackgroundColor: '#00338D',
-        },
-        {
-          label: 'Forecast',
-          data: forecast,
-          borderColor: '#F59E0B',
-          backgroundColor: 'rgba(245,158,11,0.05)',
-          tension: 0.4,
-          borderWidth: 2,
-          borderDash: [6, 4],
-          fill: true,
-          pointRadius: 4,
-          pointBackgroundColor: '#F59E0B',
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'top', align: 'end', labels: { font: { family: 'Inter', size: 11 }, boxWidth: 12 } },
-        tooltip: { callbacks: { label: ctx => ` ₹${ctx.parsed.y} Cr` } }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#6C757D' } },
-        y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'Inter', size: 11 }, color: '#6C757D', callback: v => `₹${v} Cr` } }
-      }
-    }
-  });
-
-  // ── Forecast Accuracy Gauge ──
-  const fgCtx = document.getElementById('forecastGauge').getContext('2d');
-  new Chart(fgCtx, {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: [84, 16],
-        backgroundColor: ['#006B3C', '#E5E7EB'],
-        borderWidth: 0,
-      }]
-    },
-    options: {
-      responsive: false,
-      cutout: '72%',
-      rotation: -90,
-      circumference: 180,
-      plugins: { legend: { display: false }, tooltip: { enabled: false } }
-    }
-  });
+  // ── Init Spend Request Flow Cards ──
+  renderSRFlowCards(AD_DATA.Zinc.srFlowCards);
 </script>
 <style>
 .sidebar-logout-btn {
