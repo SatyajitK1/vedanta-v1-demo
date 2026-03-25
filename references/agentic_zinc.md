@@ -74,7 +74,7 @@ The viewer should feel like they are **watching an intelligent enterprise system
 ### Execution Order
 
 1. PR Intake Agent  
-2. Categorizer Agent  
+2. Triage Agent  
 3. OPEX / CAPEX Fork  
 4. Consolidation Agent  
 5. Vendor Governance Agent  
