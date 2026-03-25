@@ -1112,13 +1112,41 @@
             <div class="section-card-body">
               <div class="timeline" id="auditTimeline" aria-label="Audit timeline">
 
-                <!-- Event 1: Request Created -->
+                <!-- Step 0: Data regarding Purchase Requisition received from SAP -->
+                <div class="timeline-item" data-event="sap" data-actor="sap">
+                  <div class="timeline-node sap" aria-label="Purchase Requisition received"></div>
+                  <div class="timeline-card highlight-sap">
+                    <div class="timeline-header">
+                      <div>
+                        <div class="timeline-action">Data regarding Purchase Requisition recieved from SAP</div>
+                        <div class="timeline-meta">
+                          <span class="timeline-actor">SAP S/4HANA Connector v2.1</span>
+                          <span class="timeline-dot"></span>
+                          <span style="font-size:var(--text-xs);color:var(--color-gray-500);">Automated Sync</span>
+                          <span class="timeline-dot"></span>
+                          <span class="timeline-time">08:05:12</span>
+                        </div>
+                      </div>
+                      <div class="timeline-stamp">15 Mar 2026<br/>08:05 IST</div>
+                    </div>
+                    <div class="timeline-body">
+                      Initial Purchase Requisition details synchronized from SAP ERP. PR Number PR-2024-039821 allocated for Excavator Procurement.
+                    </div>
+                    <div class="timeline-detail-row">
+                      <span class="timeline-detail-pill teal">PR Number: PR-2024-039821</span>
+                      <span class="timeline-detail-pill">Cost Centre: CC-MN-04</span>
+                      <span class="timeline-detail-pill">GL: 4310020</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 1: Spend Request -->
                 <div class="timeline-item" data-event="creation" data-actor="user">
-                  <div class="timeline-node created" aria-label="Request created"></div>
+                  <div class="timeline-node created" aria-label="Spend Request created"></div>
                   <div class="timeline-card">
                     <div class="timeline-header">
                       <div>
-                        <div class="timeline-action">Request Created</div>
+                        <div class="timeline-action">Spend Request Submitted</div>
                         <div class="timeline-meta">
                           <span class="timeline-actor">Arvind Maheshwari</span>
                           <span class="timeline-dot"></span>
@@ -1142,13 +1170,13 @@
                   </div>
                 </div>
 
-                <!-- Event 2: ACT Validation Triggered -->
+                <!-- Step 2: DOA Validations Triggered -->
                 <div class="timeline-item" data-event="validation" data-actor="system">
                   <div class="timeline-node system" aria-label="ACT validation triggered"></div>
                   <div class="timeline-card">
                     <div class="timeline-header">
                       <div>
-                        <div class="timeline-action">ACT Validation Engine Triggered</div>
+                        <div class="timeline-action">DOA Validations: ACT Engine Triggered</div>
                         <div class="timeline-meta">
                           <span class="timeline-actor">ACT Engine v3.2.1</span>
                           <span class="timeline-dot"></span>
@@ -1170,13 +1198,13 @@
                   </div>
                 </div>
 
-                <!-- Event 3: Validation Result -->
+                <!-- Step 2: DOA Validations Completed -->
                 <div class="timeline-item" data-event="validation" data-actor="system">
                   <div class="timeline-node validated" aria-label="Validation completed with warnings"></div>
                   <div class="timeline-card highlight-warning">
                     <div class="timeline-header">
                       <div>
-                        <div class="timeline-action">ACT Validation Completed — Score: 72/100</div>
+                        <div class="timeline-action">DOA Validations: ACT Engine Completed — Score: 72/100</div>
                         <div class="timeline-meta">
                           <span class="timeline-actor">ACT Engine v3.2.1</span>
                           <span class="timeline-dot"></span>
@@ -1199,13 +1227,13 @@
                   </div>
                 </div>
 
-                <!-- Event 4: Escalation -->
+                <!-- Step 3: DOA Approval Escalation -->
                 <div class="timeline-item" data-event="escalation" data-actor="system">
                   <div class="timeline-node escalated" aria-label="Escalated to CFO"></div>
                   <div class="timeline-card">
                     <div class="timeline-header">
                       <div>
-                        <div class="timeline-action">Escalated to CFO — Dual Sign-off Required</div>
+                        <div class="timeline-action">DOA Approval: Escalated to CFO — Dual Sign-off Required</div>
                         <div class="timeline-meta">
                           <span class="timeline-actor">Workflow Engine</span>
                           <span class="timeline-dot"></span>
@@ -1228,13 +1256,13 @@
                   </div>
                 </div>
 
-                <!-- Event 5: First Approval -->
+                <!-- Step 3: DOA Approval First -->
                 <div class="timeline-item" data-event="approval" data-actor="user">
                   <div class="timeline-node approved" aria-label="Approved by DGM Finance"></div>
                   <div class="timeline-card highlight-approved">
                     <div class="timeline-header">
                       <div>
-                        <div class="timeline-action">Approved by DGM Finance (Approver 1 of 2)</div>
+                        <div class="timeline-action">DOA Approval: Approved by DGM Finance (Approver 1 of 2)</div>
                         <div class="timeline-meta">
                           <span class="timeline-actor">Sudhir Mehta</span>
                           <span class="timeline-dot"></span>
@@ -1257,13 +1285,13 @@
                   </div>
                 </div>
 
-                <!-- Event 6: CFO Approval -->
+                <!-- Step 3: DOA Approval CFO -->
                 <div class="timeline-item" data-event="approval" data-actor="user">
                   <div class="timeline-node approved" aria-label="Approved by CFO"></div>
                   <div class="timeline-card highlight-approved">
                     <div class="timeline-header">
                       <div>
-                        <div class="timeline-action">Approved by CFO — Dual Sign-off Complete</div>
+                        <div class="timeline-action">DOA Approval: Approved by CFO — Dual Sign-off Complete</div>
                         <div class="timeline-meta">
                           <span class="timeline-actor">Priya Nair</span>
                           <span class="timeline-dot"></span>
@@ -1286,7 +1314,7 @@
                   </div>
                 </div>
 
-                <!-- Event 7: SAP Execution -->
+                <!-- Step 4: SAP Execution -->
                 <div class="timeline-item" data-event="sap" data-actor="sap">
                   <div class="timeline-node sap" aria-label="SAP commitment created"></div>
                   <div class="timeline-card highlight-sap">
